@@ -52,6 +52,8 @@ release/
 /examples/meego/QmlComponentGallery/QmlComponentGallery
 /examples/meego/QmlComponentExtrasGallery/QmlComponentExtrasGallery
 /examples/meego/TutorialApplication/TutorialApplication
+/examples/fremantle/HelloWorld/HelloWorld
+/examples/fremantle/TutorialApplication/TutorialApplication
 /examples/symbian/extrasgallery/qmlextrasgallery
 /examples/symbian/gallery/qmlgallery
 /examples/symbian/scalefm/scalefm
