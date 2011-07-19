@@ -30,6 +30,7 @@ fremantle {
     exists( $$[QMAKE_MKSPECS]/features/maliit_defines.prf ) {
         load(maliit_defines)
     }
+    THEME_DIR = /usr/share/themes
 }
 
 unix:!symbian {

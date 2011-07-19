@@ -5,6 +5,9 @@ TEMPLATE = lib
 TARGET = $$qtLibraryTarget(fremantleplugin)
 INCLUDEPATH += $$PWD $$PWD/indicators
 
+DEFINES += THEME_DIR=\\\"\"$$THEME_DIR\"\\\"
+force-local-theme: DEFINES+=FORCE_LOCAL_THEME
+
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
 QT += declarative svg
@@ -40,10 +43,18 @@ xrandr:!mac {
 
 # Input
 SOURCES += \
+    mdeclarativeimageprovider.cpp \
+    mthemeplugin.cpp \
     plugin.cpp \
+    themedaemon/mabstractthemedaemonclient.cpp \
+    themedaemon/mlocalthemedaemonclient.cpp \
 
 HEADERS += \
+    mdeclarativeimageprovider.h \
+    mthemeplugin.h \
     plugin.h \
+    themedaemon/mabstractthemedaemonclient.h \
+    themedaemon/mlocalthemedaemonclient.h \
 
 QML_FILES = \
 	qmldir

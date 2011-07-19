@@ -1,5 +1,9 @@
 
 
-File,		Procedence,	GIT Commit
-plugin.h,	symbian		3d40ac459c3f7d7825d9643812fe3343549d3818
-plugin.cpp,     
+File							Procedence,	GIT Commit
+plugin.[cpp|h],	                  			symbian		3d40ac459c3f7d7825d9643812fe3343549d3818
+mdeclarativeimageprovider.[cpp|h] 			meego
+mthemeplugin.[cpp|h]					meego
+themedaemon/mabstractthemedaemonclient.[cpp|h]		meego
+themedaemon/mlocalthemedaemonclient.[cpp|h]		meego
+

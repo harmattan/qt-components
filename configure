@@ -148,6 +148,7 @@ while [ "$#" -gt 0 ]; do
         ;;
     force-local-theme)
         FORCE_LOCAL_THEME=yes
+	HAVE_THEMEDAEMON_PROTOCOL_V1=yes
         ;;
     symbian)
         BUILD_SYMBIAN_STYLE=yes

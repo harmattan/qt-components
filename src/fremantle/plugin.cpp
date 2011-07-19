@@ -39,6 +39,8 @@
 ****************************************************************************/
 
 //Add here type headers
+#include "mdeclarativeimageprovider.h"
+#include "mthemeplugin.h"
 #include "plugin.h"
 
 #include <QApplication>
@@ -55,14 +57,18 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         // Intentionally override possible older version of the plugin.
         context->setProperty("fremantleComponentsVersionMajor", VERSION_MAJOR);
         context->setProperty("fremantleComponentsVersionMinor", VERSION_MINOR);
-/*
-        // SetUp Theme image provider
-        engine->addImageProvider(QLatin1String("theme"), new SDeclarativeImageProvider);
 
+        // SetUp Theme image provider
+        engine->addImageProvider(QLatin1String("theme"), new MDeclarativeImageProvider);
+/*
         // Register global screen instance
         context->setContextProperty("screen", MDeclarativeScreen::instance());
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
-
+*/
+        // Theme support
+        context->setContextProperty("theme", new MThemePlugin);
+        qmlRegisterUncreatableType<MThemePlugin>(uri, 1, 0, "Theme", "");
+/*
         // Register global ImputContext support (Keyboard Stuff)
         context->setContextProperty("inputContext", new MDeclarativeInputContext);
         qmlRegisterUncreatableType<MDeclarativeInputContext>(uri, 1, 0, "InputContext", "");
