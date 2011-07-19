@@ -41,6 +41,7 @@
 //Add here type headers
 #include "mdeclarativeimageprovider.h"
 #include "mdeclarativeinputcontext.h"
+#include "mdeclarativescreen.h"
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
 #include "plugin.h"
@@ -62,11 +63,11 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 
         // SetUp Theme image provider
         engine->addImageProvider(QLatin1String("theme"), new MDeclarativeImageProvider);
-/*
+
         // Register global screen instance
         context->setContextProperty("screen", MDeclarativeScreen::instance());
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
-*/
+
         // Theme support
         context->setContextProperty("theme", new MThemePlugin);
         qmlRegisterUncreatableType<MThemePlugin>(uri, 1, 0, "Theme", "");
@@ -77,14 +78,14 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 */
         context->setContextProperty("platformWindow", MWindowState::instance());
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
-/*
+
         // Disable cursor blinking + make double tapping work the way it is done in lmt.
         QApplication *app = qobject_cast<QApplication*>(QApplication::instance());
         if (app) {
             app->setCursorFlashTime(0);
             app->setDoubleClickInterval(MEEGOTOUCH_DOUBLETAP_INTERVAL);
         } 
-*/        
+
         // Set style constants
         context->setContextProperty("UiConstants", uiConstants());
 }
