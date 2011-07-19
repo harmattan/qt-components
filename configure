@@ -45,12 +45,14 @@ SOURCE_TREE=`cd "$SOURCE_TREE"; /bin/pwd`
 INSTALL_PREFIX=/usr
 
 BUILD_MEEGO_STYLE=no
+BUILD_FREMANTLE_STYLE=no
 BUILD_SYMBIAN_STYLE=no
-BUILD_DEMOS=yes
-BUILD_EXAMPLES=yes
+BUILD_DEMOS=no
+BUILD_EXAMPLES=no
 BUILD_EXTRAS=yes
-BUILD_TESTS=yes
+BUILD_TESTS=no
 HAVE_MEEGOTOUCH=no
+HAVE_MALIIT_FRAMEWORK=no
 HAVE_XDAMAGE=no
 HAVE_XRANDR=no
 HAVE_CONTEXTSUBSCRIBER=no
@@ -86,6 +88,7 @@ CONFIG_PRF="$BUILD_TREE/features/qt-components-config.prf"
 which pkg-config > /dev/null
 if [ $? -eq 0 ]; then
     pkg-config --exists meegotouch && HAVE_MEEGOTOUCH=yes
+    pkg-config --exists maliit && HAVE_MALIIT_FRAMEWORK=yes
     pkg-config --atleast-version=0.5.25 contextsubscriber-1.0 && HAVE_CONTEXTSUBSCRIBER=yes
     pkg-config --exists xdamage && HAVE_XDAMAGE=yes
     pkg-config --exists xrandr && HAVE_XRANDR=yes
@@ -106,7 +109,7 @@ while [ "$#" -gt 0 ]; do
         VAL=no
         ;;
     #Qt style yes options
-    -meego|-symbian|-meegotouch|-contextsubscriber|-xdamage|-xrandr|-meegographicssystem|-shader|-force-local-theme|-mobility)
+    -meego|-fremantle|-symbian|-meegotouch|-contextsubscriber|-xdamage|-xrandr|-meegographicssystem|-shader|-force-local-theme|-mobility)
         VAR=`echo $1 | sed 's,^-\(.*\),\1,'`
         VAL=yes
         ;;
@@ -139,6 +142,9 @@ while [ "$#" -gt 0 ]; do
         ;;
     meego)
         BUILD_MEEGO_STYLE=yes
+        ;;
+    fremantle)
+        BUILD_FREMANTLE_STYLE=yes
         ;;
     force-local-theme)
         FORCE_LOCAL_THEME=yes
@@ -209,6 +215,13 @@ while [ "$#" -gt 0 ]; do
             UNKNOWN_OPT=yes
         fi
         ;;
+    maliit)
+        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+            HAVE_MALIIT_FRAMEWORK=$VAL
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
     contextsubscriber)
         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
             HAVE_CONTEXTSUBSCRIBER=$VAL
@@ -264,12 +277,13 @@ done
 
 if [ "$OPT_HELP" = "yes" ]; then
     cat << EOF
-Usage:  configure [-meego] [-symbian] [-config <config>]
+Usage:  configure [-meego] [-fremantle] [-symbian] [-config <config>]
     [-make <part>] [-nomake <part>] [-help]
 
 Configure options:
 
     -meego ................... Build MeeGo Style
+    -fremantle ............... Build Maemo Fremantle Style
     -symbian ................. Build Symbian Style
     -config (config) ......... Configuration options recognized by qmake
     -make (part) ............. Add part to the list of parts to be built at
@@ -284,6 +298,9 @@ Additional options:
 
     -no-meegotouch ........... Do not compile MeeGo Touch framework support
  +  -meegotouch .............. Compile MeeGo Touch framework support
+
+    -no-maliit ............... Do not compile Maliit IM framework support
+ +  -maliit .................. Compile Maliit IM framework support
 
     -no-contextsubscriber .... Do not compile Context Subscriber support
  +  -contextsubscriber ....... Compile Context Subscriber support
@@ -303,6 +320,7 @@ EOF
 fi
 
 [ "$BUILD_MEEGO_STYLE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG meego"
+[ "$BUILD_FREMANTLE_STYLE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG fremantle"
 [ "$BUILD_SYMBIAN_STYLE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG symbian3"
 [ "$BUILD_DEMOS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG demos"
 [ "$BUILD_EXAMPLES" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG examples"
@@ -310,6 +328,7 @@ fi
 [ "$BUILD_TESTS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG tests"
 
 [ "$HAVE_MEEGOTOUCH" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG meegotouch"
+[ "$HAVE_MALIIT_FRAMEWORK" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG maliit"
 [ "$HAVE_CONTEXTSUBSCRIBER" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG contextsubscriber"
 [ "$HAVE_MEEGOGRAPHICSSYSTEM" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG meegographicssystem"
 [ "$HAVE_THEMEDAEMON_PROTOCOL_V1" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG themedaemonprotocolv1"
@@ -349,6 +368,14 @@ if [ "$BUILD_MEEGO_STYLE" = "yes" ]; then
     echo "  MeeGo Graphics System support .. $HAVE_MEEGOGRAPHICSSYSTEM"
     echo "  Shader support ................. $HAVE_SHADER"
     echo "  Force local theme .............. $FORCE_LOCAL_THEME"
+fi
+echo "Fremantle Style .................. $BUILD_FREMANTLE_STYLE"
+if [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
+    echo "  Maliit Framework ............... $HAVE_MALIIT_FRAMEWORK"
+    echo "  Qt Mobility support ............ $HAVE_MOBILITY"
+    echo "  XDamage support  ............... $HAVE_XDAMAGE"
+    echo "  XRandr support  ................ $HAVE_XRANDR"
+    echo "  Shader support ................. $HAVE_SHADER"
 fi
 echo "Symbian Style .................... $BUILD_SYMBIAN_STYLE"
 if [ "$BUILD_SYMBIAN_STYLE" = "yes" ]; then
