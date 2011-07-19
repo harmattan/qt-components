@@ -35,13 +35,17 @@ xdamage {
 
 xrandr:!mac {
     DEFINES += HAVE_XRANDR
-    LIBS += -lXrandr
+    PKGCONFIG += xrandr
 }
 
+# Input
 SOURCES += \
+    plugin.cpp \
 
 HEADERS += \
+    plugin.h \
 
 QML_FILES = \
+	qmldir
 
 include(../../qml.pri)
