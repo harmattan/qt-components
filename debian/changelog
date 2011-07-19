@@ -1,3 +1,9 @@
+qt-components (1.0~git20110712-1+0m5) fremantle; urgency=low
+
+  * Initial port to fremantle
+
+ -- Carlos Martin <cmartin@liberalia.net>  Tue, 12 July 2011 19:55:00 +0300
+
 qt-components (1.0~git20110712-1) maverick; urgency=low
 
   * Fixes: NB#270426 - coreweb: /usr/bin/FacebookQML "Fails at Daemon::readFromBoosterSocket" 
