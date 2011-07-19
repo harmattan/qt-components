@@ -25,6 +25,7 @@ mobility {
 
 maliit {
     DEFINES += HAVE_MALIIT_FRAMEWORK
+    PKGCONFIG += maliit-1.0
 }
 
 shader {
@@ -45,6 +46,8 @@ xrandr:!mac {
 SOURCES += \
     mdeclarativeimageprovider.cpp \
     mthemeplugin.cpp \
+    mwindowstate.cpp \
+    mx11wrapper.cpp \
     plugin.cpp \
     themedaemon/mabstractthemedaemonclient.cpp \
     themedaemon/mlocalthemedaemonclient.cpp \
@@ -52,6 +55,9 @@ SOURCES += \
 HEADERS += \
     mdeclarativeimageprovider.h \
     mthemeplugin.h \
+    mwindowstate.h \
+    mwindowstate_p.h \
+    mx11wrapper.h \
     plugin.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \

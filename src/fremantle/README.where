@@ -6,4 +6,6 @@ mdeclarativeimageprovider.[cpp|h] 			meego
 mthemeplugin.[cpp|h]					meego
 themedaemon/mabstractthemedaemonclient.[cpp|h]		meego
 themedaemon/mlocalthemedaemonclient.[cpp|h]		meego
+mwindowstate[cpp|h]					meego
+mx11wrapper[cpp|h]					meego
 

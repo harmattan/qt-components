@@ -40,7 +40,9 @@
 
 //Add here type headers
 #include "mdeclarativeimageprovider.h"
+#include "mdeclarativeinputcontext.h"
 #include "mthemeplugin.h"
+#include "mwindowstate.h"
 #include "plugin.h"
 
 #include <QApplication>
@@ -72,10 +74,10 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         // Register global ImputContext support (Keyboard Stuff)
         context->setContextProperty("inputContext", new MDeclarativeInputContext);
         qmlRegisterUncreatableType<MDeclarativeInputContext>(uri, 1, 0, "InputContext", "");
-
+*/
         context->setContextProperty("platformWindow", MWindowState::instance());
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
-
+/*
         // Disable cursor blinking + make double tapping work the way it is done in lmt.
         QApplication *app = qobject_cast<QApplication*>(QApplication::instance());
         if (app) {
