@@ -88,7 +88,7 @@ CONFIG_PRF="$BUILD_TREE/features/qt-components-config.prf"
 which pkg-config > /dev/null
 if [ $? -eq 0 ]; then
     pkg-config --exists meegotouch && HAVE_MEEGOTOUCH=yes
-    pkg-config --exists maliit && HAVE_MALIIT_FRAMEWORK=yes
+    pkg-config --exists maliit-1.0 && HAVE_MALIIT_FRAMEWORK=yes
     pkg-config --atleast-version=0.5.25 contextsubscriber-1.0 && HAVE_CONTEXTSUBSCRIBER=yes
     pkg-config --exists xdamage && HAVE_XDAMAGE=yes
     pkg-config --exists xrandr && HAVE_XRANDR=yes

@@ -24,7 +24,15 @@ meego {
     } else {
         THEME_DIR = /usr/share/themes
     }
+}
 
+fremantle {
+    exists( $$[QMAKE_MKSPECS]/features/maliit_defines.prf ) {
+        load(maliit_defines)
+    }
+}
+
+unix:!symbian {
     # Debian and derivatives pass --no-undefined to the linker, which
     # means that each library must explicitly link to all dependencies
     # than assuming that the application or another library will bring
