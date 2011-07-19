@@ -71,11 +71,11 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         // Theme support
         context->setContextProperty("theme", new MThemePlugin);
         qmlRegisterUncreatableType<MThemePlugin>(uri, 1, 0, "Theme", "");
-/*
+
         // Register global ImputContext support (Keyboard Stuff)
         context->setContextProperty("inputContext", new MDeclarativeInputContext);
         qmlRegisterUncreatableType<MDeclarativeInputContext>(uri, 1, 0, "InputContext", "");
-*/
+
         context->setContextProperty("platformWindow", MWindowState::instance());
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
 

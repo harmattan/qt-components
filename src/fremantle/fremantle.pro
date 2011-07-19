@@ -45,6 +45,7 @@ xrandr:!mac {
 # Input
 SOURCES += \
     mdeclarativeimageprovider.cpp \
+    mdeclarativeinputcontext.cpp \
     mdeclarativescreen.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
@@ -55,6 +56,7 @@ SOURCES += \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
+    mdeclarativeinputcontext.h \
     mdeclarativescreen.h \
     mthemeplugin.h \
     mwindowstate.h \
