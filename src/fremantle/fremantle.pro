@@ -70,6 +70,8 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    PageStack.js \
+    PageStack.qml \
     UIConstants.js \
     Window.qml \
     style/WindowStyle.qml \
