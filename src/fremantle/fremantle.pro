@@ -52,6 +52,7 @@ SOURCES += \
     mwindowstate.cpp \
     mx11wrapper.cpp \
     plugin.cpp \
+    sdeclarative.cpp \
     themedaemon/mabstractthemedaemonclient.cpp \
     themedaemon/mlocalthemedaemonclient.cpp \
 
@@ -65,6 +66,7 @@ HEADERS += \
     mwindowstate_p.h \
     mx11wrapper.h \
     plugin.h \
+    sdeclarative.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
 

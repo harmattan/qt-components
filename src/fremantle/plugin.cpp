@@ -39,6 +39,7 @@
 ****************************************************************************/
 
 //Add here type headers
+#include "sdeclarative.h"
 #include "mdeclarativeimageprovider.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
@@ -95,6 +96,8 @@ void FremantlePlugin::registerTypes(const char *uri) {
         // Add here custom types
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
+        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 1, "PageOrientation", "");
+        qmlRegisterUncreatableType<SPageStatus>(uri, 1, 1, "PageStatus", "");
 }
 
 QDeclarativePropertyMap *FremantlePlugin::uiConstants() {

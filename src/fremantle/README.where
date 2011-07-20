@@ -17,3 +17,5 @@ msnapshot[cpp|h]					meego
 style/Style.qml						meego
 style/WindowStyle.qml					new
 PageStack[qml|js]					symbian
+Page.qml						symbian
+sdeclarative.[cpp|h]					symbian

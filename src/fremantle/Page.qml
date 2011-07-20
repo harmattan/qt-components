@@ -67,20 +67,29 @@ Item {
     // Hiden by default
     visible: false
 
-    width: visible && parent ? parent.width : internal.previousWidth
-    height: visible && parent ? parent.height : internal.previousHeight
+    // Note we do not use anchor fill here because it will force us to relayout
+    // hidden children when rotating the screen as well
+    width: visible && parent ? parent.width - anchors.leftMargin - anchors.rightMargin : internal.prevWidth
+    height: visible && parent ? parent.height  - anchors.topMargin - anchors.bottomMargin : internal.prevHeight
+    x: parent ? anchors.leftMargin : 0
+    y: parent ? anchors.topMargin : 0
+
+    // Page margins should generally be 16 pixels as defined by UI.MARGIN_XLARGE
+    anchors.margins: 0
 
     onWidthChanged: internal.previousWidth = visible ? width : internal.previousWidth
     onHeightChanged: internal.previousHeight = visible ? height : internal.previousHeight
 
     onStatusChanged: {
-        if (status == PageStatus.Activating)
-            internal.orientationLockCheck();
+        if (status == PageStatus.Activating) {
+            internal.updateOrientationLock();
+        }
     }
 
     onOrientationLockChanged: {
-        if (status == PageStatus.Activating || status == PageStatus.Active)
-            internal.orientationLockCheck();
+        if (status == PageStatus.Activating || status == PageStatus.Active) {
+            internal.updateOrientationLock();
+        }
     }
 
     QtObject {
@@ -96,19 +105,22 @@ Item {
             return screen.currentOrientation == Screen.Landscape || screen.currentOrientation == Screen.LandscapeInverted;
         }
 
-        function orientationLockCheck() {
+        function updateOrientationLock() {
             switch (orientationLock) {
             case PageOrientation.Automatic:
-                screen.allowedOrientations = Screen.Default
+                screen.setAllowedOrientations(Screen.Portrait | Screen.Landscape);
                 break
             case PageOrientation.LockPortrait:
-                screen.allowedOrientations = Screen.Portrait
+                screen.setAllowedOrientations(Screen.Portrait);
                 break
             case PageOrientation.LockLandscape:
-                screen.allowedOrientations = Screen.Landscape
+                screen.setAllowedOrientations(Screen.Landscape);
                 break
             case PageOrientation.LockPrevious:
-                screen.allowedOrientations = screen.currentOrientation
+                // Allowed orientation should be changed to current
+                // if previously it was locked, it will remain locked
+                // if previously it was not locked, it will be locked to current
+                screen.setAllowedOrientations(screen.currentOrientation);
                 break
             case PageOrientation.Manual:
             default:
