@@ -38,19 +38,24 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import org.maemo.fremantle 1.0
+import Qt 4.7
 
-Window {
-    id: rectangle1
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Hello World"
+Item {
+    id: root
+    width: parent.width
+    height: 0
+
+    objectName: "softwareInputPanel"
+
+    property bool active: false
+
+    states: State {
+        when: active
+        PropertyChanges { target: root; height: childrenRect.height; }
     }
-    MouseArea {
-        anchors.fill: parent
-        onClicked: Qt.quit()
+
+    transitions: Transition {
+        reversible: true
+        NumberAnimation { properties: "opacity"; easing.type: Easing.InOutCubic; duration: 200 }
     }
 }
-

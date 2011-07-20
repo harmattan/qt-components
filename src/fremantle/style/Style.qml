@@ -39,18 +39,16 @@
 ****************************************************************************/
 
 import QtQuick 1.0
-import org.maemo.fremantle 1.0
 
-Window {
-    id: rectangle1
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Hello World"
-    }
-    MouseArea {
-        anchors.fill: parent
-        onClicked: Qt.quit()
-    }
+QtObject {
+    id: styleClass
+    // Settings
+    property bool inverted: theme.inverted? true : false
+    property string __invertedString: inverted? "-inverted" : ""
+
+    // some style classes like SelectionDialogStyle are using nested elements (for example Text),
+    // which isn't allowed by QtObject; this fix makes this possible
+    default property alias children: styleClass.__defaultPropertyFix
+    property list<QtObject> __defaultPropertyFix: [Item {}] //QML doesn't allow an empty list here
+
 }
-

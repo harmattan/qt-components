@@ -39,18 +39,8 @@
 ****************************************************************************/
 
 import QtQuick 1.0
-import org.maemo.fremantle 1.0
+import "UIConstants.js" as UI
 
-Window {
-    id: rectangle1
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Hello World"
-    }
-    MouseArea {
-        anchors.fill: parent
-        onClicked: Qt.quit()
-    }
+Style {
+    property color colorBackground: inverted ? UI.COLOR_INVERTED_BACKGROUND : UI.COLOR_BACKGROUND
 }
-

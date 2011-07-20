@@ -38,19 +38,71 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import org.maemo.fremantle 1.0
+#include "msnapshot.h"
+#include <qpainter.h>
+#include <qgraphicsscene.h>
 
-Window {
-    id: rectangle1
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Hello World"
+MSnapshot::MSnapshot(QDeclarativeItem *parent)
+    : QDeclarativeItem(parent), sWidth(0), sHeight(0)
+{
+    setFlag(ItemHasNoContents, false);
+    setFlag(ItemIgnoresParentOpacity, true);
+    setOpacity(0);
+}
+
+MSnapshot::~MSnapshot()
+{
+}
+
+void MSnapshot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+{
+    painter->save();
+    if (smooth()) {
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     }
-    MouseArea {
-        anchors.fill: parent
-        onClicked: Qt.quit()
+    painter->drawPixmap(0, 0, snapshot);
+    painter->restore();
+}
+
+void MSnapshot::take()
+{
+    QGraphicsScene *s = scene();
+    if (!s)
+        return;
+    snapshot = QPixmap(width(), height());
+    QPainter painter(&snapshot);
+    QRectF r(0, 0, snapshotWidth(), snapshotHeight());
+    s->render(&painter, r, r);
+}
+
+void MSnapshot::free()
+{
+    snapshot = QPixmap();
+}
+
+void MSnapshot::setSnapshotWidth(int width)
+{
+    if (sWidth != width) {
+        sWidth = width;
+        emit snapshotWidthChanged();
     }
 }
 
+void MSnapshot::setSnapshotHeight(int height)
+{
+    if (sHeight != height) {
+        sHeight = height;
+        emit snapshotHeightChanged();
+    }
+}
+
+int MSnapshot::snapshotWidth() const
+{
+    return sWidth;
+}
+
+int MSnapshot::snapshotHeight() const
+{
+    return sHeight;
+}

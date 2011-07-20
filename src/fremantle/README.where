@@ -10,3 +10,9 @@ mwindowstate[cpp|h]					meego
 mx11wrapper[cpp|h]					meego
 mdeclarativescreen[cpp|h]				meego
 mdeclarativeinputcontext[cpp|h]				meego
+SoftwareInputPanel.qml					meego
+UIConstants.js						meego
+Window.qml						meego
+msnapshot[cpp|h]					meego
+style/Style.qml						meego
+style/WindowStyle.qml					new

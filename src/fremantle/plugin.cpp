@@ -42,6 +42,7 @@
 #include "mdeclarativeimageprovider.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
+#include "msnapshot.h"
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
 #include "plugin.h"
@@ -92,6 +93,8 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 
 void FremantlePlugin::registerTypes(const char *uri) {
         // Add here custom types
+        qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
+        qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
 }
 
 QDeclarativePropertyMap *FremantlePlugin::uiConstants() {

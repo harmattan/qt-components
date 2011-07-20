@@ -38,19 +38,47 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import org.maemo.fremantle 1.0
+#ifndef MSNAPSHOT_H
+#define MSNAPSHOT_H
 
-Window {
-    id: rectangle1
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Hello World"
-    }
-    MouseArea {
-        anchors.fill: parent
-        onClicked: Qt.quit()
-    }
-}
+#include <qdeclarativeitem.h>
+#include <qglobal.h>
+#include <qpixmap.h>
 
+class MSnapshot : public QDeclarativeItem
+{
+    Q_OBJECT
+
+    Q_PROPERTY(int snapshotWidth READ snapshotWidth WRITE setSnapshotWidth NOTIFY snapshotWidthChanged)
+    Q_PROPERTY(int snapshotHeight READ snapshotHeight WRITE setSnapshotHeight NOTIFY snapshotHeightChanged)
+
+public:
+    MSnapshot(QDeclarativeItem *parent = 0);
+    virtual ~MSnapshot();
+
+    virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+
+    int snapshotWidth() const;
+    int snapshotHeight() const;
+
+    void setSnapshotWidth(int width);
+    void setSnapshotHeight(int height);
+
+public Q_SLOTS:
+    void take();
+    void free();
+
+Q_SIGNALS:
+    void snapshotWidthChanged();
+    void snapshotHeightChanged();
+
+private:
+    Q_DISABLE_COPY(MSnapshot)
+
+    QPixmap snapshot;
+    int sWidth;
+    int sHeight;
+};
+
+QML_DECLARE_TYPE(MSnapshot)
+#endif

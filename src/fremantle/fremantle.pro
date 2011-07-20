@@ -47,6 +47,7 @@ SOURCES += \
     mdeclarativeimageprovider.cpp \
     mdeclarativeinputcontext.cpp \
     mdeclarativescreen.cpp \
+    msnapshot.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
     mx11wrapper.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     mdeclarativeimageprovider.h \
     mdeclarativeinputcontext.h \
     mdeclarativescreen.h \
+    msnapshot.h \
     mthemeplugin.h \
     mwindowstate.h \
     mwindowstate_p.h \
@@ -67,6 +69,11 @@ HEADERS += \
     themedaemon/mlocalthemedaemonclient.h \
 
 QML_FILES = \
-	qmldir
+    qmldir \
+    UIConstants.js \
+    Window.qml \
+    style/WindowStyle.qml \
+    SoftwareInputPanel.qml \
+    style/Style.qml \
 
 include(../../qml.pri)
