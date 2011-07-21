@@ -83,5 +83,7 @@ QML_FILES = \
     style/WindowStyle.qml \
     SoftwareInputPanel.qml \
     style/Style.qml \
+    PageStackWindow.qml \
+    style/PageStackWindowStyle.qml \
 
 include(../../qml.pri)

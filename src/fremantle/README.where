@@ -23,3 +23,5 @@ ToolBar.qml						meego
 style/ToolBarStyle.qml					meego
 StatusBar.qml						symbian
 style/StatusBarStyle.qml				symbian
+PageStackWindow.qml					meego
+style/PageStackWindowStyle.qml				meego
