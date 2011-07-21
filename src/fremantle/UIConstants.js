@@ -70,6 +70,9 @@ var COLOR_BUTTON_SECONDARY_FOREGROUND  = "#8c8c8c" //secondary text
 var COLOR_BUTTON_DISABLED_FOREGROUND   = "#B2B2B4" //disabled text
 var COLOR_BUTTON_BACKGROUND            = "#000000" //background
 
+var COLOR_STATUSBAR_FOREGROUND           = "#ffffff" // text color
+var COLOR_STATUSBAR_INVERTED_FOREGROUND  = "#ffffff" // inverted text color
+
 var SIZE_ICON_DEFAULT = 32;
 var SIZE_ICON_LARGE = 48;
 

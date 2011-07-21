@@ -3,3 +3,4 @@ Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 ToolBar 1.0 ToolBar.qml
 Window 1.0 Window.qml
+StatusBar 1.0 StatusBar.qml

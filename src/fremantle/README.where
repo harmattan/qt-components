@@ -21,3 +21,5 @@ Page.qml						symbian
 sdeclarative.[cpp|h]					symbian
 ToolBar.qml						meego
 style/ToolBarStyle.qml					meego
+StatusBar.qml						symbian
+style/StatusBarStyle.qml				symbian

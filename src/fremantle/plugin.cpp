@@ -78,6 +78,9 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         context->setContextProperty("inputContext", new MDeclarativeInputContext);
         qmlRegisterUncreatableType<MDeclarativeInputContext>(uri, 1, 0, "InputContext", "");
 
+        SDeclarative *declarative = new SDeclarative(context);
+        context->setContextProperty("maemo", declarative);
+
         context->setContextProperty("platformWindow", MWindowState::instance());
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
 

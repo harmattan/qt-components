@@ -74,6 +74,8 @@ QML_FILES = \
     qmldir \
     ToolBar.qml \
     style/ToolBarStyle.qml \
+    StatusBar.qml \
+    style/StatusBarStyle.qml \
     PageStack.js \
     PageStack.qml \
     UIConstants.js \
