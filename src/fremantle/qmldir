@@ -1,7 +1,18 @@
 plugin fremantleplugin
 Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
-ToolBar 1.0 ToolBar.qml
-Window 1.0 Window.qml
-StatusBar 1.0 StatusBar.qml
 PageStackWindow 1.0 PageStackWindow.qml
+PageStackWindowStyle.qml 1.0 PageStackWindowStyle 1.0
+StatusBar 1.0 StatusBar.qml
+StatusBarStyle.qml 1.0 StatusBarStyle.qml
+Style.qml 1.0 Style.qmql
+ToolBar 1.0 ToolBar.qml
+ToolBarLayout.qml 1.0 ToolBarLayout.qml
+ToolBarStyle.qml 1.0 ToolBarStyle.qml
+ToolButton.qml 1.0 ToolButton.qml
+ToolButtonRow.qml 1.0 ToolButtonRow.qml
+ToolButtonStyle.qml 1.0 ToolButtonStyle.qml
+ToolIcon.qml 1.0 ToolIcon.qml
+ToolItemStyle.qml 1.0 ToolItemStyle.qml
+Window 1.0 Window.qml
+WindowStyle.qml 1.0 WindowStyle.qml

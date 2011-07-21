@@ -72,6 +72,13 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    ToolBarLayout.js \
+    ToolBarLayout.qml \
+    style/ToolButtonStyle.qml \
+    ToolButton.qml \
+    ToolButtonRow.qml \
+    style/ToolItemStyle.qml \
+    ToolIcon.qml \
     ToolBar.qml \
     style/ToolBarStyle.qml \
     StatusBar.qml \
