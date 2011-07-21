@@ -72,6 +72,8 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    ToolBar.qml \
+    style/ToolBarStyle.qml \
     PageStack.js \
     PageStack.qml \
     UIConstants.js \

@@ -98,6 +98,7 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
         qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 1, "PageOrientation", "");
         qmlRegisterUncreatableType<SPageStatus>(uri, 1, 1, "PageStatus", "");
+        qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
 }
 
 QDeclarativePropertyMap *FremantlePlugin::uiConstants() {

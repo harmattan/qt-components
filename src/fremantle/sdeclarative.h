@@ -183,6 +183,15 @@ public:
     };
 };
 
+class MToolBarVisibility : public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(Visibility)
+
+public:
+    enum Visibility { Visible, Hidden, HiddenImmediately };
+};
+
 QML_DECLARE_TYPE(SDeclarative)
 
 #endif // SDECLARATIVE_H
