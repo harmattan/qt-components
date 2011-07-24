@@ -71,7 +71,7 @@ Item {
                 return "image://theme/" + iconId;
             }
 
-            source: handleIconSource(iconId)
+            source: handleIconSource(platformIconId)
             anchors.centerIn: parent
         }
     }
