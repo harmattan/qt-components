@@ -104,7 +104,7 @@ function layout() {
             items.push(children[i])
 
             // Center all items vertically
-            items[0].y = (function() {return height / 2 - items[0].height / 2})
+            items[0].y = parent.height / 2 - items[0].height / 2
             // Find out which items are expanding
             if (children[i].__expanding) {
                 expandingItems.push(children[i])
