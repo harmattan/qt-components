@@ -3,6 +3,8 @@ Button 1.0 Button.qml
 ButtonStyle 1.0 ButtonStyle.qml
 Label 1.0 Label.qml
 LabelStyle 1.0 LabelStyle.qmlm
+Menu 1.0 Menu.qml
+MenuStyle 1.0 MenuStyle.qml
 Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml

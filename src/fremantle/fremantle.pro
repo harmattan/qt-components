@@ -77,9 +77,11 @@ HEADERS += \
 QML_FILES = \
     qmldir \
     Fader.qml \
-    PopUp.qml \
+    Popup.qml \
     ScrollDecorator.qml \
     style/ScrollDecoratorStyle.qml \
+    Menu.qml \
+    style/MenuStyle.qml \
     Label.qml \
     style/LabelStyle.qml \
     Button.qml \

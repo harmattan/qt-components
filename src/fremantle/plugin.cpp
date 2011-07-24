@@ -40,14 +40,12 @@
 
 //Add here type headers
 #include "mdeclarativeimageprovider.h"
-#include "mdeclarativeimattributeextension.h"
-#include "mdeclarativeimobserver.h"
+#include "mdeclarativeimplicitsizeitem.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
 #include "mscrolldecoratorsizer.h"
 #include "msnapshot.h"
 #include "mthemeplugin.h"
-#include "mtoolbarvisibility.h"
 #include "mwindowstate.h"
 #include "plugin.h"
 #include "sdeclarative.h"
@@ -109,6 +107,9 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 1, "PageOrientation", "");
         qmlRegisterUncreatableType<SPageStatus>(uri, 1, 1, "PageStatus", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
+
+        // Custom primitives
+        qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
 
         qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
 }

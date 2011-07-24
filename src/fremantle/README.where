@@ -39,3 +39,5 @@ style/LableStyle.qml					meego
 Fader.qml						meego
 Popup.qml						meego
 ScrollDecorator.qml					meego
+Menu.qml						meego
+style/MenuStyle.qml					meego
