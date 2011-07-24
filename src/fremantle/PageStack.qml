@@ -159,7 +159,7 @@ Item {
             property Item owner: null
 
             // The width of the longer screen dimension
-            property int screenWidth: Math.max(screen.width, screen.height)
+            property int screenWidth: Math.max(screen.displayWidth, screen.displayHeight)
 
             // Duration of transition animation (in ms)
             property int transitionDuration: 200
