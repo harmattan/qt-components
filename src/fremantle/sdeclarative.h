@@ -192,6 +192,16 @@ public:
     enum Visibility { Visible, Hidden, HiddenImmediately };
 };
 
+class MDialogStatus : public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(Status)
+
+public:
+    enum Status {Opening, Open, Closing, Closed};
+
+};
+
 QML_DECLARE_TYPE(SDeclarative)
 
 #endif // SDECLARATIVE_H

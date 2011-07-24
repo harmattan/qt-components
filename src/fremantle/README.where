@@ -41,3 +41,6 @@ Popup.qml						meego
 ScrollDecorator.qml					meego
 Menu.qml						meego
 style/MenuStyle.qml					meego
+MenuLayout.qml						meego
+MenuItem.qml						meego
+style/MenuItem.qml					meego

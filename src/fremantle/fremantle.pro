@@ -60,7 +60,7 @@ SOURCES += \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
-    mdeclarativeimplicitsizeitem.cpp \
+    mdeclarativeimplicitsizeitem.h \
     mdeclarativeinputcontext.h \
     mdeclarativescreen.h \
     mscrolldecoratorsizer.h \
@@ -80,8 +80,12 @@ QML_FILES = \
     Popup.qml \
     ScrollDecorator.qml \
     style/ScrollDecoratorStyle.qml \
+    AbstractMenu.qml \
     Menu.qml \
     style/MenuStyle.qml \
+    MenuItem.qml \
+    style/MenuItemStyle.qml \
+    MenuLayout.qml \
     Label.qml \
     style/LabelStyle.qml \
     Button.qml \
@@ -97,6 +101,7 @@ QML_FILES = \
     style/ToolBarStyle.qml \
     StatusBar.qml \
     style/StatusBarStyle.qml \
+    Page.qml \
     PageStack.js \
     PageStack.qml \
     UIConstants.js \

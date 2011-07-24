@@ -105,6 +105,7 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState","");
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
+        qmlRegisterUncreatableType<MDialogStatus>(uri, 1, 0, "DialogStatus", "");
         qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 0, "PageOrientation", "");
         qmlRegisterUncreatableType<SPageStatus>(uri, 1, 0, "PageStatus", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
