@@ -31,4 +31,11 @@ ToolButton.qml						meego
 ToolButtonRow.qml					meego
 ToolIcon.qml						meego
 style/ToolButtonStyle.qml				meego
-style/ToolItemStylee.qml				meego
+style/ToolItemStyle.qml					meego
+Button.qml						meego
+style/ButtonStyle.qml					meego
+Label.qml						meego
+style/LableStyle.qml					meego
+Fader.qml						meego
+Popup.qml						meego
+ScrollDecorator.qml					meego

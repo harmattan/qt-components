@@ -7,6 +7,8 @@ Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml
 PageStackWindowStyle 1.0 PageStackWindowStyle 1.0
+ScrollDecorator 1.0 ScrollDecorator.qml
+ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
 StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml

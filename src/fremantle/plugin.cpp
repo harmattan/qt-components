@@ -40,13 +40,20 @@
 
 //Add here type headers
 #include "mdeclarativeimageprovider.h"
+#include "mdeclarativeimattributeextension.h"
+#include "mdeclarativeimobserver.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
+#include "mscrolldecoratorsizer.h"
 #include "msnapshot.h"
 #include "mthemeplugin.h"
+#include "mtoolbarvisibility.h"
 #include "mwindowstate.h"
 #include "plugin.h"
 #include "sdeclarative.h"
+
+#include <QDeclarativePropertyMap>
+#include <QFont>
 
 #include <QApplication>
 #include <QtDeclarative>
@@ -102,6 +109,8 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 1, "PageOrientation", "");
         qmlRegisterUncreatableType<SPageStatus>(uri, 1, 1, "PageStatus", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
+
+        qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
 }
 
 QDeclarativePropertyMap *FremantlePlugin::uiConstants() {

@@ -48,6 +48,7 @@ SOURCES += \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.cpp \
     mdeclarativescreen.cpp \
+    mscrolldecoratorsizer.cpp \
     msnapshot.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.h \
     mdeclarativescreen.h \
+    mscrolldecoratorsizer.h \
     msnapshot.h \
     mthemeplugin.h \
     mwindowstate.h \
@@ -74,6 +76,10 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    Fader.qml \
+    PopUp.qml \
+    ScrollDecorator.qml \
+    style/ScrollDecoratorStyle.qml \
     Label.qml \
     style/LabelStyle.qml \
     Button.qml \
