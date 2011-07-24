@@ -41,7 +41,7 @@
 #ifndef MDECLARATIVEIMPLICITSIZEITEM_H
 #define MDECLARATIVEIMPLICITSIZEITEM_H
 
-#include <QDeclarativeItem>
+#include <qdeclarativeitem.h>
 
 class MDeclarativeImplicitSizeItem : public QDeclarativeItem
 {
@@ -50,9 +50,6 @@ class MDeclarativeImplicitSizeItem : public QDeclarativeItem
     Q_PROPERTY(qreal implicitWidth READ implicitWidth WRITE setImplicitWidthNotify NOTIFY implicitWidthChanged)
     Q_PROPERTY(qreal implicitHeight READ implicitHeight WRITE setImplicitHeightNotify NOTIFY implicitHeightChanged)
     Q_PROPERTY(bool focusable READ platformFocusable WRITE setPlatformFocusable NOTIFY platformFocusableChanged) // Should be removed week 15
-
-    // DEPRECATED
-    Q_PROPERTY(bool platformFocusable READ platformFocusable WRITE setPlatformFocusable NOTIFY platformFocusableChanged)
 
 public:
     MDeclarativeImplicitSizeItem(QDeclarativeItem *parent = 0);

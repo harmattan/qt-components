@@ -79,3 +79,5 @@ void MDeclarativeImplicitSizeItem::setPlatformFocusable(bool shouldFocus)
         emit platformFocusableChanged();
     }
 }
+
+#include "moc_mdeclarativeimplicitsizeitem.cpp"
