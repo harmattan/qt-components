@@ -74,6 +74,8 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    Label.qml \
+    style/LabelStyle.qml \
     Button.qml \
     style/ButtonStyle.qml \
     ToolBarLayout.js \
