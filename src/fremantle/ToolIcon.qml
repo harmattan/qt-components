@@ -48,6 +48,8 @@ Item {
     property url iconSource
     property string platformIconId
 
+    // TODO: deprecated
+    property alias iconId: root.platformIconId
     width: 80; height: 64
     signal clicked
 
