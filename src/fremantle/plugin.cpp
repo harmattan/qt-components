@@ -103,9 +103,10 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 void FremantlePlugin::registerTypes(const char *uri) {
         // Add here custom types
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
+        qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState","");
         qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
-        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 1, "PageOrientation", "");
-        qmlRegisterUncreatableType<SPageStatus>(uri, 1, 1, "PageStatus", "");
+        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 0, "PageOrientation", "");
+        qmlRegisterUncreatableType<SPageStatus>(uri, 1, 0, "PageStatus", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
 
         // Custom primitives
