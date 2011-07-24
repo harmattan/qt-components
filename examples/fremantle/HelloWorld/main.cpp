@@ -44,8 +44,6 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    app.setProperty("NoMStyle", true);
-
     QDir::setCurrent(app.applicationDirPath());
 
     QDeclarativeView window;
