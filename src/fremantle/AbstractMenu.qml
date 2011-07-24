@@ -222,7 +222,7 @@ Popup {
                     anchors.top: backgroundRect.top
                     anchors.topMargin: titleBar.height
                     property int maxHeight : visualParent
-                                             ? visualParent.height - platformStyle.topMargin - __statusBarDelta
+                                             ? /*visualParent.height*/ 444 - platformStyle.topMargin - __statusBarDelta
                                                - footerBar.height - titleBar.height
                                              : root.parent
                                                      ? root.parent.height - platformStyle.topMargin - __statusBarDelta
