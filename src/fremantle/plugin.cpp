@@ -39,7 +39,6 @@
 ****************************************************************************/
 
 //Add here type headers
-#include "sdeclarative.h"
 #include "mdeclarativeimageprovider.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
@@ -47,6 +46,7 @@
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
 #include "plugin.h"
+#include "sdeclarative.h"
 
 #include <QApplication>
 #include <QtDeclarative>

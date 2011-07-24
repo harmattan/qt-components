@@ -45,6 +45,7 @@ xrandr:!mac {
 # Input
 SOURCES += \
     mdeclarativeimageprovider.cpp \
+    mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.cpp \
     mdeclarativescreen.cpp \
     msnapshot.cpp \
@@ -58,6 +59,7 @@ SOURCES += \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
+    mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.h \
     mdeclarativescreen.h \
     msnapshot.h \
@@ -72,6 +74,8 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    Button.qml \
+    style/ButtonStyle.qml \
     ToolBarLayout.js \
     ToolBarLayout.qml \
     style/ToolButtonStyle.qml \
