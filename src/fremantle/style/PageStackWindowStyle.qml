@@ -39,8 +39,9 @@
 ****************************************************************************/
 
 import QtQuick 1.0
+import "." 1.0
 
-Style {
+WindowStyle {
     property bool cornersVisible: true
 
     // Background
