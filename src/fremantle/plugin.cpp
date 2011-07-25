@@ -39,10 +39,13 @@
 ****************************************************************************/
 
 //Add here type headers
+#include "mdeclarativemousefilter.h"
 #include "mdeclarativeimageprovider.h"
+#include "mdeclarativeimobserver.h"
 #include "mdeclarativeimplicitsizeitem.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
+#include "minversemousearea.h"
 #include "mscrolldecoratorsizer.h"
 #include "msnapshot.h"
 #include "mtexttranslator.h"
@@ -124,7 +127,9 @@ void FremantlePlugin::registerTypes(const char *uri) {
 
         // Custom primitives
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
-
+        qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
+        qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
+        qmlRegisterType<MDeclarativeIMObserver>(uri, 1, 0, "InputMethodObserver");
         qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
 
         // shader effect item (to be removed when supported in QML)

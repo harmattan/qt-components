@@ -45,9 +45,12 @@ xrandr:!mac {
 # Input
 SOURCES += \
     mdeclarativeimageprovider.cpp \
+    mdeclarativeimobserver.cpp \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.cpp \
+    mdeclarativemousefilter.cpp \
     mdeclarativescreen.cpp \
+    minversemousearea.cpp \
     mscrolldecoratorsizer.cpp \
     msnapshot.cpp \
     mtexttranslator.cpp \
@@ -75,9 +78,12 @@ SOURCES += \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
+    mdeclarativeimobserver.h \
     mdeclarativeimplicitsizeitem.h \
     mdeclarativeinputcontext.h \
+    mdeclarativemousefilter.h \
     mdeclarativescreen.h \
+    minversemousearea.h \
     mscrolldecoratorsizer.h \
     msnapshot.h \
     mtexttranslator.h \
@@ -133,6 +139,9 @@ QML_FILES = \
     ToolBarLayout.qml \
     style/ToolButtonStyle.qml \
     ToolButton.qml \
+    TextAreaHelper.js \
+    TextField.qml \
+    style/TextFieldStyle.qml \
     ToolButtonRow.qml \
     style/ToolItemStyle.qml \
     ToolIcon.qml \

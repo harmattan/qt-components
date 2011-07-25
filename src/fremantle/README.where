@@ -50,3 +50,9 @@ Magnifier[js|qml]					meego
 mtexttranslator[h|cpp]					meego
 style/EditBubbleStyle.qml				meego
 Utitls.js						meego
+TextAreaHelper.js					meego
+TextField.qml						meego
+mdeclarativeimobserver[cpp|h]				meego
+mdeclarativemousefilter[cpp|h]				meego
+minversemousearea[cpp|h]				meego
+style/TextFieldStyle[cpp|h]				meego

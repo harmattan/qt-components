@@ -19,6 +19,8 @@ ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
 StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
+TextField 1.0 TextField.qml
+TextFieldStyle 1.0 TextFieldStyle.qml
 ToolBar 1.0 ToolBar.qml
 ToolBarLayout 1.0 ToolBarLayout.qml
 ToolBarStyle 1.0 ToolBarStyle.qml
