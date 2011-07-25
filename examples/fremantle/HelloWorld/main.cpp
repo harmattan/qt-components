@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 #ifdef __arm__
     window.showFullScreen();
 #else
-# define MAX(a,b) a > b ? a : b
+# define MAX(a, b) ((a > b) ? a : b)
     QRect geometry;
     geometry = app.desktop()->screenGeometry();
     (MAX(geometry.width(), geometry.height()) < 1024) ? window.showFullScreen() : window.show();
