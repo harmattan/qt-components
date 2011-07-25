@@ -66,7 +66,9 @@ QMAKE_CONFIG=
 QMAKE_DEBUG=
 OPT_HELP=no
 
-QMAKE=`which qmake` 2> /dev/null
+if [ -z "$QTDIR" ]; then
+    QMAKE=`which qmake` 2> /dev/null
+fi
 if [ ! -f "$QMAKE" ]; then
     QMAKE=$QTDIR/bin/qmake
     if [ ! -f $QMAKE ]; then
