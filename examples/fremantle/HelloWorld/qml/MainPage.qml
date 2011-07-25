@@ -12,10 +12,17 @@ Page {
         visible: false
     }
     Button{
+        id: button
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: label.bottom
         anchors.topMargin: 10
         text: qsTr("Click here!")
         onClicked: label.visible=true
+    }
+    TextField{
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: button.bottom
+        anchors.topMargin: 20
+        placeholderText: qsTr("Insert some text here")
     }
 }
