@@ -44,6 +44,7 @@ import "UIConstants.js" as UI
 import "EditBubble.js" as Popup
 import "TextAreaHelper.js" as TextAreaHelper
 import "Magnifier.js" as MagnifierPopup
+
 FocusScope {
     id: root
 
@@ -300,7 +301,7 @@ FocusScope {
         selectedTextColor: root.platformStyle.selectedTextColor
         selectionColor: root.platformStyle.selectionColor
         //QTQUICK11 mouseSelectionMode: TextInput.SelectWords
-        focus: true
+        //focus: true
 
         Component.onDestruction: {
             Popup.close(textInput);

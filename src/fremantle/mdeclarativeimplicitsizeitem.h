@@ -72,4 +72,7 @@ public:
     virtual ~MDeclarativeFocusScope();
 };
 
+QML_DECLARE_TYPE(MDeclarativeImplicitSizeItem)
+QML_DECLARE_TYPE(MDeclarativeFocusScope)
+
 #endif //MDECLARATIVEITEM_H
