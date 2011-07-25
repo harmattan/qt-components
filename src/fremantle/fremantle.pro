@@ -50,6 +50,7 @@ SOURCES += \
     mdeclarativescreen.cpp \
     mscrolldecoratorsizer.cpp \
     msnapshot.cpp \
+    mtexttranslator.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
     mx11wrapper.cpp \
@@ -79,6 +80,7 @@ HEADERS += \
     mdeclarativescreen.h \
     mscrolldecoratorsizer.h \
     msnapshot.h \
+    mtexttranslator.h \
     mthemeplugin.h \
     mwindowstate.h \
     mwindowstate_p.h \
@@ -107,6 +109,12 @@ HEADERS += \
 
 QML_FILES = \
     qmldir \
+    EditBubble.js \
+    EditBubble.qml \
+    style/EditBubbleStyle.qml \
+    Magnifier.js \
+    Magnifier.qml \
+    Utils.js \
     Fader.qml \
     Popup.qml \
     ScrollDecorator.qml \

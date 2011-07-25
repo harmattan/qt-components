@@ -45,3 +45,8 @@ MenuLayout.qml						meego
 MenuItem.qml						meego
 style/MenuItem.qml					meego
 shadereffect/*						meego
+EditBubble[js|qml]					meego
+Magnifier[js|qml]					meego
+mtexttranslator[h|cpp]					meego
+style/EditBubbleStyle.qml				meego
+Utitls.js						meego

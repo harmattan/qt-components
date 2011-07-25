@@ -1,13 +1,15 @@
 plugin fremantleplugin
 Button 1.0 Button.qml
 ButtonStyle 1.0 ButtonStyle.qml
+EditBubble 1.0 EditBubble.qml
+EditBubbleStyle 1.0 EditBubbleStyle.qml
 Label 1.0 Label.qml
 LabelStyle 1.0 LabelStyle.qml
 Menu 1.0 Menu.qml
-MenuLayout 1.0 MenuLayout.qml
 MenuItem 1.0 MenuItem.qml
-MenuStyle 1.0 MenuStyle.qml
 MenuItemStyle 1.0 MenuItemStyle.qml
+MenuLayout 1.0 MenuLayout.qml
+MenuStyle 1.0 MenuStyle.qml
 Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml
@@ -23,8 +25,8 @@ ToolBarStyle 1.0 ToolBarStyle.qml
 ToolButton 1.0 ToolButton.qml
 ToolButtonRow 1.0 ToolButtonRow.qml
 ToolButtonStyle 1.0 ToolButtonStyle.qml
-ToolItem 1.0 ToolItem.qml
 ToolIcon 1.0 ToolIcon.qml
+ToolItem 1.0 ToolItem.qml
 ToolItemStyle 1.0 ToolItemStyle.qml
 Window 1.0 Window.qml
 WindowStyle 1.0 WindowStyle.qml
