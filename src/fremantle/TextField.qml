@@ -299,7 +299,7 @@ FocusScope {
         selectByMouse: false
         selectedTextColor: root.platformStyle.selectedTextColor
         selectionColor: root.platformStyle.selectionColor
-        mouseSelectionMode: TextInput.SelectWords
+        //QTQUICK11 mouseSelectionMode: TextInput.SelectWords
         focus: true
 
         Component.onDestruction: {
