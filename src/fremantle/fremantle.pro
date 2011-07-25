@@ -10,7 +10,7 @@ force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
-QT += declarative svg
+QT += declarative svg opengl
 !win32:!macx: QT += dbus
 
 !win32:!embedded:!mac:!symbian {
@@ -57,6 +57,20 @@ SOURCES += \
     sdeclarative.cpp \
     themedaemon/mabstractthemedaemonclient.cpp \
     themedaemon/mlocalthemedaemonclient.cpp \
+    shadereffectitem/3d/qarray.cpp \
+    shadereffectitem/3d/qcolor4ub.cpp \
+    shadereffectitem/3d/qcustomdataarray.cpp \
+    shadereffectitem/3d/qglattributedescription.cpp \
+    shadereffectitem/3d/qglattributevalue.cpp \
+    shadereffectitem/3d/qglnamespace.cpp \
+    shadereffectitem/3d/qmatrix4x4stack.cpp \
+    shadereffectitem/geometry.cpp \
+    shadereffectitem/shadereffect.cpp \
+    shadereffectitem/shadereffectitem.cpp \
+    shadereffectitem/shadereffectitemnull.cpp \
+    shadereffectitem/shadereffectsource.cpp \
+    shadereffectitem/shadereffectsourcenull.cpp \
+    shadereffectitem/utilities.cpp \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
@@ -73,6 +87,23 @@ HEADERS += \
     sdeclarative.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
+    shadereffectitem/3d/qarray.h \
+    shadereffectitem/3d/qcolor4ub.h \
+    shadereffectitem/3d/qcustomdataarray.h \
+    shadereffectitem/3d/qglattributedescription.h \
+    shadereffectitem/3d/qglattributevalue.h \
+    shadereffectitem/3d/qglnamespace.h \
+    shadereffectitem/3d/qmatrix4x4stack.h \
+    shadereffectitem/3d/qmatrix4x4stack_p.h \
+    shadereffectitem/3d/qt3dglobal.h \
+    shadereffectitem/geometry.h \
+    shadereffectitem/glfunctions.h \
+    shadereffectitem/shadereffect.h \
+    shadereffectitem/shadereffectitem.h \
+    shadereffectitem/shadereffectitemnull.h \
+    shadereffectitem/shadereffectsource.h \
+    shadereffectitem/shadereffectsourcenull.h \
+    shadereffectitem/utilities.h \
 
 QML_FILES = \
     qmldir \

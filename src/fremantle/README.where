@@ -44,3 +44,4 @@ style/MenuStyle.qml					meego
 MenuLayout.qml						meego
 MenuItem.qml						meego
 style/MenuItem.qml					meego
+shadereffect/*						meego

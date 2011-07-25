@@ -45,6 +45,7 @@
 #include "mdeclarativescreen.h"
 #include "mscrolldecoratorsizer.h"
 #include "msnapshot.h"
+#include "mtexttranslator.h"
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
 #include "plugin.h"
@@ -52,6 +53,14 @@
 
 #include <QDeclarativePropertyMap>
 #include <QFont>
+
+#ifdef HAVE_SHADER
+# include "shadereffectitem/shadereffectitem.h"
+# include "shadereffectitem/shadereffectsource.h"
+#else
+# include "shadereffectitem/shadereffectitemnull.h"
+# include "shadereffectitem/shadereffectsourcenull.h"
+#endif
 
 #include <QApplication>
 #include <QtDeclarative>
@@ -89,6 +98,9 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         context->setContextProperty("platformWindow", MWindowState::instance());
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
 
+        context->setContextProperty("textTranslator", new MTextTranslator);
+        qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
+
         // Disable cursor blinking + make double tapping work the way it is done in lmt.
         QApplication *app = qobject_cast<QApplication*>(QApplication::instance());
         if (app) {
@@ -114,6 +126,15 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
 
         qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
+
+        // shader effect item (to be removed when supported in QML)
+#ifdef HAVE_SHADER
+        qmlRegisterType<ShaderEffectItem>(uri, 1, 0, "ShaderEffectItem");
+        qmlRegisterType<ShaderEffectSource>(uri, 1, 0, "ShaderEffectSource");
+#else
+        qmlRegisterType<ShaderEffectItemNull>(uri, 1, 0, "ShaderEffectItem");
+        qmlRegisterType<ShaderEffectSourceNull>(uri, 1, 0, "ShaderEffectSource");
+#endif
 }
 
 QDeclarativePropertyMap *FremantlePlugin::uiConstants() {
