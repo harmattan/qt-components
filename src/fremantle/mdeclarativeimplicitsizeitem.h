@@ -49,23 +49,27 @@ class MDeclarativeImplicitSizeItem : public QDeclarativeItem
 
     Q_PROPERTY(qreal implicitWidth READ implicitWidth WRITE setImplicitWidthNotify NOTIFY implicitWidthChanged)
     Q_PROPERTY(qreal implicitHeight READ implicitHeight WRITE setImplicitHeightNotify NOTIFY implicitHeightChanged)
-    Q_PROPERTY(bool focusable READ platformFocusable WRITE setPlatformFocusable NOTIFY platformFocusableChanged) // Should be removed week 15
 
 public:
     MDeclarativeImplicitSizeItem(QDeclarativeItem *parent = 0);
     virtual ~MDeclarativeImplicitSizeItem();
 
-    bool platformFocusable() const;
-    void setPlatformFocusable(bool shouldFocus);
-
 Q_SIGNALS:
     void implicitWidthChanged();
     void implicitHeightChanged();
-    void platformFocusableChanged();
 
 protected:
     void setImplicitWidthNotify(const qreal width);
     void setImplicitHeightNotify(const qreal height);
+};
+
+class MDeclarativeFocusScope : public MDeclarativeImplicitSizeItem
+{
+    Q_OBJECT
+
+public:
+    MDeclarativeFocusScope(MDeclarativeImplicitSizeItem *parent=0);
+    virtual ~MDeclarativeFocusScope();
 };
 
 #endif //MDECLARATIVEITEM_H

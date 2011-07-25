@@ -67,17 +67,14 @@ void MDeclarativeImplicitSizeItem::setImplicitHeightNotify(const qreal height)
     emit implicitHeightChanged();
 }
 
-bool MDeclarativeImplicitSizeItem::platformFocusable() const
+MDeclarativeFocusScope::MDeclarativeFocusScope(MDeclarativeImplicitSizeItem *parent) :
+    MDeclarativeImplicitSizeItem(parent)
 {
-    return flags() & QGraphicsItem::ItemIsFocusable;
+        setFlag(ItemIsFocusable, true);
 }
 
-void MDeclarativeImplicitSizeItem::setPlatformFocusable(bool shouldFocus)
+MDeclarativeFocusScope::~MDeclarativeFocusScope()
 {
-    if (shouldFocus != platformFocusable()) {
-        setFlag(ItemIsFocusable, shouldFocus);
-        emit platformFocusableChanged();
-    }
 }
 
 #include "moc_mdeclarativeimplicitsizeitem.cpp"
