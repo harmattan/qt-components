@@ -77,13 +77,13 @@ Item {
             return
         var p = flickableItem.parent
         while (p) {
-            if (p.hasOwnProperty("__isPage")) {
-                __hasPageHeight = function() { return p.height == flickableItem.height }
-                __hasPageWidth = function() { return p.width == flickableItem.width }
-                __topPageMargin = function() { return p.anchors.topMargin }
-                __bottomPageMargin = function() { return p.anchors.bottomMargin }
-                __leftPageMargin = function() { return p.anchors.leftMargin }
-                __rightPageMargin = function() { return p.anchors.rightMargin }
+	   if (typeof(p.pageStack) != 'undefined') {
+                __hasPageHeight = (p.height == flickableItem.height)
+                __hasPageWidth = (p.width == flickableItem.width)
+                __topPageMargin = p.anchors.topMargin
+                __bottomPageMargin = p.anchors.bottomMargin
+                __leftPageMargin = p.anchors.leftMargin
+                __rightPageMargin = p.anchors.rightMargin
                 return;
             } else {
                 p = p.parent;
