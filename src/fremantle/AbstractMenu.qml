@@ -185,7 +185,7 @@ Popup {
         width:  parent.width  - platformStyle.leftMargin - platformStyle.rightMargin  // ToDo: better width heuristic
         height: (screen.currentOrientation == 1) || (screen.currentOrientation == 4) ?
                 /* Portrait  */ titleBar.height + flickableContent.height + footerBar.height :
-                /* Landscape */ parent.height - platformStyle.topMargin - platformStyle.bottomMargin - __statusBarDelta
+                /* Landscape */ parent.height - platformStyle.topMargin - platformStyle.bottomMargin - __statusBarDelta - 1
         anchors.bottom: parent.bottom
 
         state: __statesWrapper.state
