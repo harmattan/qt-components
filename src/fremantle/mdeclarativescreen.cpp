@@ -68,6 +68,12 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
+#ifdef Q_WS_MAEMO_5
+#include <fcntl.h>
+#include <QSocketNotifier>
+#define GPIO_FILE "/sys/devices/platform/gpio-switch/slide"
+#endif
+
 static const int DEFAULT_WIDTH = 480;
 static const int DEFAULT_HEIGHT = 800;
 
@@ -137,6 +143,16 @@ public:
 # ifdef HAVE_SENSORS
     QOrientationSensor orientationSensor;
 # endif
+# ifdef Q_WS_MAEMO_5
+    int eventFd;
+    QSocketNotifier* sn;
+
+    void kbSliderPoll();
+    void kbSliderUnPoll();
+
+    bool kbSliderStatus();
+    void onKbSliderEvent();
+# endif
 #endif
 
 private:
@@ -152,6 +168,54 @@ MDeclarativeScreen* MDeclarativeScreen::instance()
         self = new MDeclarativeScreen();
     return self;
 }
+
+#ifdef Q_WS_MAEMO_5
+
+bool MDeclarativeScreenPrivate::kbSliderStatus()
+{
+    // Slider closed by default. gpio-input sets state to open /
+    // closed values. We only requires to read the first char to know
+    // if slide is 'o'pen or 'c'losed
+    char o = 'c';
+    if (read(eventFd, &o, 1) > 0) {
+        return o == 'o';
+    }
+    // Return current status if fails
+    return keyboardOpen;
+}
+
+void MDeclarativeScreenPrivate::onKbSliderEvent()
+{
+    // Something happened in the input file; read the events, decide whether
+    // they're interesting, and update the context properties.
+    _q_updateOrientationAngle();
+}
+
+void MDeclarativeScreenPrivate::kbSliderPoll()
+{
+    // Start polling the event file
+    eventFd = open(GPIO_FILE, O_RDONLY);
+    if (eventFd < 0) {
+        qWarning("Cannot open " GPIO_FILE);
+        return;
+    }
+    sn = new QSocketNotifier(eventFd, QSocketNotifier::Read, q);
+    QObject::connect(sn, SIGNAL(activated(int)), q, SLOT(onKbSliderEvent()));
+
+    // Read the initial status.
+    keyboardOpen = kbSliderStatus();
+}
+
+void MDeclarativeScreenPrivate::kbSliderUnPoll()
+{
+    // stop the listening activities
+    delete sn;
+    sn = 0;
+    if (eventFd >= 0)
+        close(eventFd);
+    eventFd = -1;
+}
+#endif
 
 #ifdef Q_WS_X11
 // This writes the orientation angle of into the X11 window property,
@@ -215,6 +279,10 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 # ifdef HAVE_SENSORS
     , orientationSensor(0)
 # endif
+# ifdef Q_WS_MAEMO_5
+    , eventFd(-1)
+    , sn(0)
+# endif
 #endif
     , minimized(false)
 {
@@ -229,6 +297,9 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 
 MDeclarativeScreenPrivate::~MDeclarativeScreenPrivate()
 {
+#ifdef Q_WS_MAEMO_5
+    kbSliderUnPoll();
+#endif
 }
 
 void MDeclarativeScreenPrivate::initContextSubscriber()
@@ -393,10 +464,14 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 #endif
 
 #ifdef HAVE_CONTEXTSUBSCRIBER
-bool open = keyboardOpenProperty.value().toBool();
+    bool open = keyboardOpenProperty.value().toBool();
 #else
-# ifdef HAVE_SENSORS
+# ifdef Q_WS_MAEMO_5
+    bool open = kbSliderStatus();
+# else
+#  ifdef HAVE_SENSORS
     bool open = false;
+#  endif
 # endif
 #endif
 
@@ -462,7 +537,10 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     top = isRemoteScreenPresent() ? remoteTopEdge : topEdge;
 #else
 # ifdef HAVE_SENSORS
-   switch (orientationSensor.reading()->orientation()) {
+    if (!orientationSensor.isActive()) {
+        return top;
+    }
+    switch (orientationSensor.reading()->orientation()) {
        case QOrientationReading::TopUp:     top = "top"; break;
        case QOrientationReading::TopDown:   top = "bottom"; break;
        case QOrientationReading::LeftUp:    top = "left"; break;
@@ -481,6 +559,9 @@ MDeclarativeScreen::MDeclarativeScreen(QDeclarativeItem *parent)
         : QObject(parent),
         d(new MDeclarativeScreenPrivate(this))
 {
+#ifdef Q_WS_MAEMO_5
+    d->kbSliderPoll();
+#endif
     d->initMobilityBackends();
     d->initContextSubscriber();
     qApp->installEventFilter(this);
