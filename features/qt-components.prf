@@ -2,6 +2,9 @@
     error(Please run configure.)
 }
 
+maemo5|fremantle {
+    DEFINES += Q_COMPONENTS_MAEMO
+}
 meego {
     DEFINES += Q_COMPONENTS_MEEGO
 }

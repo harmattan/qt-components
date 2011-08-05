@@ -17,16 +17,14 @@ QT += declarative svg opengl
     CONFIG += link_pkgconfig
 }
 
-load(mobilityconfig, true)
-contains(MOBILITY_CONFIG, systeminfo) {
-    CONFIG += mobility
-    MOBILITY += systeminfo
-    DEFINES += HAVE_SYSTEMINFO
+maemo5 {
+    DEFINES += Q_WS_MAEMO_5
 }
-contains(MOBILITY_CONFIG, sensors) {
-    CONFIG += mobility
-    MOBILITY += sensors
-    DEFINES += HAVE_SENSORS
+
+mobility {
+    QT += network
+    MOBILITY += sensors systeminfo
+    DEFINES += HAVE_SENSORS HAVE_SYSTEMINFO
 }
 
 maliit {
