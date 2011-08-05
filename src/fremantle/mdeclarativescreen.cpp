@@ -50,6 +50,11 @@
 # include "contextproperty.h"
 # include "contextpropertyinfo.h"
 # include "mservicelistener.h"
+#else
+# ifdef HAVE_SENSORS
+# include <qorientationsensor.h>
+  QTM_USE_NAMESPACE
+# endif
 #endif
 
 #ifdef Q_WS_X11
@@ -65,6 +70,7 @@
 
 static const int DEFAULT_WIDTH = 480;
 static const int DEFAULT_HEIGHT = 800;
+
 static const qreal CATEGORY_SMALL_LIMIT  = 3.2;
 static const qreal CATEGORY_MEDIUM_LIMIT = 4.5;
 static const qreal CATEGORY_LARGE_LIMIT  = 7.0;
@@ -80,6 +86,7 @@ public:
 
     void updateX11OrientationAngleProperty();
     void initContextSubscriber();
+    void initMobilityBackends();
 
     void _q_isCoveredChanged();
     void _q_updateOrientationAngle();
@@ -126,7 +133,12 @@ public:
     ContextProperty keyboardOpenProperty;
     ContextProperty videoRouteProperty;
     MServiceListener remoteTopEdgeListener;
+#else
+# ifdef HAVE_SENSORS
+    QOrientationSensor orientationSensor;
+# endif
 #endif
+
 private:
     bool minimized;
 };
@@ -199,6 +211,10 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , videoRouteProperty("com.nokia.policy.video_route")
     , remoteTopEdgeListener(remoteTopEdgeProperty.info()->providerDBusType(),
           remoteTopEdgeProperty.info()->providerDBusName())
+#else
+# ifdef HAVE_SENSORS
+    , orientationSensor(0)
+# endif
 #endif
     , minimized(false)
 {
@@ -248,6 +264,21 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
 
     QObject::connect(MWindowState::instance(), SIGNAL(animatingChanged()),
                      q, SLOT(_q_windowAnimationChanged()));
+}
+
+void MDeclarativeScreenPrivate::initMobilityBackends()
+{
+#ifdef HAVE_SENSORS
+    orientationSensor.connectToBackend();
+    orientationSensor.start();
+    if (!orientationSensor.isActive()) {
+        qWarning("OrientationSensor didn't start!");
+    }
+    //Connect to updateOrientationAngle slot
+    QObject::connect(&orientationSensor, SIGNAL(readingChanged()),
+                     q, SLOT(_q_updateOrientationAngle()));
+#endif
+    return;
 }
 
 void MDeclarativeScreenPrivate::updateX11OrientationAngleProperty()
@@ -336,7 +367,8 @@ int MDeclarativeScreenPrivate::rotation() const
 
 MDeclarativeScreen::Orientation MDeclarativeScreenPrivate::physicalOrientation() const {
     MDeclarativeScreen::Orientation o = MDeclarativeScreen::Default;
-#ifdef HAVE_CONTEXTSUBSCRIBER
+
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
     QString topEdge = topEdgeValue();
 
     if (topEdge == "top") {
@@ -356,10 +388,19 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 {
     MDeclarativeScreen::Orientation newOrientation = MDeclarativeScreen::Default;
 
-#ifdef HAVE_CONTEXTSUBSCRIBER
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
     QString edge = topEdgeValue();
-    bool open = keyboardOpenProperty.value().toBool();
+#endif
 
+#ifdef HAVE_CONTEXTSUBSCRIBER
+bool open = keyboardOpenProperty.value().toBool();
+#else
+# ifdef HAVE_SENSORS
+    bool open = false;
+# endif
+#endif
+
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
     //HW Keyboard open or TV connected causes a switch to landscape, but only if this is allowed
     if ((open || isTvConnected) && allowedOrientations & MDeclarativeScreen::Landscape) {
         newOrientation = MDeclarativeScreen::Landscape;
@@ -419,6 +460,19 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     QString topEdge = topEdgeProperty.value().toString();
     QString remoteTopEdge = remoteTopEdgeProperty.value().toString();
     top = isRemoteScreenPresent() ? remoteTopEdge : topEdge;
+#else
+# ifdef HAVE_SENSORS
+   switch (orientationSensor.reading()->orientation()) {
+       case QOrientationReading::TopUp:     top = "top"; break;
+       case QOrientationReading::TopDown:   top = "bottom"; break;
+       case QOrientationReading::LeftUp:    top = "left"; break;
+       case QOrientationReading::RightUp:   top = "right"; break;
+       case QOrientationReading::FaceUp:    top = "up"; break;
+       case QOrientationReading::FaceDown:  top = "down"; break;
+       case QOrientationReading::Undefined: top = "Undefined"; break;
+       default: top = "Invalid enum value";
+    }
+# endif
 #endif
     return top;
 }
@@ -427,8 +481,8 @@ MDeclarativeScreen::MDeclarativeScreen(QDeclarativeItem *parent)
         : QObject(parent),
         d(new MDeclarativeScreenPrivate(this))
 {
+    d->initMobilityBackends();
     d->initContextSubscriber();
-
     qApp->installEventFilter(this);
 }
 

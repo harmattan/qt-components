@@ -59,10 +59,6 @@ Window {
         showStatusBar: window.showStatusBar
     }
 
-    onOrientationChangeStarted: {
-        statusBar.orientation = screen.currentOrientation
-    }
-
     Image {
         id: backgroundImage
         source: window.inPortrait ? platformStyle.portraiteBackground : platformStyle.landscapeBackground
