@@ -69,9 +69,8 @@
 #endif
 
 #ifdef Q_WS_MAEMO_5
-#include <fcntl.h>
-#include <QSocketNotifier>
-#define GPIO_FILE "/sys/devices/platform/gpio-switch/slide"
+# define SLIDER_DEVICE "/org/freedesktop/Hal/devices/platform_slide"
+# include "fsliderdevice.h"
 #endif
 
 static const int DEFAULT_WIDTH = 480;
@@ -144,14 +143,7 @@ public:
     QOrientationSensor orientationSensor;
 # endif
 # ifdef Q_WS_MAEMO_5
-    int eventFd;
-    QSocketNotifier* sn;
-
-    void kbSliderPoll();
-    void kbSliderUnPoll();
-
-    bool kbSliderStatus();
-    void onKbSliderEvent();
+    FSliderDevice *k;
 # endif
 #endif
 
@@ -168,54 +160,6 @@ MDeclarativeScreen* MDeclarativeScreen::instance()
         self = new MDeclarativeScreen();
     return self;
 }
-
-#ifdef Q_WS_MAEMO_5
-
-bool MDeclarativeScreenPrivate::kbSliderStatus()
-{
-    // Slider closed by default. gpio-input sets state to open /
-    // closed values. We only requires to read the first char to know
-    // if slide is 'o'pen or 'c'losed
-    char o = 'c';
-    if (read(eventFd, &o, 1) > 0) {
-        return o == 'o';
-    }
-    // Return current status if fails
-    return keyboardOpen;
-}
-
-void MDeclarativeScreenPrivate::onKbSliderEvent()
-{
-    // Something happened in the input file; read the events, decide whether
-    // they're interesting, and update the context properties.
-    _q_updateOrientationAngle();
-}
-
-void MDeclarativeScreenPrivate::kbSliderPoll()
-{
-    // Start polling the event file
-    eventFd = open(GPIO_FILE, O_RDONLY);
-    if (eventFd < 0) {
-        qWarning("Cannot open " GPIO_FILE);
-        return;
-    }
-    sn = new QSocketNotifier(eventFd, QSocketNotifier::Read, q);
-    QObject::connect(sn, SIGNAL(activated(int)), q, SLOT(onKbSliderEvent()));
-
-    // Read the initial status.
-    keyboardOpen = kbSliderStatus();
-}
-
-void MDeclarativeScreenPrivate::kbSliderUnPoll()
-{
-    // stop the listening activities
-    delete sn;
-    sn = 0;
-    if (eventFd >= 0)
-        close(eventFd);
-    eventFd = -1;
-}
-#endif
 
 #ifdef Q_WS_X11
 // This writes the orientation angle of into the X11 window property,
@@ -280,8 +224,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , orientationSensor(0)
 # endif
 # ifdef Q_WS_MAEMO_5
-    , eventFd(-1)
-    , sn(0)
+    , k(new FSliderDevice(SLIDER_DEVICE))
 # endif
 #endif
     , minimized(false)
@@ -298,7 +241,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 MDeclarativeScreenPrivate::~MDeclarativeScreenPrivate()
 {
 #ifdef Q_WS_MAEMO_5
-    kbSliderUnPoll();
+    delete k;
 #endif
 }
 
@@ -326,6 +269,12 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
                      q, SLOT(_q_updateOrientationAngle()));
     QObject::connect(&remoteTopEdgeListener, SIGNAL(nameDisappeared()),
                      q, SLOT(_q_updateOrientationAngle()));
+#else 
+# ifdef Q_WS_MAEMO_5
+    QObject::connect(k, SIGNAL(isOpenChanged()),
+                     q, SLOT(_q_updateOrientationAngle()));
+ 
+# endif 
 #endif
     //initiating the variables to current orientation
     _q_updateOrientationAngle();
@@ -467,7 +416,7 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
     bool open = keyboardOpenProperty.value().toBool();
 #else
 # ifdef Q_WS_MAEMO_5
-    bool open = kbSliderStatus();
+    bool open = k->isOpen();
 # else
 #  ifdef HAVE_SENSORS
     bool open = false;
@@ -559,9 +508,6 @@ MDeclarativeScreen::MDeclarativeScreen(QDeclarativeItem *parent)
         : QObject(parent),
         d(new MDeclarativeScreenPrivate(this))
 {
-#ifdef Q_WS_MAEMO_5
-    d->kbSliderPoll();
-#endif
     d->initMobilityBackends();
     d->initContextSubscriber();
     qApp->installEventFilter(this);
@@ -608,15 +554,19 @@ void MDeclarativeScreen::setOrientation(Orientation o)
 
     Orientation newOrientation = Default;
     //if keyboard is open always set landscape and ignore allowed orientations
-#ifdef HAVE_CONTEXTSUBSCRIBER
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5)
+# ifdef HAVE_CONTEXT_SUBSCRIBER
     if(d->keyboardOpenProperty.value().toBool()) {
+# else
+    if(d->k->isOpen()) {
         newOrientation = Landscape;
     } else {
+# endif
 #endif
         if (!(d->allowedOrientations & o))
             return;
         newOrientation = o;
-#ifdef HAVE_CONTEXTSUBSCRIBER
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5)
     }
 #endif
     d->orientation = newOrientation;

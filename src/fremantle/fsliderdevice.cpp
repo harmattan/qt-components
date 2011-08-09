@@ -66,7 +66,7 @@ void FSliderDevice::callback(QDBusPendingCallWatcher* pcw)
         // Currently, a True value in reply indicated that keyboard is closed
         if (open == reply.argumentAt<0>()) {
             open = !open;
-            Q_EMIT isOpenChanged(open);
+            Q_EMIT isOpenChanged();
         }
     }
     if (watcher == pcw) {

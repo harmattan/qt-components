@@ -39,7 +39,7 @@ class FSliderDevice : public QObject
     Q_OBJECT
 
 public:
-  Q_PROPERTY(bool open READ isOpen NOTIFY isOpenChanged)
+  Q_PROPERTY(bool open READ isOpen NOTIFY isOpenChanged FINAL)
 
 public:
   explicit FSliderDevice(const QString& path, QObject *parent = 0);
@@ -47,8 +47,8 @@ public:
 
     bool isOpen() const;
 
-signals:
-    void isOpenChanged(bool status);
+Q_SIGNALS:
+    void isOpenChanged();
 
 private Q_SLOTS:
     void updated();
