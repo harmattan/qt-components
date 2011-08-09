@@ -11,10 +11,22 @@ force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
 QT += declarative svg opengl
-!win32:!macx: QT += dbus
+!win32:!macx:!simulator {
+    SOURCES += \
+        asyncdbusinterface.cpp \
+        fsliderdevice.cpp \
+
+    HEADERS += \
+        asyncdbusinterface.h \
+        fsliderdevice.h \
+
+    QT += dbus
+    DEFINES += HAVE_DBUS  
+}
 
 !win32:!embedded:!mac:!symbian {
     CONFIG += link_pkgconfig
+
 }
 
 maemo5 {
