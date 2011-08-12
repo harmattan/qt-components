@@ -70,6 +70,13 @@
 
 #if !defined(HAVE_CONTEXTSUBSCRIBER)  && defined(Q_WS_MAEMO_5)
 # include "fsliderdevice.h"
+# include "forientationdevice.h"
+#endif
+
+//Stuff for minimize/maximize on N900
+#ifdef Q_WS_MAEMO_5
+# include <QDBusConnection>
+# include <QDBusMessage>
 #endif
 
 static const int DEFAULT_WIDTH = 480;
@@ -140,6 +147,7 @@ public:
 #else
 # ifdef Q_WS_MAEMO_5
     FSliderDevice k;
+    FOrientationDevice o;
 # else
 #  ifdef HAVE_SENSORS
     QOrientationSensor orientationSensor;
@@ -222,6 +230,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 #else
 # ifdef Q_WS_MAEMO_5
     , k(SLIDER_DEVICE)
+    , o(ORIENT_DEVICE, ORIENT_SIGNAL)
 # else 
 #  ifdef HAVE_SENSORS
     , orientationSensor(0)
@@ -271,9 +280,15 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
 # ifdef Q_WS_MAEMO_5
     QObject::connect(&k, SIGNAL(valueChanged()),
                      q, SLOT(_q_updateOrientationAngle()));
- 
+    QObject::connect(&o, SIGNAL(valueChanged()),
+                     q, SLOT(_q_updateOrientationAngle()));
+
+    // Start to listen to events by default
+    o.start(q);
+    k.start(q);
 # endif 
 #endif
+
     //initiating the variables to current orientation
     _q_updateOrientationAngle();
     _q_isCoveredChanged();
@@ -386,7 +401,7 @@ int MDeclarativeScreenPrivate::rotation() const
 MDeclarativeScreen::Orientation MDeclarativeScreenPrivate::physicalOrientation() const {
     MDeclarativeScreen::Orientation o = MDeclarativeScreen::Default;
 
-#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS)
     QString topEdge = topEdgeValue();
 
     if (topEdge == "top") {
@@ -406,7 +421,7 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 {
     MDeclarativeScreen::Orientation newOrientation = MDeclarativeScreen::Default;
 
-#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS)
     QString edge = topEdgeValue();
 #endif
 
@@ -422,7 +437,7 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 # endif
 #endif
 
-#if defined(HAVE_CONTEXTSUBSCRIBER) || defined(HAVE_SENSORS)
+#if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS) 
     //HW Keyboard open or TV connected causes a switch to landscape, but only if this is allowed
     if ((open || isTvConnected) && allowedOrientations & MDeclarativeScreen::Landscape) {
         newOrientation = MDeclarativeScreen::Landscape;
@@ -484,6 +499,7 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     top = isRemoteScreenPresent() ? remoteTopEdge : topEdge;
 #else
 # ifdef Q_WS_MAEMO_5
+    top = o.getOrientation();
 # else
 #  ifdef HAVE_SENSORS
     if (!orientationSensor.isActive()) {
@@ -525,16 +541,16 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
         if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
             d->setMinimized(d->topLevelWidget->windowState() & Qt::WindowMinimized);
             if(d->isMinimized()) {
-	        //Stop keyboard watcher
-	        d->k.stop(this);
+	        //Stop keyboard and orientation watcher
+	        d->k.stop(this); d->o.stop(this);
                 //minimized apps are forced to portrait
                 d->allowedOrientationsBackup = d->allowedOrientations;
                 //set allowedOrientations manually, because setAllowedOrientations() will not work while minimized
                 d->allowedOrientations = Portrait;
                 setOrientation(Portrait);
             } else {
-	        //Start keyboard watcher
-	      d->k.start(this);
+	        //Start watchers.
+	      d->k.start(this); d->o.start(this);
                 if(d->allowedOrientationsBackup != Default) {
                     setAllowedOrientations(d->allowedOrientationsBackup);
                     //if the current sensor's value is allowed, switch to it
@@ -603,10 +619,19 @@ MDeclarativeScreen::Orientation MDeclarativeScreen::currentOrientation() const
 
 void MDeclarativeScreen::setAllowedOrientations(Orientations orientation) {
     if (d->allowedOrientations == orientation
-        || d->isMinimized()) //fixed portrait when minimized, no change possible!
+        || d->isMinimized()) //fixed landscape when minimized, no change possible!
         return;
 
     d->allowedOrientations = orientation;
+
+#ifdef Q_WS_MAEMO_5
+    // This code starts or stops accelerometes
+    uint i, flags;
+    for (i = 0, flags = 0; i < sizeof(Orientations); i++) {
+      flags += ((orientation & (1 << i)) != 0);
+    }
+    flags > 1 ? d->o.start(this): d->o.stop(this);
+#endif
 
     // Check if physical orientation fits allowed orientations
     if(d->physicalOrientation() != d->orientation) {
@@ -687,7 +712,15 @@ void MDeclarativeScreen::setMinimized(bool minimized)
         return;
 
     if(d->topLevelWidget) {
-        d->topLevelWidget->setWindowState(minimized ? Qt::WindowMinimized : Qt::WindowMaximized);
+#ifdef Q_WS_MAEMO_5
+      if (minimized) {
+	QDBusConnection c = QDBusConnection::sessionBus();
+        QDBusMessage    m = QDBusMessage::createSignal("/", "com.nokia.hildon_desktop", "exit_app_view");
+        c.send(m);
+      }
+#else
+        d->topLevelWidget->setWindowState(minimized ? Qt::WindowMinimized : Qt::WindowFullScreen);
+#endif
         d->setMinimized(minimized);
     } else {
         qCritical() << "No top level widget set";
