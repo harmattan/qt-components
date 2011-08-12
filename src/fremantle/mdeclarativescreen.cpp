@@ -51,7 +51,7 @@
 # include "contextpropertyinfo.h"
 # include "mservicelistener.h"
 #else
-# ifdef HAVE_SENSORS
+# if !defined(Q_WS_MAEMO_5) && defined(HAVE_SENSORS)
 # include <qorientationsensor.h>
   QTM_USE_NAMESPACE
 # endif
@@ -68,8 +68,7 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
-#ifdef Q_WS_MAEMO_5
-# define SLIDER_DEVICE "/org/freedesktop/Hal/devices/platform_slide"
+#if !defined(HAVE_CONTEXTSUBSCRIBER)  && defined(Q_WS_MAEMO_5)
 # include "fsliderdevice.h"
 #endif
 
@@ -139,11 +138,12 @@ public:
     ContextProperty videoRouteProperty;
     MServiceListener remoteTopEdgeListener;
 #else
-# ifdef HAVE_SENSORS
-    QOrientationSensor orientationSensor;
-# endif
 # ifdef Q_WS_MAEMO_5
-    FSliderDevice *k;
+    FSliderDevice k;
+# else
+#  ifdef HAVE_SENSORS
+    QOrientationSensor orientationSensor;
+#  endif
 # endif
 #endif
 
@@ -217,14 +217,15 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , isCoveredProperty("Screen.IsCovered")
     , keyboardOpenProperty("/maemo/InternalKeyboard/Open")
     , videoRouteProperty("com.nokia.policy.video_route")
-    , remoteTopEdgeListener(remoteTopEdgeProperty.info()->providerDBusType(),
-          remoteTopEdgeProperty.info()->providerDBusName())
+    , remoteTopEdgeListener(remoteTopEdgeProperty.info()->providerDBusType()
+    , remoteTopEdgeProperty.info()->providerDBusName())
 #else
-# ifdef HAVE_SENSORS
-    , orientationSensor(0)
-# endif
 # ifdef Q_WS_MAEMO_5
-    , k(new FSliderDevice(SLIDER_DEVICE))
+    , k(SLIDER_DEVICE)
+# else 
+#  ifdef HAVE_SENSORS
+    , orientationSensor(0)
+#  endif
 # endif
 #endif
     , minimized(false)
@@ -240,9 +241,6 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 
 MDeclarativeScreenPrivate::~MDeclarativeScreenPrivate()
 {
-#ifdef Q_WS_MAEMO_5
-    delete k;
-#endif
 }
 
 void MDeclarativeScreenPrivate::initContextSubscriber()
@@ -271,7 +269,7 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
                      q, SLOT(_q_updateOrientationAngle()));
 #else 
 # ifdef Q_WS_MAEMO_5
-    QObject::connect(k, SIGNAL(isOpenChanged()),
+    QObject::connect(&k, SIGNAL(valueChanged()),
                      q, SLOT(_q_updateOrientationAngle()));
  
 # endif 
@@ -288,7 +286,7 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
 
 void MDeclarativeScreenPrivate::initMobilityBackends()
 {
-#ifdef HAVE_SENSORS
+#if !defined (Q_WS_MAEMO_5) && defined(HAVE_SENSORS)
     orientationSensor.connectToBackend();
     orientationSensor.start();
     if (!orientationSensor.isActive()) {
@@ -416,7 +414,7 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
     bool open = keyboardOpenProperty.value().toBool();
 #else
 # ifdef Q_WS_MAEMO_5
-    bool open = k->isOpen();
+    bool open = k.isOpen();
 # else
 #  ifdef HAVE_SENSORS
     bool open = false;
@@ -485,7 +483,9 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     QString remoteTopEdge = remoteTopEdgeProperty.value().toString();
     top = isRemoteScreenPresent() ? remoteTopEdge : topEdge;
 #else
-# ifdef HAVE_SENSORS
+# ifdef Q_WS_MAEMO_5
+# else
+#  ifdef HAVE_SENSORS
     if (!orientationSensor.isActive()) {
         return top;
     }
@@ -499,6 +499,7 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
        case QOrientationReading::Undefined: top = "Undefined"; break;
        default: top = "Invalid enum value";
     }
+#  endif
 # endif
 #endif
     return top;
@@ -524,12 +525,16 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
         if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
             d->setMinimized(d->topLevelWidget->windowState() & Qt::WindowMinimized);
             if(d->isMinimized()) {
+	        //Stop keyboard watcher
+	        d->k.stop(this);
                 //minimized apps are forced to portrait
                 d->allowedOrientationsBackup = d->allowedOrientations;
                 //set allowedOrientations manually, because setAllowedOrientations() will not work while minimized
                 d->allowedOrientations = Portrait;
                 setOrientation(Portrait);
             } else {
+	        //Start keyboard watcher
+	      d->k.start(this);
                 if(d->allowedOrientationsBackup != Default) {
                     setAllowedOrientations(d->allowedOrientationsBackup);
                     //if the current sensor's value is allowed, switch to it
@@ -558,7 +563,7 @@ void MDeclarativeScreen::setOrientation(Orientation o)
 # ifdef HAVE_CONTEXT_SUBSCRIBER
     if(d->keyboardOpenProperty.value().toBool()) {
 # else
-    if(d->k->isOpen()) {
+    if(d->k.isOpen()) {
         newOrientation = Landscape;
     } else {
 # endif
