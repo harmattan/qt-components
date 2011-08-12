@@ -16,12 +16,16 @@ QT += declarative svg opengl
         asyncdbusinterface.cpp \
         fdbusproxy.cpp \
         fhalservice.cpp \
+        fmceservice.cpp \
+        forientationdevice.cpp \
         fsliderdevice.cpp \
 
     HEADERS += \
         asyncdbusinterface.h \
         fdbusproxy.h \
         fhalservice.h \
+        fmceservice.h \
+        forientationdevice.h \
         fsliderdevice.h \
 
     QT += dbus
