@@ -14,10 +14,14 @@ QT += declarative svg opengl
 !win32:!macx:!simulator {
     SOURCES += \
         asyncdbusinterface.cpp \
+        fdbusproxy.cpp \
+        fhalservice.cpp \
         fsliderdevice.cpp \
 
     HEADERS += \
         asyncdbusinterface.h \
+        fdbusproxy.h \
+        fhalservice.h \
         fsliderdevice.h \
 
     QT += dbus

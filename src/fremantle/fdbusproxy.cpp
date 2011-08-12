@@ -17,44 +17,53 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- */
+*/
 
-#ifndef FSLIDERDEVICE_H
-#define FSLIDERDEVICE_H
+#include <asyncdbusinterface.h>
 
-#include "fhalservice.h"
+#include <QDBusPendingReply>
+#include <QDBusPendingCallWatcher>
 
-#define SLIDER_DEVICE "/org/freedesktop/Hal/devices/platform_slide"
-#define SLIDER_BUS    QDBusConnection::systemBus()
+#include "fdbusproxy.h"
 
-class FSliderDevice : public FDBusProxy
+FDBusProxy::FDBusProxy(const QString& path, QObject *parent):
+    QObject(parent),
+    started(false),
+    device(path),
+    signal("/"),
+    proxy(0),
+    watcher(0)
 {
-    Q_OBJECT
 
-public:
-    Q_PROPERTY(bool open READ isOpen NOTIFY valueChanged() FINAL)
+}
 
-Q_SIGNALS:
-    void valueChanged();
+FDBusProxy::FDBusProxy(const QString& path, const QString &signal_path, QObject *parent):
+    QObject(parent),
+    started(false),
+    device(path),
+    signal(signal_path),
+    proxy(0),
+    watcher(0)
+{
+}
 
-public:
-    virtual void start (QObject *requestor = 0);
-    virtual void stop  (QObject *requestor = 0);
+FDBusProxy::~FDBusProxy()
+{
+    delete proxy;
+    proxy = 0;
+    delete watcher;
+    watcher = 0;
+}
 
-public:
-    explicit FSliderDevice(const QString& path, QObject *parent = 0);
+bool FDBusProxy::isStarted() const
+{
+    return started;
+}
 
-public:
-    bool isOpen() const;
+void FDBusProxy::callback(QDBusPendingCallWatcher* pcw)
+{
+    Q_UNUSED(pcw);
+    // Do nothing
+}
 
-private:
-    bool open;
-    FHALService *hal;
-
-private Q_SLOTS:
-    void onHALStateChanged();
-    void callback(QDBusPendingCallWatcher* watcher);
-    void updated();
-};
-
-#endif /* ! FSLIDERDEVICE_H */
+#include "moc_fdbusproxy.cpp"
