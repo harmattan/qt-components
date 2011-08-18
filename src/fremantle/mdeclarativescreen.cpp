@@ -536,18 +536,20 @@ MDeclarativeScreen::~MDeclarativeScreen()
 }
 
 bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
-    if(e->type() == QEvent::WindowStateChange) {
+    if(e->type() == QEvent::ActivationChange) {
         d->topLevelWidget = qobject_cast<QWidget*>(o);
         if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
-            d->setMinimized(d->topLevelWidget->windowState() & Qt::WindowMinimized);
+            d->setMinimized(!d->topLevelWidget->isActiveWindow());
             if(d->isMinimized()) {
 	        //Stop keyboard and orientation watcher
 	        d->k.stop(this); d->o.stop(this);
                 //minimized apps are forced to portrait
                 d->allowedOrientationsBackup = d->allowedOrientations;
-                //set allowedOrientations manually, because setAllowedOrientations() will not work while minimized
-                d->allowedOrientations = Portrait;
-                setOrientation(Portrait);
+                //set allowedOrientations manually, because
+                //setAllowedOrientations() will not work while
+                //minimized. For Fremantle, force to Landscape
+                d->allowedOrientations = Landscape;
+                setOrientation(Landscape);
             } else {
 	        //Start watchers.
 	      d->k.start(this); d->o.start(this);
