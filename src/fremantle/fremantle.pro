@@ -159,7 +159,6 @@ QML_FILES = \
     style/LabelStyle.qml \
     Button.qml \
     style/ButtonStyle.qml \
-    ToolBarLayout.js \
     ToolBarLayout.qml \
     style/ToolButtonStyle.qml \
     ToolButton.qml \
