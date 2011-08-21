@@ -99,7 +99,7 @@ Item {
                 top:  parent.top; left:  parent.right
                 topMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall
             }
-            onClicked: Qt.quit
+            onClicked: Qt.quit()
         }
 
         Item {
