@@ -48,6 +48,10 @@ Style {
             ((screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted) ? "portrait" : "landscape") +
             __invertedString + "-background"
 
+	// Fremantle only buttons to replace Harmattan swipe functionality
+    property url closeButton: "image://theme/icon-f-statusbar-close"
+    property url homeButton:  "image://theme/icon-f-statusbar-home"
+
     //property int statusBarHeight: 36
 
     // Default separation between elements
@@ -59,4 +63,8 @@ Style {
 
     // transitions
     property int visibilityTransitionDuration: 250
+
+	// Fremantle help transitions
+    property int showHelpDuration: 1600
+    property int helpTransitionDuration: 400
 }

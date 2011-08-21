@@ -41,6 +41,8 @@
 import QtQuick 1.0
 import "." 1.0
 
+import "UIConstants.js" as UI
+
 Item {
     id: root
 
@@ -50,6 +52,9 @@ Item {
 
     // Whether status bar should be showed
     property bool showStatusBar: true
+
+    // Extended API (fremantle only)
+    property bool showHelp: true
 
     // Styling for the StatusBar
     property Style platformStyle: StatusBarStyle {}
@@ -84,10 +89,54 @@ Item {
         }
     }
 
+    Rectangle {
+        id: help_background
+        width: parent.width; height: parent.height
+        color: "black"
+        opacity: 0.0
+        enabled: showHelp
+
+        Item {
+            id: help_contents
+            opacity: 0.0
+            anchors.fill: parent
+
+            Image {
+                source: platformStyle.homeButton
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    left: parent.left
+                    leftMargin: platformStyle.paddingSmall
+                }
+            }
+
+            Image {
+                source: platformStyle.closeButton
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    rightMargin: platformStyle.paddingSmall
+                }
+            }
+
+            Label {
+                color: UI.COLOR_INVERTED_FOREGROUND
+                anchors.centerIn: parent
+                text: qsTr("'Tap' to switch or close")
+            }
+        }
+    }
+
+     Timer{
+        id: stimer
+        interval: platformStyle.showHelpDuration; running: showHelp; repeat: false;
+    }
+
     MouseArea {
         anchors.fill: parent
         onClicked: {
             //FIXME: Implement a StatusApplet
+            console.log("Area clicked")
         }
     }
 
@@ -104,6 +153,14 @@ Item {
             name: "hidden"
             when: showStatusBar == false
             PropertyChanges {target: root; anchors.topMargin: -root.height; }
+
+        },
+        State {
+            name: "start"
+            when: stimer.running == true
+            PropertyChanges {target: root; height: platformStyle.paddingSmall * 8}
+            PropertyChanges {target: help_background; opacity: 1.0 }
+            PropertyChanges {target: help_contents; opacity: 1.0; }
         }
     ]
 
@@ -112,7 +169,17 @@ Item {
         Transition {
             from: ""; to: "hidden"; reversible: true
             ParallelAnimation {
-                PropertyAnimation { properties: "anchors.topMargin"; easing.type: Easing.InOutExpo;  duration: platformStyle.visibilityTransitionDuration }
+                PropertyAnimation {properties: "anchors.topMargin"; easing.type: Easing.InOutExpo;  duration: platformStyle.visibilityTransitionDuration }
+            }
+        },
+        Transition {
+            from: "start"; to: ""; reversible:  false
+            SequentialAnimation {
+                PropertyAnimation {targets: help_contents; properties: "opacity"; easing.type: Easing.InOutExpo;  duration: platformStyle.helpTransitionDuration }
+                PauseAnimation    {duration:  platformStyle.visibilityTransitionDuration}
+                PropertyAnimation {targets: root; properties:"height"; easing.type: Easing.InOutExpo;  duration: platformStyle.helpTransitionDuration }
+                PauseAnimation    {duration:  platformStyle.visibilityTransitionDuration}
+                PropertyAnimation {targets: help_background; properties: "opacity"; easing.type: Easing.InOutExpo;  duration: platformStyle.helpTransitionDuration }
             }
         }
     ]
