@@ -80,11 +80,11 @@ Item {
 
         MouseArea {
             id: switchButton
-            enabled:  allowSwitch
+            enabled: allowSwitch
             z: 1
-            width: platformStyle.buttonWidth; height:  platformStyle.buttonHeight
+            width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
-                top:  parent.top; left:  parent.left
+                top: parent.top; left: parent.left
                 topMargin: platformStyle.paddingSmall; leftMargin: platformStyle.paddingSmall
             }
             onClicked: screen.minimized = true
@@ -92,11 +92,11 @@ Item {
 
         MouseArea {
             id: closeButton
-            enabled:  allowClose
+            enabled: allowClose
             z: 1
-            width: platformStyle.buttonWidth; height:  platformStyle.buttonHeight
+            width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
-                top:  parent.top; left:  parent.right
+                top: parent.top; right: parent.right
                 topMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall
             }
             onClicked: Qt.quit()

@@ -542,7 +542,14 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
             d->setMinimized(!d->topLevelWidget->isActiveWindow());
             if(d->isMinimized()) {
 	        //Stop keyboard and orientation watcher
-	        d->k.stop(this); d->o.stop(this);
+#ifdef Q_WS_MAEMO_5
+	        d->k.stop(this); 
+		d->o.stop(this);
+#else
+# ifdef HAVE_SENSORS
+		d->orientationSensor.stop();
+# endif
+#endif
                 //minimized apps are forced to portrait
                 d->allowedOrientationsBackup = d->allowedOrientations;
                 //set allowedOrientations manually, because
@@ -552,7 +559,13 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
                 setOrientation(Landscape);
             } else {
 	        //Start watchers.
+#ifdef Q_WS_MAEMO_5
 	      d->k.start(this); d->o.start(this);
+#else
+# ifdef HAVE_SENSORS
+	      d->orientationSensor.start();
+# endif
+#endif
                 if(d->allowedOrientationsBackup != Default) {
                     setAllowedOrientations(d->allowedOrientationsBackup);
                     //if the current sensor's value is allowed, switch to it
