@@ -5,24 +5,25 @@ Page {
     id: mainPage
     tools: commonTools
 
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: qsTr("Hello world!")
-        visible: false
-    }
     Button{
         id: button
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: label.bottom
-        anchors.topMargin: 10
+        anchors.centerIn: parent
         text: qsTr("Click here!")
         onClicked: label.visible=true
     }
-    TextField{
+    Label {
+        id: label
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: button.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 10
+        text: qsTr("Hello world!")
+        visible: false
+    }
+    TextField{
+        id: input
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
         placeholderText: qsTr("Insert some text here")
     }
 }
