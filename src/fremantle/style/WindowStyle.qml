@@ -42,5 +42,8 @@ import QtQuick 1.0
 import "UIConstants.js" as UI
 
 Style {
-    property color colorBackground: inverted ? UI.COLOR_INVERTED_BACKGROUND : UI.COLOR_BACKGROUND
+    property color colorBackground: "black"
+    property int buttonWidth:  UI.SIZE_BUTTON
+    property int buttonHeight:  UI.SIZE_BUTTON
+    property int paddingSmall: UI.PADDING_SMALL
 }

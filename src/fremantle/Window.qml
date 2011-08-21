@@ -53,6 +53,10 @@ Item {
     // Read only property true if window is in portrait
     property alias inPortrait: window.portrait
 
+    // Extendend API (for fremantle only)
+    property bool allowSwitch: true
+    property bool allowClose:  true
+
     property Style platformStyle: WindowStyle{}
 
     signal orientationChangeAboutToStart
@@ -73,6 +77,30 @@ Item {
         height: window.portrait ? screen.displayWidth : screen.displayHeight
 
         anchors.centerIn: parent
+
+        MouseArea {
+            id: switchButton
+            enabled:  allowSwitch
+            z: 1
+            width: platformStyle.buttonWidth; height:  platformStyle.buttonHeight
+            anchors {
+                top:  parent.top; left:  parent.left
+                topMargin: platformStyle.paddingSmall; leftMargin: platformStyle.paddingSmall
+            }
+            onClicked: screen.minimized = true
+        }
+
+        MouseArea {
+            id: closeButton
+            enabled:  allowClose
+            z: 1
+            width: platformStyle.buttonWidth; height:  platformStyle.buttonHeight
+            anchors {
+                top:  parent.top; left:  parent.right
+                topMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall
+            }
+            onClicked: Qt.quit
+        }
 
         Item {
             id: windowContent
