@@ -147,6 +147,13 @@ QML_FILES = \
     Utils.js \
     Fader.qml \
     Popup.qml \
+    Dialog.qml \
+    style/DialogStyle.qml \
+    CommonDialog.qml \
+    SelectionDialog.qml \
+    style/SelectionDialogStyle.qml \
+    QueryDialog.qml \
+    style/QueryDialogStyle.qml \
     ScrollDecorator.qml \
     style/ScrollDecoratorStyle.qml \
     AbstractMenu.qml \
