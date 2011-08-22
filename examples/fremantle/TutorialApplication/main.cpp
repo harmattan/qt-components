@@ -50,10 +50,16 @@ int main(int argc, char **argv)
 
     QDeclarativeView window;
     window.setSource(QUrl("qrc:/main.qml"));
+    QObject::connect((QObject*)window.engine(), SIGNAL(quit()), &app, SLOT(quit()));
+
 #ifdef __arm__
     window.showFullScreen();
 #else
-    window.show();
+# define MAX(a, b) ((a > b) ? a : b)
+    QRect geometry;
+    geometry = app.desktop()->screenGeometry();
+    (MAX(geometry.width(), geometry.height()) < 1024) ? window.showFullScreen() : window.show();
+# undef MAX
 #endif
 
     return app.exec();
