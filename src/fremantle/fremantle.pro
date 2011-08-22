@@ -160,6 +160,7 @@ QML_FILES = \
     Button.qml \
     style/ButtonStyle.qml \
     ToolBarLayout.qml \
+    ToolBarLayout.js\
     style/ToolButtonStyle.qml \
     ToolButton.qml \
     TextAreaHelper.js \
