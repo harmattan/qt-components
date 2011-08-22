@@ -1,0 +1,78 @@
+#/bin/bash
+
+function fremantle()
+{
+    # http://mywiki.wooledge.org/BashFAQ/020
+    while IFS= read -r -d $'\0' file; do
+	FILES[i++]="$file"
+    done < <(find . -name "${1}" -type f -print0)
+
+    for FILE in ${FILES[@]}; do
+	sed -i -e 's/^\(import[ \t]\+QtQuick[ \t]\+\)1.1[ \t]*$/\11.0/g' $FILE
+	sed -i -e 's/^\(import[ \t]\+\).*meego[ \t].*$/\1org.maemo.fremantle 1.0/' $FILE
+	sed -i -e 's/^\(import[ \t]\+\).*meego.extras[ \t].*$/\1org.maemo.fremantle.extras 1.0/' $FILE
+    done
+}
+
+if [ "$#" -lt 2 ]; then
+    echo "Missing Options"
+    OPT_HELP=yes
+    ERROR=yes
+fi
+
+while [ "$#" -gt 1 ]; do
+    CURRENT_OPT="$1"
+    UNKNOWN_ARG=no
+
+    case "$1" in
+    #Known Options
+    --fremantle|--harmattan)
+        VAR=`echo $1 | sed 's,^--\(.*\),\1,'`
+        VAL=yes
+        ;;
+    --*)
+        VAR=`echo $1 | sed 's,^--\(.*\),\1,'`
+        VAL=unknown
+        ;;
+    *)
+        UNKNOWN_ARG=yes
+        ;;
+    esac
+    if [ "$UNKNOWN_ARG" = "yes" ]; then
+        echo "$1: unknown argument"
+        OPT_HELP=yes
+        ERROR=yes
+        shift
+        continue
+    fi
+    shift
+
+    UNKNOWN_OPT=no
+    case "$VAR" in
+    fremantle|harmattan)
+        MIGRATETO=$VAR
+        ;;
+    *)
+        UNKNOWN_OPT=yes
+        ;;
+    esac
+    if [ "$UNKNOWN_OPT" = "yes" ]; then
+        echo "${CURRENT_OPT}: unknown option"
+        OPT_HELP=yes
+        ERROR=yes
+    fi
+done
+
+if [ "$OPT_HELP" = "yes" ] || [ "$MIGRATETO" = "" ]; then
+    cat << EOF
+Usage:  configure [-r] [--fremantle|--harmattan] qmlfiles
+
+Configure options:
+    --fremantle ............... Use QtQuick 1.0 and Maemo namespace
+    --harmattan ............... use QtQuick 1.1 and Nokia namespace
+EOF
+    [ "x$ERROR" = "xyes" ] && exit 1
+    exit 0
+fi
+
+$MIGRATETO $1
