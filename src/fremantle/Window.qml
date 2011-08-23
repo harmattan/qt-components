@@ -41,6 +41,8 @@
 import QtQuick 1.0
 import "." 1.0
 
+import "UIConstants.js" as UI
+
 Item {
     id: root
     width: screen.displayWidth
@@ -81,7 +83,7 @@ Item {
         MouseArea {
             id: switchButton
             enabled: allowSwitch
-            z: 1
+            z: UI.STATUS_BAR_Z_INDEX
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
                 top: parent.top; left: parent.left
@@ -93,7 +95,7 @@ Item {
         MouseArea {
             id: closeButton
             enabled: allowClose
-            z: 1
+            z: UI.STATUS_BAR_Z_INDEX
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
                 top: parent.top; right: parent.right

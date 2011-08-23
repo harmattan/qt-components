@@ -50,6 +50,9 @@ Item {
     width: parent ? parent.width : 0
     height: background.height
 
+    // Set StatusBar in the Z index required by Window
+    z: UI.STATUS_BAR_Z_INDEX
+
     // Whether status bar should be showed
     property bool showStatusBar: true
 
