@@ -67,3 +67,7 @@ TabGroup.qml						meego
 ButtonColumn.qml					meego
 ButtonRow.qml						meego
 ButtonGroup.js						meego
+CheckBox.qml						meego
+style/CheckBoxStyle.qml					meego
+RadioButton.qml						meego
+RadioButtonStyle.qml					meego

@@ -169,6 +169,10 @@ QML_FILES = \
     ButtonColumn.qml \
     ButtonGroup.js \
     style/ButtonStyle.qml \
+    CheckBox.qml \
+    style/CheckBoxStyle.qml \
+    RadioButton.qml \
+    style/RadioButtonStyle.qml \
     ToolBarLayout.qml \
     ToolBarLayout.js\
     style/ToolButtonStyle.qml \

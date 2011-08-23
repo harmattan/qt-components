@@ -3,6 +3,8 @@ Button 1.0 Button.qml
 ButtonColumn 1.0 ButtonColumn.qml
 ButtonRow 1.0 ButtonRow.qml
 ButtonStyle 1.0 ButtonStyle.qml
+CheckBox 1.0 CheckBox.qml
+CheckBoxStyle 1.0 CheckBoxStyle.qml
 Dialog 1.0 Dialog.qml
 DialogStyle 1.0 DialogStyle.qml
 EditBubble 1.0 EditBubble.qml
@@ -20,6 +22,8 @@ PageStackWindow 1.0 PageStackWindow.qml
 PageStackWindowStyle 1.0 PageStackWindowStyle.qml
 QueryDialog 1.0 QueryDialog.qml
 QueryDialogStyle 1.0 QueryDialogStyle.qml
+RadioButton 1.0 RadioButton.qml
+RadioButtonStyle 1.0 RadioButtonStyle.qml
 ScrollDecorator 1.0 ScrollDecorator.qml
 ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
 SelectionDialog 1.0 SelectionDialog.qml
