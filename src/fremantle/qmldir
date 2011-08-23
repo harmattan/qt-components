@@ -1,14 +1,12 @@
 plugin fremantleplugin
 Button 1.0 Button.qml
+ButtonColumn 1.0 ButtonColumn.qml
+ButtonRow 1.0 ButtonRow.qml
 ButtonStyle 1.0 ButtonStyle.qml
 Dialog 1.0 Dialog.qml
 DialogStyle 1.0 DialogStyle.qml
 EditBubble 1.0 EditBubble.qml
 EditBubbleStyle 1.0 EditBubbleStyle.qml
-QueryDialog 1.0 QueryDialog.qml
-QueryDialogStyle 1.0 QueryDialogStyle.qml
-SelectionDialog 1.0 SelectionDialog.qml
-SelectionDialogStyle 1.0 SelectionDialogStyle.qml
 Label 1.0 Label.qml
 LabelStyle 1.0 LabelStyle.qml
 Menu 1.0 Menu.qml
@@ -20,11 +18,16 @@ Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml
 PageStackWindowStyle 1.0 PageStackWindowStyle.qml
+QueryDialog 1.0 QueryDialog.qml
+QueryDialogStyle 1.0 QueryDialogStyle.qml
 ScrollDecorator 1.0 ScrollDecorator.qml
 ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
+SelectionDialog 1.0 SelectionDialog.qml
+SelectionDialogStyle 1.0 SelectionDialogStyle.qml
 StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
+TabGroup 1.0 TabGroup.qml
 TextField 1.0 TextField.qml
 TextFieldStyle 1.0 TextFieldStyle.qml
 ToolBar 1.0 ToolBar.qml

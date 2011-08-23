@@ -64,3 +64,6 @@ style/DialogStyle.qml					meego
 style/QueryDialogStyle.qml				meego
 style/SelectionDialogStyle.qml				meego
 TabGroup.qml						meego
+ButtonColumn.qml					meego
+ButtonRow.qml						meego
+ButtonGroup.js						meego

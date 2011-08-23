@@ -165,6 +165,9 @@ QML_FILES = \
     Label.qml \
     style/LabelStyle.qml \
     Button.qml \
+    ButtonRow.qml \
+    ButtonColumn.qml \
+    ButtonGroup.js \
     style/ButtonStyle.qml \
     ToolBarLayout.qml \
     ToolBarLayout.js\
