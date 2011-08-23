@@ -177,6 +177,7 @@ QML_FILES = \
     style/ToolItemStyle.qml \
     ToolIcon.qml \
     ToolBar.qml \
+    TabGroup.qml \
     style/ToolBarStyle.qml \
     StatusBar.qml \
     style/StatusBarStyle.qml \
