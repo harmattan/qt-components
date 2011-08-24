@@ -181,6 +181,7 @@ QML_FILES = \
     TextField.qml \
     style/TextFieldStyle.qml \
     ToolButtonRow.qml \
+    style/ToolButtonRowStyle.qml \
     style/ToolItemStyle.qml \
     ToolIcon.qml \
     ToolBar.qml \

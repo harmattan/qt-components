@@ -44,11 +44,11 @@ var connectedItems = [];
 
 // Find item in an array
 function contains(container, obj) {
-  for (var i = 0 ; i < container.length; i++) {
-    if (container[i] == obj)
-        return true;
-  }
-  return false
+    for (var i = 0 ; i < container.length; i++) {
+        if (container[i] == obj)
+            return true;
+    }
+    return false
 }
 
 // Remove item from an array
@@ -88,79 +88,115 @@ function cleanup() {
     this.parentChanged.disconnect(arguments.callee);
 }
 
+function getItemWidth(item) {
+    return item.implicitWidth ? item.implicitWidth: item.width
+}
+
+function getSpacing(item) {
+    return typeof item.platformStyle.spacing != undefined ? 
+                item.platformStyle.spacing : 8 /* UI.PADDING_LARGE */
+}
+
 // Main layout function
 function layout() {
-
     if (parent === null || width === 0)
         return;
 
-    var i;
+    var i,j;
     var items = new Array();          // Keep track of visible items
-    var expandingItems = new Array(); // Keep track of expandingItems for tabs
+    var expandingItem;
     var widthOthers = 0;
+
+    //Changes for FREMANTLE: We limit expanding items to just one:
+
+    //RATIONALE: Its a pain in the ass to get code that magically, sets
+    //width correctly for more that one expanding item. Ideally, with
+    //presence of implicitwidth and implicitheight, this could be done, but
+    //it doesn't make sense to have two or more expanding items on a device
+    //480px width.
+
+    // Right now, there's only two type of components expandable:
+    // ButtonRows and textFields
+
+    // if you combine both of them (why in the hell you could want
+    // buttonRows in a Row?) set implicitWidth of ToolButtonRow. This will
+    // update internal property __expanding to false and layout will work
 
     for (i = 0; i < children.length; i++) {
         if (children[i].visible) {
-            // make sure all the children have correct parent, height, and y
-            children[i].parent = toolbarLayout
             items.push(children[i])
 
             // Center all items vertically
-            children[i].y = parent.height / 2 - children[i].height / 2
+            children[i].y = height / 2 - children[i].height / 2
+
             // Find out which items are expanding
             if (children[i].__expanding) {
-                expandingItems.push(children[i])
+                expandingItem = children[i]
             } else {
                 // Calculate the space that fixed size items take
-                widthOthers += children[i].width;
+                widthOthers += getItemWidth(children[i])
             }
         }
     }
-
     if (items.length === 0)
         return;
 
-    // Extra padding is applied if the leftMost or rightmost widget is expanding (note** removed on new design)
-    var leftPadding = 0
-    var rightPadding = 0 
+    // Avaliable space for expandingItem
 
-    // In LandScape mode we add extra margin to keep contents centered
-    // for two basic cases
-    if (items.length == 2 && screen.currentOrientation == Screen.Landscape) {
-        // expanding item on left
-        if (expandingItems.length > 0 && items[0].__expanding && !items[items.length-1].__expanding)
-            leftPadding += items[items.length-1].width
+    //Calculate expandingItem 'implicitWidth'
+    if (expandingItem) {
 
-        // expanding item is on right
-        if (expandingItems.length > 0 && items[items.length-1].__expanding && !items[0].__expanding)
-            rightPadding += items[0].width
+	var ichildren = new Array();
+	var nchildren = expandingItem.children.length
+
+	for (i = 0; i < nchildren; i++) {
+	    ichildren.push(expandingItem.children[i]);
+	}
+
+	var updated = true
+	var space   = toolbarLayout.width - widthOthers
+	var cspace  = (space - getSpacing(expandingItem) * (nchildren - 1)) / nchildren
+
+	// Use all available space for expandingItem
+	expandingItem.width = space
+
+	//Try to reduce to minimum (implicitWidth)
+	while (updated && ichildren.length > 1) {
+	    updated = false
+	    for (i = 0; i < nchildren; i++) {
+		var iWidth = ichildren[i].implicitWidth ?ichildren[i].implicitWidth: 0
+		//Asume that iWidth is 0 it's also undefined 
+		if (iWidth && iWidth < cspace) {
+		    space -= (iWidth + getSpacing(expandingItem))
+		    ichildren[i].width = iWidth
+		    ichildren.splice(i,1)
+		    nchildren -= 1
+		    updated = true
+		    break;
+		}
+	    }
+	    cspace = (space - getSpacing(expandingItem) * (nchildren - 1)) / nchildren
+	}
+
+	// NO sucess? force it
+	for (i = 0; i < nchildren; i++) {
+	    ichildren[i].width = Math.min(ichildren[i].implicitWidth, cspace)
+	}
     }
 
-    var width = toolbarLayout.width - leftPadding - rightPadding
-
-    // Calc expandingItems and tabrows
-    for (i = 0; i < expandingItems.length; i++)
-        expandingItems[i].width = (width - widthOthers) / expandingItems.length
-
-    var lastItem = items[items.length-1] ? items[items.length-1] : undefined;
-
     // Space to be divided between first and last items
-    var toolBox = width - (items[0] ? items[0].width : 0) -
-        (lastItem ? lastItem.width : 0);
-
     // |X  X  X| etc.
-    var spacingBetween = toolBox;
-    for (i = 1; i < items.length - 1; i++)
-        spacingBetween -= items[i].width;
-    items[0].x = leftPadding
-
+    var spacingBetween = toolbarLayout.width;
+    for (i = 0; i < items.length; i++) {
+        spacingBetween -= getItemWidth(items[i])
+    }
     // Calculate spacing between items
     spacingBetween /= items.length - 1;
-
     // Starting after first item
     var dX = items[0].width + spacingBetween;
+
     for (i = 1; i < items.length; i++) {
-        items[i].x = dX + leftPadding;
+        items[i].x = dX;
         dX += spacingBetween + items[i].width;
     }
 }

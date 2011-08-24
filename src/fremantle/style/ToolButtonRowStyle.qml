@@ -39,19 +39,9 @@
 ****************************************************************************/
 
 import QtQuick 1.0
+import "." 1.0
 import "UIConstants.js" as UI
 
-Item {
-    default property alias children: row.children
-    property bool __expanding: true // Layout hint used but ToolBarLayout
-
-    // Styling for the ToolButtonRow
-    property Style platformStyle: ToolButtonRowStyle {}
-
-    Row{
-        id: row
-        width: Math.min(parent.width, childrenRect.width)
-        spacing: platformStyle.spacing
-        anchors.centerIn: parent
-    }
+Style {
+    property int spacing: UI.PADDING_LARGE
 }

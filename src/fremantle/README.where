@@ -71,3 +71,4 @@ CheckBox.qml						meego
 style/CheckBoxStyle.qml					meego
 RadioButton.qml						meego
 RadioButtonStyle.qml					meego
+style/ToolButtonRowStyle.qml				new

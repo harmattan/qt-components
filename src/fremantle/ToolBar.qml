@@ -65,9 +65,6 @@ Item {
     // Sets the tools with a transition.
     function setTools(tools, transition) {
         stateGroup.state = tools ? "" : "hidden"
-        if (tools !== null) {
-            tools.height = root.height
-        }
         priv.transition = transition
         root.tools = tools
     }
