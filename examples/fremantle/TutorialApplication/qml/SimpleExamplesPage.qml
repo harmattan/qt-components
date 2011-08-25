@@ -39,9 +39,7 @@
 ****************************************************************************/
 
 import QtQuick 1.0
-import Qt.labs.components 1.1
 import org.maemo.fremantle 1.0
-
 
 Page {
     id: buttonsPage
