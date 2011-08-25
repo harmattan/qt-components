@@ -136,9 +136,11 @@ Item {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+
         onClicked: {
-            //FIXME: Implement a StatusApplet
+            //FIXME: Implement a StatusApplet. See symbian Belle for details
             console.log("Area clicked")
         }
     }
@@ -155,7 +157,7 @@ Item {
         State {
             name: "hidden"
             when: showStatusBar == false
-            PropertyChanges {target: root; anchors.topMargin: -root.height; }
+            PropertyChanges {target: root; anchors.topMargin: -root.height; visible: false}
 
         },
         State {
@@ -173,6 +175,7 @@ Item {
             from: ""; to: "hidden"; reversible: true
             ParallelAnimation {
                 PropertyAnimation {properties: "anchors.topMargin"; easing.type: Easing.InOutExpo;  duration: platformStyle.visibilityTransitionDuration }
+			    PropertyAnimation { target: statusBar; properties: "visible"; }
             }
         },
         Transition {

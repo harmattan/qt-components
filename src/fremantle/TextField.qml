@@ -85,6 +85,8 @@ FocusScope {
 
     property alias platformPreedit: inputMethodObserver.preedit
 
+    signal accepted
+
     onPlatformSipAttributesChanged: {
         platformSipAttributes.registerInputElement(textInput)
     }
@@ -101,6 +103,37 @@ FocusScope {
     function copy() {
         textInput.copy()
     }
+
+    Connections {
+        target: platformWindow
+
+        onActiveChanged: {
+            if(platformWindow.active) {
+                if (!readOnly) {
+                    if (activeFocus) {
+                        if (platformCustomSoftwareInputPanel != null) {
+                            platformOpenSoftwareInputPanel();
+                        } else {
+                            inputContext.simulateSipOpen();
+                        }
+                        repositionTimer.running = true;
+                    }
+                }
+            } else {
+                if (activeFocus) {
+                    platformCloseSoftwareInputPanel();
+                    Popup.close(textInput);
+                }
+            }
+        }
+
+        onAnimatingChanged: {
+            if (!platformWindow.animating && root.activeFocus) {
+                TextAreaHelper.repositionFlickable(contentMovingAnimation);
+            }
+        }
+    }
+
 
     function paste() {
         textInput.paste()
@@ -303,6 +336,8 @@ FocusScope {
         //QTQUICK11 mouseSelectionMode: TextInput.SelectWords
         //focus: true
 
+        onAccepted: { root.accepted() } 
+
         Component.onDestruction: {
             Popup.close(textInput);
         }
@@ -313,16 +348,6 @@ FocusScope {
             onContentYChanged: if (root.activeFocus) TextAreaHelper.filteredInputContextUpdate();
             onContentXChanged: if (root.activeFocus) TextAreaHelper.filteredInputContextUpdate();
             onMovementEnded: inputContext.update();
-        }
-
-        Connections {
-            target: platformWindow
-
-            onAnimatingChanged: {
-                if (!platformWindow.animating && root.activeFocus) {
-                    TextAreaHelper.repositionFlickable(contentMovingAnimation);
-                }
-            }
         }
 
         Connections {
@@ -345,12 +370,6 @@ FocusScope {
         }
 
         onCursorPositionChanged: {
-            var magnifier = MagnifierPopup.popup;
-            if (magnifier) {
-                var mappedPos =  mapToItem(magnifier.parent,positionToRectangle(cursorPosition).x - magnifier.width / 2, 0);
-                magnifier.xCenter = positionToRectangle(cursorPosition).x / root.width;
-                magnifier.x = mappedPos.x;
-            }
             if (Popup.isOpened(textInput) && !Popup.isChangingInput()) {
                 Popup.close(textInput);
                 Popup.open(textInput);
@@ -439,8 +458,9 @@ FocusScope {
                     attemptToActivate = false
                     MagnifierPopup.open(root);
                     var magnifier = MagnifierPopup.popup;
-                    magnifier.xCenter = positionToRectangle(cursorPosition).x / root.width
-                    var mappedPos =  mapToItem(magnifier.parent, positionToRectangle(cursorPosition).x - magnifier.width / 2,
+                    var mappedPosMf = mapFromItem(parent,mouse.x,0);
+                    magnifier.xCenter = mapToItem(magnifier.sourceItem,mappedPosMf.x,0).x / magnifier.parent.width
+                    var mappedPos =  mapToItem(magnifier.parent, mappedPosMf.x - magnifier.width / 2,
                                                textInput.y - 120 - UI.MARGIN_XLARGE - (height / 2));
                     var yAdjustment = -mapFromItem(magnifier.__rootElement(), 0, 0).y < magnifier.height / 2.5 ? magnifier.height / 2.5 + mapFromItem(magnifier.__rootElement(), 0,0).y : 0
                     magnifier.x = mappedPos.x;
@@ -488,7 +508,12 @@ FocusScope {
 
             onMousePositionChanged: {
                 if (MagnifierPopup.isOpened() && !parent.selectByMouse) {
-                    parent.cursorPosition = textInput.positionAt(mouse.x)
+                    textInput.cursorPosition = textInput.positionAt(mouse.x)
+                    var magnifier = MagnifierPopup.popup;
+                    var mappedPosMf = mapFromItem(parent,mouse.x,0);
+                    var mappedPos =  mapToItem(magnifier.parent,mappedPosMf.x - magnifier.width / 2.0, 0);
+                    magnifier.xCenter = mapToItem(magnifier.sourceItem,mappedPosMf.x,0).x / magnifier.sourceItem.width;
+                    magnifier.x = mappedPos.x;
                 }
             }
 

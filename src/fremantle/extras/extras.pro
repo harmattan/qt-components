@@ -1,8 +1,8 @@
 include (../../../qt-components.pri)
 
-TARGETPATH = org.maemo.extras.1.1
+TARGETPATH = org/maemo/extras
 TEMPLATE = lib
-TARGET = $$qtLibraryTarget(fremantleextrasplugin_1_1)
+TARGET = $$qtLibraryTarget(fremantleextrasplugin)
 INCLUDEPATH += $$PWD
 
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release

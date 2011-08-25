@@ -38,6 +38,9 @@
 **
 ****************************************************************************/
 
+#include <QtDeclarative>
+#include <QApplication>
+
 //Add here type headers
 #include "mdeclarativemousefilter.h"
 #include "mdeclarativeimageprovider.h"
@@ -65,20 +68,24 @@
 # include "shadereffectitem/shadereffectsourcenull.h"
 #endif
 
-#include <QApplication>
-#include <QtDeclarative>
-
 static const int VERSION_MAJOR = 1;
 static const int VERSION_MINOR = 0;
 
 void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri) {
-        
+        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle"));
+
         QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
         QDeclarativeContext *context = engine->rootContext();
 
+	// If plugin was initilized once, do not initialize it again
+        if(engine->imageProvider(QLatin1String("theme"))) {
+	    return;
+	}
+
         // Intentionally override possible older version of the plugin.
-        context->setProperty("fremantleComponentsVersionMajor", VERSION_MAJOR);
-        context->setProperty("fremantleComponentsVersionMinor", VERSION_MINOR);
+        context->setProperty("ComponentsFlavor", "fremantle");
+        context->setProperty("ComponentsVersionMajor", VERSION_MAJOR);
+        context->setProperty("ComponentsVersionMinor", VERSION_MINOR);
 
         // SetUp Theme image provider
         engine->addImageProvider(QLatin1String("theme"), new MDeclarativeImageProvider);
@@ -116,14 +123,17 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 }
 
 void FremantlePlugin::registerTypes(const char *uri) {
+        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle"));
+
         // Add here custom types
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
-        qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState","");
-        qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
-        qmlRegisterUncreatableType<MDialogStatus>(uri, 1, 0, "DialogStatus", "");
-        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 0, "PageOrientation", "");
+
         qmlRegisterUncreatableType<SPageStatus>(uri, 1, 0, "PageStatus", "");
+        qmlRegisterUncreatableType<MDialogStatus>(uri, 1, 0, "DialogStatus", "");
+        qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState","");
+        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 0, "PageOrientation", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
+        qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
 
         // Custom primitives
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
@@ -132,6 +142,7 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
         qmlRegisterType<MDeclarativeMouseEvent>(uri, 1, 0, "MMouseEvent");
         qmlRegisterType<MDeclarativeIMObserver>(uri, 1, 0, "InputMethodObserver");
+
         qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
 
         // shader effect item (to be removed when supported in QML)

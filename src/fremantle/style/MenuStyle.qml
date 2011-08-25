@@ -47,7 +47,7 @@ Style {
     property real rightMargin: ( (screen.currentOrientation == 1) ||
                                  (screen.currentOrientation == 4) ) ? 0 : 0
     property real topMargin: ( (screen.currentOrientation == 1) ||
-                               (screen.currentOrientation == 4) ) ? 16 : 0
+                               (screen.currentOrientation == 4) ) ? 246 : 0
 
     property real bottomMargin: 0
 

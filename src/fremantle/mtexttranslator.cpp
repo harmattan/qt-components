@@ -43,6 +43,11 @@
 #include <QCoreApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QFileInfo>
+
+namespace {
+  const QString i10nDir("/usr/share/l10n/meegotouch/");
+}
 
 #ifdef HAVE_SYSTEMINFO
 #include <QSystemInfo>
@@ -53,6 +58,8 @@ MTextTranslator::MTextTranslator()
     QCoreApplication *app = QCoreApplication::instance();
     Q_ASSERT(app);
 
+    QFileInfo qmInfo;
+
 #ifdef HAVE_SYSTEMINFO
     QtMobility::QSystemInfo *sysInfo = new QtMobility::QSystemInfo(this);
     QString locale = sysInfo->currentLanguage();
@@ -61,11 +68,18 @@ MTextTranslator::MTextTranslator()
 #endif
 
     m_translator = new QTranslator(this);
-    if (locale == "C") {
-        m_translator->load(QString("/usr/share/l10n/meegotouch/libmeegotouch.qm"));
-        } else {
-        m_translator->load(QString("/usr/share/l10n/meegotouch/common_")+locale);
-        }
+
+    //fallback to default qm, when file not found
+    qmInfo.setFile(QString("%1%2%3%4")
+                   .arg(i10nDir)
+                   .arg("common_")
+                   .arg(locale)
+                   .arg(".qm"));
+    if (locale == "C" || !qmInfo.exists()) {
+        m_translator->load(i10nDir + QString("libmeegotouch.qm"));
+    } else {
+        m_translator->load(i10nDir + QString("common_")+locale);
+    }
     app->installTranslator(m_translator);
 }
 
@@ -82,6 +96,6 @@ QString MTextTranslator::translate(QString textId)
     const QChar TextVariantSeparator(0x9c, 0);
     text = text.left(text.indexOf(TextVariantSeparator));
     return text;
-}	
+}
 
 

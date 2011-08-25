@@ -75,6 +75,8 @@ public:
             ims->startOrientationAngleChange(newOrientationAngle);
             ims->setOrientationAngle(newOrientationAngle);
         }
+#else
+	Q_UNUSED(newOrientation)
 #endif
     }
 
