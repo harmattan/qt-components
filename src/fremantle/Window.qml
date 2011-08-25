@@ -82,7 +82,7 @@ Item {
 
         MouseArea {
             id: switchButton
-            enabled: allowSwitch
+            enabled: allowSwitch && screen.allowSwipe
             z: UI.STATUS_BAR_Z_INDEX
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
@@ -94,7 +94,7 @@ Item {
 
         MouseArea {
             id: closeButton
-            enabled: allowClose
+            enabled: allowClose && screen.allowSwipe
             z: UI.STATUS_BAR_Z_INDEX
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {

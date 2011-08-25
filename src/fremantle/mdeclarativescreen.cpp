@@ -216,6 +216,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , isTvConnected(false)
     , topLevelWidget(0)
     , oldEventFilter(0)
+    , allowSwipe(true)
 #ifdef Q_WS_X11
     , windowId(0)
 #endif
@@ -550,7 +551,7 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
 		d->orientationSensor.stop();
 # endif
 #endif
-                //minimized apps are forced to portrait
+                //minimized apps are forced to landscape
                 d->allowedOrientationsBackup = d->allowedOrientations;
                 //set allowedOrientations manually, because
                 //setAllowedOrientations() will not work while
@@ -809,36 +810,6 @@ MDeclarativeScreen::Density MDeclarativeScreen::density() const {
         return ExtraHigh;
 }
 
-void MDeclarativeScreen::updatePlatformStatusBarRect(QDeclarativeItem * statusBar)
-{
-    Q_UNUSED(statusBar);
-
-#ifdef Q_WS_X11
-    QWidget * activeWindow = QApplication::activeWindow();
-    if(!activeWindow) {
-        return;
-    }
-
-    QRectF rect(statusBar->mapRectToScene(0, 0, (qreal)statusBar->width(), (qreal)statusBar->height()));
-    unsigned long data[4] = {0};
-
-    if(statusBar->y() >= 0) {
-        data[0] = 0;
-        data[1] = 0;
-        data[2] = rect.width();
-        data[3] = rect.height();
-    }
-
-    Display *dpy = QX11Info::display();
-    Atom a = XInternAtom(dpy, "_MEEGOTOUCH_MSTATUSBAR_GEOMETRY", False);
-    Window w = activeWindow->effectiveWinId();
-    if(data[3] == 0)
-        XDeleteProperty(dpy, w, a);
-    else
-        XChangeProperty(dpy, w, a, XA_CARDINAL, 32, PropModeReplace, (unsigned char*)data, 4);
-#endif
-}
-
 bool MDeclarativeScreen::allowSwipe() const
 {
     return d->allowSwipe;
@@ -852,29 +823,9 @@ void MDeclarativeScreen::setAllowSwipe(bool enabled)
         if(!activeWindow) {
             return;
         }
-        Display       *dpy = QX11Info::display();
-        Window w = activeWindow->effectiveWinId();
-
-        unsigned long val = (enabled) ? 1 : 0;
-        Atom atom = XInternAtom(dpy, "_MEEGOTOUCH_CANNOT_MINIMIZE", false);
-        if (!atom) {
-            qWarning("Unable to obtain _MEEGOTOUCH_CANNOT_MINIMIZE. This example will only work "
-                     "with the MeeGo Compositor!");
-            return;
-        }
-
-        XChangeProperty (dpy,
-                w,
-                atom,
-                XA_CARDINAL,
-                32,
-                PropModeReplace,
-                reinterpret_cast<unsigned char *>(&val),
-                1);
-
+#endif
         d->allowSwipe = enabled;
         emit allowSwipeChanged();
-#endif
     }
 }
 
