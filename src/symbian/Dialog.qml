@@ -58,6 +58,9 @@ Item {
     property int platformContentMaximumHeight:
         dialog.maxHeight() - titleBar.height - buttonItem.height
 
+    property alias privateTitleHeight: titleBar.height
+    property alias privateButtonsHeight: buttonItem.height
+
     signal accepted
     signal rejected
     signal clickedOutside
@@ -68,13 +71,17 @@ Item {
     }
 
     function accept() {
-        dialog.close()
-        accepted()
+        if (status == DialogStatus.Open) {
+            dialog.close()
+            accepted()
+        }
     }
 
     function reject() {
-        dialog.close()
-        rejected()
+        if (status == DialogStatus.Open) {
+            dialog.close()
+            rejected()
+        }
     }
 
     function close() {
@@ -125,6 +132,10 @@ Item {
         anchors.centerIn: parent
         animationDuration: 250
         platformInverted: root.platformInverted
+
+        // Consume all key events that are not processed by children
+        Keys.onPressed: event.accepted = true
+        Keys.onReleased: event.accepted = true
 
         BorderImage {
             source: privateStyle.imagePath("qtg_fr_popup", root.platformInverted)

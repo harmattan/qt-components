@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the Qt Components project.
+** This file is part of the Qt Components project on Qt Labs.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** You may use this file under the terms of the BSD license as follows:
@@ -39,13 +39,44 @@
 ****************************************************************************/
 
 import QtQuick 1.1
+import com.nokia.symbian 1.1
 
-Text {
-    property bool platformInverted: false
-    color: platformInverted ? platformStyle.colorNormalLightInverted
-                            : platformStyle.colorNormalLight
-    font.family: platformStyle.fontFamilyRegular
-    font.pixelSize: platformStyle.fontSizeMedium
-    verticalAlignment: Text.AlignVCenter
-    horizontalAlignment: Text.AlignLeft
+Window {
+    id: root
+
+    //! [0]
+    ButtonRow {
+        id: buttonRow
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: platformStyle.paddingMedium }
+
+        Button { text: "Button 1"; platformInverted: true }
+        Button { text: "Button 2"; platformInverted: true }
+        Button { text: "Button 3"; platformInverted: true }
+    }
+    //! [0]
+
+    //! [1]
+    Button {
+        id: toggleInvertButton
+        anchors { left: parent.left; right: parent.right; top: buttonRow.bottom; margins: platformStyle.paddingMedium }
+        text: "Set " + (toolBar.platformInverted ? "normal" : "inverted") + " style for ToolBar"
+
+        onClicked: {
+            toolBar.platformInverted = !toolBar.platformInverted
+        }
+    }
+
+    ToolBar {
+        id: toolBar
+
+        anchors.bottom: parent.bottom
+        tools: ToolBarLayout {
+            ToolButton {
+                iconSource: "toolbar-back"
+                platformInverted: toolBar.platformInverted
+                onClicked: Qt.quit()
+            }
+        }
+    }
+    //! [1]
 }

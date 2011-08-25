@@ -37,41 +37,34 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#ifndef CTOUCHINPUT_H
-#define CTOUCHINPUT_H
 
-#include <e32base.h>
-#include <e32property.h>
+import QtQuick 1.1
+import com.nokia.symbian 1.1
 
-class MTouchInputStateObserver
-{
-public:
-    virtual void VisibleChanged() = 0;
-};
+Item {
+    id: root
+    anchors.fill: parent
 
-class CTouchInput : public CActive
-{
-public:
-    static CTouchInput* NewL( MTouchInputStateObserver& aObserver );
-    virtual ~CTouchInput();
+    Label {
+        id: label
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: platformStyle.paddingLarge
+        text: "This is a Symbian Label"
+    }
 
-    TBool Visible() const;
-    TReal PortraitHeight();
-    TReal LandscapeHeight();
+    Rectangle {
+        id: longLabelBackground
+        anchors.fill: longLabel
+        color: platformStyle.colorNormalMid
+    }
 
-private:
-    CTouchInput( MTouchInputStateObserver& aObserver );
-    void ConstructL();
-    void RunL();
-    void DoCancel();
-    void Subscribe();
-
-private:
-    RProperty iProperty;
-    MTouchInputStateObserver& iObserver;
-    TBool iVisible;
-    TReal iPortraitHeight;
-    TReal iLandscapeHeight;
-};
-
-#endif // CTOUCHINPUT_H
+    Label {
+        id: longLabel
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: label.bottom
+        anchors.topMargin: platformStyle.paddingLarge
+        text: "This is a longer Symbian Label\n with several\n lines of text.\n There is a\
+  Rectangle behind \n the Label."
+    }
+}

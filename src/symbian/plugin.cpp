@@ -77,7 +77,7 @@ public:
         if (versionMajor > VERSION_MAJOR ||
             (versionMajor == VERSION_MAJOR && versionMinor >= VERSION_MINOR)) {
             // Either newer or this version of plugin already initialized.
-            // The same plugin might initialized twice: once from 
+            // The same plugin might initialized twice: once from
             // "import com.nokia.symbian", and another time from
             // "import Qt.labs.components.native".
             return;
@@ -86,8 +86,6 @@ public:
             context->setProperty("symbianComponentsVersionMajor", VERSION_MAJOR);
             context->setProperty("symbianComponentsVersionMinor", VERSION_MINOR);
         }
-
-        engine->addImageProvider(QLatin1String("theme"), new SDeclarativeImageProvider);
 
         screen = new SDeclarativeScreen(engine, context); // context as parent
         context->setContextProperty("screen", screen);
@@ -101,6 +99,13 @@ public:
 
         SDeclarative *declarative = new SDeclarative(context);
         context->setContextProperty("symbian", declarative);
+
+        SDeclarativeImageProvider *imageProvider = new SDeclarativeImageProvider;
+        engine->addImageProvider(QLatin1String("theme"), imageProvider);
+
+        // make status of graphics sharing available for 'symbian' -context property
+        if (imageProvider->graphicsSharing())
+            declarative->setGraphicsSharing(true);
 
         SPopupManager *popupManager = new SPopupManager(context);
         context->setContextProperty("platformPopupManager", popupManager);

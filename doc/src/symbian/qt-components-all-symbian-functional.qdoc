@@ -66,6 +66,8 @@
         \o \l{PopupManager}
         \o \l{Screen}
         \o \l{Style}
+        \o \l{Label}
+        \o \l{InputContext}
     \endlist
 
     \section1 Indicators
@@ -145,6 +147,7 @@
     \list
         \o \l{InfoBanner}
         \o \l{RatingIndicator}
+        \o \l{SearchBox}
         \o \l{TimePickerDialog}
         \o \l{DatePickerDialog}
         \o \l{Tumbler}

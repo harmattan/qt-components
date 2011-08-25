@@ -53,9 +53,15 @@ MouseArea {
     property alias cutEnabled: contextMenu.cutEnabled
     property bool platformInverted: false
 
+    enabled: !editor.inputMethodComposing
+
+    LayoutMirroring.enabled: false
+    LayoutMirroring.childrenInherit: true
+
     function updateGeometry() {
         selectionBegin.updateGeometry();
         selectionEnd.updateGeometry();
+        contextMenu.calculatePosition(); // Update context menu position
     }
 
     function flickEnded() {
@@ -66,30 +72,28 @@ MouseArea {
     }
 
     onPressed: {
-        var currentTouchPoint = root.mapToItem(editor, mouse.x, mouse.y);
+        internal.currentTouchPoint = root.mapToItem(editor, mouse.x, mouse.y);
 
-        if (currentTouchPoint.x < 0)
-            currentTouchPoint.x = 0
+        if (internal.currentTouchPoint.x < 0)
+            internal.currentTouchPoint.x = 0
 
-        if (currentTouchPoint.y < 0)
-            currentTouchPoint.y = 0
+        if (internal.currentTouchPoint.y < 0)
+            internal.currentTouchPoint.y = 0
 
         if (internal.tapCounter == 0)
-            internal.touchPoint = currentTouchPoint;
+            internal.touchPoint = internal.currentTouchPoint;
 
-        if (!editor.readOnly)
-            editor.forceActiveFocus();
-
+        editor.forceActiveFocus();
         contextMenu.hide();
         internal.handleMoved = false;
 
         selectionBegin.viewPortRect = internal.mapViewPortRectToHandle(selectionBegin);
         selectionEnd.viewPortRect = internal.mapViewPortRectToHandle(selectionEnd);
 
-        internal.pressedHandle = internal.handleForPoint({x: currentTouchPoint.x, y: currentTouchPoint.y});
+        internal.pressedHandle = internal.handleForPoint({x: internal.currentTouchPoint.x, y: internal.currentTouchPoint.y});
 
         if (internal.pressedHandle != null) {
-            internal.handleGrabbed(currentTouchPoint);
+            internal.handleGrabbed();
             // Position cursor at the pressed selection handle
             // TODO: Add bug ID!!
             var tempStart = editor.selectionStart
@@ -128,7 +132,7 @@ MouseArea {
                 internal.pressedHandle = selectionEnd;
                 if (editor.readOnly)
                     magnifier.hide();
-                internal.handleGrabbed(internal.touchPoint);
+                internal.handleGrabbed();
             }
             contextMenu.hide();
         }
@@ -150,13 +154,12 @@ MouseArea {
         internal.longTap = false;
     }
 
-    onMousePositionChanged: {
+    onPositionChanged: {
 
         internal.currentTouchPoint = root.mapToItem(editor, mouse.x, mouse.y);
 
         if (internal.pressedHandle != null) {
-            internal.hitTestPoint = {x:internal.currentTouchPoint.x + internal.touchOffsetFromHitTestPoint.x,
-                                     y:internal.currentTouchPoint.y + internal.touchOffsetFromHitTestPoint.y};
+            internal.hitTestPoint = {x:internal.currentTouchPoint.x, y:internal.currentTouchPoint.y};
 
             var newPosition = editor.positionAt(internal.hitTestPoint.x, internal.hitTestPoint.y);
             if (newPosition >= 0 && newPosition != editor.cursorPosition) {
@@ -194,7 +197,6 @@ MouseArea {
         property int tapCounter: 0
         property variant pressedHandle: null
         property variant hitTestPoint: Qt.point(0, 0)
-        property variant touchOffsetFromHitTestPoint: Qt.point(0, 0)
         property variant touchPoint: Qt.point(0, 0)
         property variant currentTouchPoint: Qt.point(0, 0)
 
@@ -202,7 +204,7 @@ MouseArea {
             if (!internal.handleMoved) {
                 // need to deselect, because if the cursor position doesn't change the selection remains
                 // even after setting to cursorPosition
-                editor.select(editor.cursorPosition, editor.cursorPosition);
+                editor.deselect();
                 editor.cursorPosition = editor.positionAt(internal.touchPoint.x, internal.touchPoint.y);
                 contextMenu.hide();
                 if (!editor.readOnly)
@@ -226,10 +228,9 @@ MouseArea {
                 contextMenu.hide();
         }
 
-        function handleGrabbed(currentTouchPoint) {
+        function handleGrabbed() {
             mouseGrabDisabler.setKeepMouseGrab(root, true);
-            internal.hitTestPoint = root.mapToItem(editor, internal.pressedHandle.center.x, internal.pressedHandle.center.y);
-            internal.touchOffsetFromHitTestPoint = {x:internal.hitTestPoint.x - currentTouchPoint.x, y:internal.hitTestPoint.y - currentTouchPoint.y};
+            internal.hitTestPoint = {x:internal.currentTouchPoint.x, y:internal.currentTouchPoint.y};
 
             internal.forcedSelection = internal.editorHasSelection;
         }
@@ -270,7 +271,7 @@ MouseArea {
             var startRect = editor.positionToRectangle(editor.selectionStart);
             var endRect = editor.positionToRectangle(editor.selectionEnd);
             var selectionRect = Qt.rect(startRect.x, startRect.y, endRect.x - startRect.x + endRect.width, endRect.y - startRect.y + endRect.height);
-            var viewPortRect = Qt.rect(editorScrolledX, editorScrolledY, root.width, root.height);
+            var viewPortRect = Qt.rect(editorScrolledX, editorScrolledY, editor.width, editor.height);
 
             return Utils.rectIntersectsRect(selectionRect, viewPortRect) ||
                    Utils.rectContainsRect(viewPortRect, selectionRect) ||
@@ -303,7 +304,6 @@ MouseArea {
         id: contextMenu
 
         editor: root.editor
-        editorScrolledY: root.editorScrolledY
         platformInverted: root.platformInverted
     }
 
@@ -342,4 +342,10 @@ MouseArea {
         }
     }
 
+    Keys.onPressed: {
+        if (internal.editorHasSelection && event.modifiers & Qt.ShiftModifier
+            && (event.key == Qt.Key_Left || event.key == Qt.Key_Right
+            || event.key == Qt.Key_Up || event.key == Qt.Key_Down))
+            contextMenu.show()
+    }
 }

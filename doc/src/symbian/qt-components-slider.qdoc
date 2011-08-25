@@ -44,7 +44,7 @@
     When the user slides the handle, the \c value is updated and the \c
     valueChanged signal is emitted . If the \c valueIndicatorVisible property is
     \c true, the value indicator is shown beside the handle when the user
-    presses the handle . The value indicator shows the text of \c
+    presses the handle. The value indicator shows the text of \c
     valueIndicatorText, but if \c valueIndicatorText contains an empty string,
     the indicator shows the current \c value instead.
 
@@ -156,4 +156,16 @@
     \c true will switch the progression from right to left or top to bottom.
 
     The default value is \c false.
+*/
+
+/*!
+    \qmlproperty bool Slider::platformInverted
+    \since 1.1
+
+    \e {Symbian:}
+
+    If platformInverted is \c true, the component is visualized with the
+    inverted style. For more information, see
+    \l {Using Inverted Style with Symbian Components}. By default
+    platformInverted is \c false.
 */

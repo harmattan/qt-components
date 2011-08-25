@@ -52,11 +52,10 @@ Column {
 
     spacing: 14
 
-    Text {
+    Label {
+        platformInverted: column.childrenInverted
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Qt Components " + (enabled ? "(enabled)" : "(disabled)")
-        font { family: platformStyle.fontFamilyRegular; pixelSize: platformStyle.fontSizeMedium }
-        color: platformStyle.colorNormalLight
     }
 
     Button {
@@ -117,6 +116,7 @@ Column {
             source: add.pressed ? "image://theme/qtg_graf_textfield_add_pressed"
                                 : "image://theme/qtg_graf_textfield_add_normal"
             height: parent.height; width: parent.height
+            scale: LayoutMirroring.enabled ? -1 : 1
 
             MouseArea {
                 id: add
@@ -578,24 +578,13 @@ Column {
 
     Component {
         id: sectionScrollComponent
-        Dialog {
+        CommonDialog {
             id: sectionScroll
             platformInverted: column.childrenInverted
-            title: Text {
-                text: "Section Scroller"
-                font { bold: true; pixelSize: 16 }
-                color: "white"
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
-            }
-            buttons:
-                ToolButton {
-                    text: "Close"
-                    height: platformStyle.graphicSizeMedium
-                    platformInverted: column.childrenInverted
-                    onClicked: sectionScroll.close()
-                }
+            titleText: "Section Scroller"
+            buttonTexts: ["Close"]
+            onButtonClicked: close()
+
             content:
                 Rectangle {
                 width: parent.width

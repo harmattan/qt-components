@@ -47,6 +47,9 @@
 #include <QDeclarativeEngine>
 #include <QPixmapCache>
 #include <QSysInfo>
+#include <QDeclarativeItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 
 #ifdef Q_OS_SYMBIAN
 #include <AknUtils.h>
@@ -75,7 +78,8 @@ public:
     SDeclarativePrivate()
         : mListInteractionMode(SDeclarative::TouchInteraction)
         , foreground(true)
-        , rightToLeftDisplayLanguage(false) {
+        , rightToLeftDisplayLanguage(false)
+        , graphicsSharing(false) {
 #ifdef Q_OS_SYMBIAN
         // Initialize based on the current UI language - it cannot be changed without a reboot.
         switch (User::Language()) {
@@ -98,6 +102,7 @@ public:
     QTimer timer;
     bool foreground;
     bool rightToLeftDisplayLanguage;
+    bool graphicsSharing;
 };
 
 int SDeclarativePrivate::allocatedMemory() const
@@ -207,6 +212,27 @@ SDeclarative::S60Version SDeclarative::s60Version() const
 bool SDeclarative::rightToLeftDisplayLanguage() const
 {
     return d_ptr->rightToLeftDisplayLanguage;
+}
+
+void SDeclarative::setGraphicsSharing(bool sharingEnabled)
+{
+    d_ptr->graphicsSharing = sharingEnabled;
+}
+
+bool SDeclarative::privateGraphicsSharing() const
+{
+    return d_ptr->graphicsSharing;
+}
+
+void SDeclarative::privateSendMouseRelease(QDeclarativeItem *item) const
+{
+    // this is for situations where a press event opens another window (QWidget)
+    // that eats the mouse released event. This method can be used for generating
+    // the released event and 'correcting' the state of MouseArea/Flickable
+    if (item) {
+        QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
+        item->scene()->sendEvent(item, &releaseEvent);
+    }
 }
 
 bool SDeclarative::eventFilter(QObject *obj, QEvent *event)

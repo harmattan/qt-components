@@ -77,6 +77,8 @@ Page {
                         placeholderText: "Default text"
                         maximumLength: 80
 
+                        onAccepted: { console.log("accepted signal triggered") } 
+
                         Keys.onReturnPressed: {
                             text = "Return key pressed";
                             parent.focus = true;
@@ -193,11 +195,20 @@ Page {
                     Label {
                         font: UiConstants.FieldLabelFont
                         color: UiConstants.FieldLabelColor
-                        text: "Default text field as bottom:"
+                        text: "Bottom text field:"
                     }
                     TextField {
                         anchors {left: parent.left; right: parent.right;}
-                    }                   
+                    }   
+                    TextEdit {
+                        height: 400;
+                        width: 800;
+                    }
+                    Label {
+                        font: UiConstants.FieldLabelFont
+                        color: UiConstants.FieldLabelColor
+                        text: "Page ends here"
+                    }                
                 }
             }
             ScrollDecorator {

@@ -1,8 +1,69 @@
-qt-components (1.0~git20110712-1+0m5) fremantle; urgency=low
+qt-components (1.1~git20110824-2) maverick; urgency=low
 
-  * Initial port to fremantle
+  * Fixes: NB#278574 "import com.meego.extras 1.0" fails in PR1.1
 
- -- Carlos Martin <cmartin@liberalia.net>  Tue, 12 July 2011 19:55:00 +0300
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Wed, 24 Aug 2011 15:35:00 +0300
+
+qt-components (1.1~git20110824-1) maverick; urgency=low
+
+  * Fx: 278574 "import com.meego.extras 1.0" fails in PR1.1 (moved to next release)
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Wed, 24 Aug 2011 15:00:00 +0300
+
+qt-components (1.1~git20110819-1) maverick; urgency=low
+
+  * 260181 Orientation switch transition is incorrect (REOPENED)
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Fri, 19 Aug 2011 10:35:00 +0300
+
+qt-components (1.1~git20110815-2) maverick; urgency=low
+
+  * Fixes: NB#248174 There is a possibility to use VKB when it switches to custom VKB
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Mon, 15 Aug 2011 13:05:00 +0300
+
+qt-components (1.1~git20110815-1) maverick; urgency=low
+
+  * Fixes: NB#276546 Cannot open OVI music application
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Mon, 15 Aug 2011 12:45:00 +0300
+
+qt-components (1.1~git20110810-1) maverick; urgency=low
+
+  * Fixes: NB#267202 - qt-components.qdocconf has invalid image paths
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Wed, 10 Aug 2011 09:05:00 +0300
+
+qt-components (1.1~git20110804-1) maverick; urgency=low
+
+  * Fixes: NB#275789 Black screen displayed when Facebook application is launched
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Thu, 04 Aug 2011 15:15:00 +0300
+
+qt-components (1.1~git20110803-1) maverick; urgency=low
+
+  * Fixes: NB#268109 Default background image has artifacts
+  * Fixes: NB#267527 Sheet component doesn't block mouse events
+  * Fixes: NB#267389 Doubletap gesture max duration should be 325ms
+  * Fixes: NB#267030 Toolbar doesn't let specify semi transparent background
+  * Fixes: NB#262493 Flickable repositioning miscalculated when textfield on the bottom is focused
+  * Fixes: NB#261554 Qt components slider has side-effects when panning
+  * Fixes: NB#260211 Object/Context Menu transition parameters are slightly off
+  * Fixes: NB#260205 View/Action Menu transition parameters are slightly off
+  * Fixes: NB#260166 Toolbar appearance/disappearance transition is incorrect
+  * Fixes: NB#260070 Orientation lock to portrait does not work when HW keyboard is opened
+  * Fixes: NB#256232 Text entry prompt not having transitions
+  * Fixes: NB#270426 coreweb: /usr/bin/FacebookQML "Fails at Daemon::readFromBoosterSocket" - crashes in LPT
+  * Fixes: NB#267912 Wrong font int TextField and TextArea
+  * Fixes: NB#259160 Qt components text entries do not notify on failing paste
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Wed, 03 Aug 2011 12:25:00 +0300
+
+qt-components (1.1~git20110802-1) maverick; urgency=low
+
+  * Upgrading changelog version number from 1.0 to 1.1
+
+ -- Joonas Reynders <ext-joonas.n.reynders@nokia.com>  Tue, 02 Aug 2011 15:40:00 +0300
 
 qt-components (1.0~git20110712-1) maverick; urgency=low
 

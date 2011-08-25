@@ -62,7 +62,7 @@ Item {
 
     BorderImage {
         source: containingPopup.objectName == "OptionsMenu"
-                ? privateStyle.imagePath("qtg_fr_popup_options_item_area_bg", root.platformInverted)
+                ? privateStyle.imagePath("qtg_fr_popup_options", root.platformInverted)
                 : privateStyle.imagePath("qtg_fr_popup", root.platformInverted)
         border { left: 20; top: 20; right: 20; bottom: 20 }
         anchors.fill: parent
@@ -134,6 +134,7 @@ Item {
             onInteractionModeChanged: {
                 if (symbian.listInteractionMode == Symbian.KeyNavigation) {
                     contentY = 0
+                    scrollBar.flash(Symbian.FadeOut)
                     if (itemAvailable)
                         contentArea.children[0].children[index].focus = true
                 } else if (symbian.listInteractionMode == Symbian.TouchInteraction) {
@@ -147,15 +148,14 @@ Item {
                         index++
                         if (index * itemHeight > contentY + height - itemHeight) {
                             contentY = index * itemHeight - height + itemHeight
-                            scrollBar.flash(Symbian.FadeOut)
                         }
                     } else if (event.key == Qt.Key_Up && index > 0) {
                         index--
                         if (index * itemHeight < contentY) {
                             contentY = index * itemHeight
-                            scrollBar.flash(Symbian.FadeOut)
                         }
                     }
+                    scrollBar.flash(Symbian.FadeOut)
                     contentArea.children[0].children[index].focus = true
                     event.accepted = true
                 }
@@ -165,6 +165,7 @@ Item {
 
     ScrollBar {
         id: scrollBar
+        objectName: "scrollBar"
         flickableItem: flickableArea
         interactive: false
         visible: flickableArea.height < flickableArea.contentHeight

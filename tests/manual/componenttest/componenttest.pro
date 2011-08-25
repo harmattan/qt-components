@@ -42,7 +42,7 @@ symbian {
             "%{\"Nokia\"}" \
             " " \
             "; Unique Vendor name" \
-            ":\"Nokia, Qt\"" \
+            ":\"Nokia\"" \
             " "
 
     header = "$${LITERAL_HASH}{\"componenttest\"},(0x200346E0),1,0,0,TYPE=SA,RU"
@@ -55,7 +55,6 @@ OTHER_FILES += \
     TestUtils.js \
     ../shared/MemoryDisplay.qml \
     components/FontSelectionDialog.qml \
-    components/Label.qml \
     components/TextSettings.qml \
     components/TextSettingsModel.qml \
     tests/BusyIndicator.qml \
@@ -71,6 +70,7 @@ OTHER_FILES += \
     tests/Dialog.qml \
     tests/Indicators.qml \
     tests/KeyNavigation.qml \
+    tests/Label.qml \
     tests/ListItem.qml \
     tests/ListView.qml \
     tests/Metrics.qml \

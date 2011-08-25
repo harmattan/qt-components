@@ -51,6 +51,12 @@
 #include <QSignalSpy>
 #include <QInputContext>
 
+#ifdef Q_OS_SYMBIAN
+#include <e32property.h>
+const TUint32 KAknFepSoftwareInputpanelHeight = 0x00000005;
+const TUid KPSUidAknFep = { 0x100056de };
+#endif // Q_OS_SYMBIAN
+
 class tst_SDeclarativeInputContext : public QObject
 {
     Q_OBJECT
@@ -59,6 +65,7 @@ private slots:
     void defaultPropertyValues();
     void height();
     void visible();
+    void autoMove();
 
 private:
     QScopedPointer<QDeclarativeView> m_view;
@@ -112,6 +119,23 @@ void tst_SDeclarativeInputContext::height()
 
     QVERIFY(portraitHeight > landscapeHeight);
     QCOMPARE(heightChangedSpy.count(), 1);
+
+#ifdef Q_OS_SYMBIAN
+    //Switch to portrait
+    RProperty::Set( KPSUidAknFep, KAknFepSoftwareInputpanelHeight, 150 );
+    screen->setProperty("allowedOrientations", SDeclarativeScreen::Portrait);
+    QCOMPARE(m_inputContext->property("height").toInt(), 150);
+    QCOMPARE(heightChangedSpy.count(), 2);
+
+    //Switch to landscape
+    RProperty::Set( KPSUidAknFep, KAknFepSoftwareInputpanelHeight, 120 );
+    screen->setProperty("allowedOrientations", SDeclarativeScreen::Landscape);
+    QCOMPARE(m_inputContext->property("height").toInt(), 120);
+    QCOMPARE(heightChangedSpy.count(), 3);
+
+    //Reset
+    RProperty::Set( KPSUidAknFep, KAknFepSoftwareInputpanelHeight, 0 );
+#endif // Q_OS_SYMBIAN
 
     //Switch back to portrait
     screen->setProperty("allowedOrientations", SDeclarativeScreen::Portrait);
@@ -181,6 +205,19 @@ void tst_SDeclarativeInputContext::visible()
     QEXPECT_FAIL("", "Missing implementation from qcoefepinputcontext_s60, http://bugreports.qt.nokia.com/browse/QTBUG-20153", Continue);
 #endif // Q_OS_SYMBIAN
     QCOMPARE(m_inputContext->property("visible").toBool(), false);
+}
+
+void tst_SDeclarativeInputContext::autoMove()
+{
+    QSignalSpy platformTranslationChangedSpy(m_inputContext, SIGNAL(autoMoveChanged()));
+
+    m_inputContext->setProperty("autoMove", false);
+    QTRY_COMPARE(platformTranslationChangedSpy.count(), 1);
+    QCOMPARE(m_inputContext->property("autoMove").toBool(), false);
+
+    m_inputContext->setProperty("autoMove", true);
+    QTRY_COMPARE(platformTranslationChangedSpy.count(), 2);
+    QCOMPARE(m_inputContext->property("autoMove").toBool(), true);
 }
 
 QTEST_MAIN(tst_SDeclarativeInputContext)

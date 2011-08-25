@@ -45,18 +45,19 @@ import "../components"
 FocusScope {
     id: root
 
+    Component.onCompleted: mainWindow.softwareInputPanelEnabled = true
+    Component.onDestruction:  mainWindow.softwareInputPanelEnabled = false
+
     QtObject {
         id: privy
         property bool portrait:    screen.currentOrientation == Screen.Portrait
                                 || screen.currentOrientation == Screen.PortraitInverted
-
-        property real contentHeight: parent.height - buttons.height
     }
 
     ButtonRow {
         id: buttons
 
-        property real h: parent.height * (privy.portrait ? 1/8 : 1/6)
+        property real h: privy.portrait ? platformStyle.graphicSizeLarge : platformStyle.graphicSizeMedium
 
         anchors { top: parent.top; left: parent.left; right: parent.right }
         exclusive: false
@@ -83,11 +84,9 @@ FocusScope {
     Column {
         id: style
 
-        property real h: (height - spacing * (children.length - 1)) / children.length
+        property real h: Math.round((height - spacing * (children.length - 1)) / children.length)
 
-        anchors { top: buttons.bottom; left: parent.left; bottom: privy.portrait ? settings.top : vbk.top }
-        width: visible ? h : 0
-        visible: !inputContext.visible
+        anchors { top: buttons.bottom; left: parent.left }
 
         Button {
             id: bold; objectName: "bold"
@@ -112,19 +111,40 @@ FocusScope {
             height: parent.h; width: parent.width
             checkable: true; text: "U"
         }
+
+        Behavior on width { PropertyAnimation { duration: 200 } }
+        Behavior on opacity { PropertyAnimation { duration: 200 } }
+
+        states: [
+            State {
+                name: "Portrait"
+                when: privy.portrait && !inputContext.visible
+                AnchorChanges { target: style; anchors. bottom: settings.top }
+                PropertyChanges { target: style; opacity: 1; width: h }
+            },
+
+            State {
+                name: "Landscape"
+                when: !privy.portrait && !inputContext.visible
+                AnchorChanges { target: style; anchors. bottom: parent.bottom }
+                PropertyChanges { target: style; opacity: 1; width: h }
+            },
+
+            State {
+                name: "Hidden"
+                when: inputContext.visible
+                PropertyChanges { target: style; opacity: 1; width: 0 }
+            }
+        ]
+
+        transitions: [ Transition { AnchorAnimation { duration: 200 } } ]
     }
 
     TextArea {
         id: textArea; objectName: "textArea"
-        anchors {
-            top: buttons.bottom
-            left: style.right
-            right: privy.portrait ? parent.right : settings.left
-            bottom: privy.portrait ? settings.top : vbk.top
-        }
 
+        anchors { top: buttons.bottom; left: style.right }
         placeholderText: "Enter text here"
-        platformMaxImplicitWidth: root.width - style.width - (privy.portrait ? 0 : settings.width)
         enabled: enable.checked
         errorHighlight: error.checked
         horizontalAlignment: settings.horizontalAlignment
@@ -142,30 +162,58 @@ FocusScope {
         font.strikeout: strikeout.checked
         font.underline: underline.checked
         font.weight: settings.fontWeight
+
+        Behavior on width { PropertyAnimation { duration: 200 } }
+        Behavior on height { PropertyAnimation { duration: 200 } }
+
+        states: [
+            State {
+                name: "Portrait"
+                when: privy.portrait
+                AnchorChanges { target: textArea; anchors.right: parent.right; anchors.bottom: settings.top }
+            },
+
+            State {
+                name: "Landscape"
+                when: !privy.portrait
+                AnchorChanges { target: textArea; anchors.right: settings.left; anchors.bottom: parent.bottom }
+            }
+        ]
    }
 
    TextSettings {
         id: settings
         anchors {
-            top: privy.portrait ? undefined : buttons.bottom
-            bottom: vbk.top
+            bottom: parent.bottom
             right: parent.right
             topMargin: platformStyle.paddingSmall
             bottomMargin: platformStyle.paddingSmall
         }
-        height: visible ? privy.contentHeight * 1/3 : 0
-        width: privy.portrait ? parent.width : parent.width * 2/5
-        visible: !privy.portrait || !inputContext.visible
-    }
 
-    Item {
-        id: vbk
-        anchors {
-            bottom: root.bottom
-            right: parent.right
-            left: parent.left
-        }
-        height: inputContext.visible ? inputContext.height : 0
+        Behavior on height { PropertyAnimation { duration: 200 } }
+        Behavior on width { PropertyAnimation { duration: 200 } }
+        Behavior on opacity { PropertyAnimation { duration: 200 } }
+
+        states: [
+            State {
+                name: "Portrait"
+                when: privy.portrait && !inputContext.visible
+                PropertyChanges { target: settings; opacity: 1; width: parent.width; height: (parent.height - buttons.height) * 1/3 }
+            },
+
+            State {
+                name: "Landscape"
+                when: !privy.portrait
+                PropertyChanges { target: settings; opacity: 1; width: parent.width * 2/5; height: (parent.height - buttons.height)}
+            },
+
+            State {
+                name: "Hidden"
+                when: !privy.portrait || !inputContext.visible
+                PropertyChanges { target: style; opacity: 0; width: 0; height: 0 }
+            }
+        ]
+
     }
 
     Menu {

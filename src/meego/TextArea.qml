@@ -147,6 +147,32 @@ FocusScope {
         textEdit.openSoftwareInputPanel();
     }
 
+    Connections {
+        target: platformWindow
+
+        onActiveChanged: {
+            if(platformWindow.active) {
+                if (!readOnly) {
+                    if (activeFocus) {
+                        platformOpenSoftwareInputPanel();
+                        repositionTimer.running = true;
+                    }
+                }
+            } else {
+                if (activeFocus) {
+                    platformCloseSoftwareInputPanel();
+                    Popup.close(textEdit);
+                }
+            }
+        }
+
+        onAnimatingChanged: {
+            if (!platformWindow.animating && root.activeFocus) {
+                TextAreaHelper.repositionFlickable(contentMovingAnimation);
+            }
+        }
+    }
+
     implicitWidth: platformStyle.defaultWidth
     implicitHeight: Math.max (UI.FIELD_DEFAULT_HEIGHT,
                               textEdit.height + (UI.FIELD_DEFAULT_HEIGHT - font.pixelSize))
@@ -276,19 +302,20 @@ FocusScope {
         persistentSelection: false
         focus: true
 
-        function updateMagnifierPosition() {
+        function updateMagnifierPosition(posX, posY) {
             var magnifier = MagnifierPopup.popup;
-            var mappedPos =  mapToItem(magnifier.parent, positionToRectangle(cursorPosition).x - magnifier.width / 2,
-                                       positionToRectangle(cursorPosition).y - magnifier.height / 2 - 70);
+            var cursorHeight = textEdit.positionToRectangle(0,0).height;
+            var mappedPos =  mapToItem(magnifier.parent, posX - magnifier.width / 2,
+                                       posY - magnifier.height / 2 - cursorHeight - 70);
 
-            magnifier.xCenter = positionToRectangle(cursorPosition).x / root.width;
+            magnifier.xCenter = mapToItem(magnifier.sourceItem, posX, 0).x / magnifier.sourceItem.width;
             magnifier.x = mappedPos.x;
-            if (-root.mapFromItem(magnifier.__rootElement(), 0,0).y - positionToRectangle(cursorPosition).y < (magnifier.height / 1.5)) {
-                magnifier.yAdjustment = Math.max(0,(magnifier.height / 1.5) + root.mapFromItem(magnifier.__rootElement(), 0,0).y - positionToRectangle(cursorPosition).y);
+            if (-root.mapFromItem(magnifier.__rootElement(), 0,0).y - (posY - cursorHeight) < (magnifier.height / 1.5)) {
+                magnifier.yAdjustment = Math.max(0,(magnifier.height / 1.5) + root.mapFromItem(magnifier.__rootElement(), 0,0).y - (posY - cursorHeight));
             } else {
                 magnifier.yAdjustment = 0;
             }
-            magnifier.yCenter = 1.0 - ((50 + (positionToRectangle(cursorPosition).y)) / root.height);
+            magnifier.yCenter = 1.0 - ((50 + posY - cursorHeight) / root.height);
             magnifier.y = mappedPos.y + magnifier.yAdjustment;
         }
 
@@ -314,15 +341,6 @@ FocusScope {
         }
 
         Connections {
-            target: platformWindow
-
-            onAnimatingChanged: {
-                if (!platformWindow.animating && root.activeFocus)
-                    TextAreaHelper.repositionFlickable(contentMovingAnimation);
-            }
-        }
-
-        Connections {
             target: inputContext
 
             onSoftwareInputPanelVisibleChanged: {
@@ -337,9 +355,7 @@ FocusScope {
         }
 
         onCursorPositionChanged: {
-            if (MagnifierPopup.isOpened()) {
-                updateMagnifierPosition();
-            } else if(activeFocus) {
+            if(!MagnifierPopup.isOpened() && activeFocus) {
                 TextAreaHelper.repositionFlickable(contentMovingAnimation)
             }
 
@@ -424,8 +440,8 @@ FocusScope {
                     parent.selectByMouse = false
                     MagnifierPopup.open(root);
                     var magnifier = MagnifierPopup.popup;
-                    parent.updateMagnifierPosition()
-                    parent.cursorPosition = textEdit.positionAt(mouse.x, mouse.y)
+                    parent.cursorPosition = parent.positionAt(mouse.x,mouse.y)
+                    parent.updateMagnifierPosition(mouse.x,mouse.y)
                     root.z = Number.MAX_VALUE
                 }
             }
@@ -469,9 +485,11 @@ FocusScope {
                     var pos = textEdit.positionAt (mouse.x,mouse.y)
                     var posNextLine = textEdit.positionAt (mouse.x, mouse.y + 1)
                     var posPrevLine = textEdit.positionAt (mouse.x, mouse.y - 1)
-                    if (!(Math.abs(posNextLine - pos) > 1 || Math.abs(posPrevLine - pos) > 1)) {
+                    if (!(Math.abs(posNextLine - pos) > 1 ||
+                        Math.abs(posPrevLine - pos) > 1)) {
                         parent.cursorPosition = pos
                     }
+                    parent.updateMagnifierPosition(mouse.x,mouse.y);
                 }
             }
             onDoubleClicked: {

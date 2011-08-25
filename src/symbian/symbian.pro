@@ -87,7 +87,6 @@ symbian: {
     HEADERS += \
         sdeclarativeinputcontext_p_symbian.h \
         sdeclarativetouchinput.h
-
 } else {
     HEADERS += \
         sdeclarativeinputcontext_p.h
@@ -118,6 +117,7 @@ QML_FILES = \
     ContextMenu.qml \
     Dialog.qml \
     Fader.qml \
+    Label.qml \
     ListHeading.qml \
     ListItem.qml \
     ListItemText.qml \
@@ -199,7 +199,7 @@ symbian {
             "%{\"Nokia\"}" \
             " " \
             "; Unique Vendor name" \
-            ":\"Nokia, Qt\"" \
+            ":\"Nokia\"" \
             " "
 
     # Reminder: SIS UID must remain the same between versions 1.x

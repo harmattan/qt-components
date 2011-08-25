@@ -68,7 +68,10 @@ Item {
         }
 
         function textColor() {
-            if (activeFocus && symbian.listInteractionMode == Symbian.KeyNavigation)
+            if (!enabled)
+                return root.platformInverted ? platformStyle.colorDisabledLightInverted
+                                             : platformStyle.colorDisabledLight
+            else if (activeFocus && symbian.listInteractionMode == Symbian.KeyNavigation)
                 return root.platformInverted ? platformStyle.colorHighlightedInverted
                                              : platformStyle.colorHighlighted
             else if (mouseArea.pressed && mouseArea.containsMouse)
@@ -115,7 +118,7 @@ Item {
         id: subItemIcon
 
         Image {
-            source: privateStyle.imagePath("qtg_graf_drill_down_indicator", root.platformInverted)
+            source: privateStyle.imagePath("qtg_graf_drill_down_indicator", platformInverted)
             sourceSize.width: platformStyle.graphicSizeSmall
             sourceSize.height: platformStyle.graphicSizeSmall
             mirror: LayoutMirroring.enabled

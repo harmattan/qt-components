@@ -24,3 +24,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
+/*!
+
+    \page notepad.html
+    \title Notepad Example
+    \quotefile src/snippets/symbian/snippet-notepad.qml
+
+*/

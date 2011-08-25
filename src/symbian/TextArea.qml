@@ -248,7 +248,7 @@ FocusScopeItem {
         Flickable {
             id: flick
 
-            property real tiny: Math.round(platformStyle.graphicSizeTiny / 2)
+            property real tiny: Math.round(platformStyle.borderSizeMedium / 2)
 
             function ensureVisible(rect) {
                 if (Math.round(contentX) > Math.round(rect.x))
@@ -275,6 +275,16 @@ FocusScopeItem {
             contentWidth: textEdit.model.paintedWidth +
                          (textEdit.wrapMode == TextEdit.NoWrap ? textEdit.cursorRectangle.width : 0)
             interactive: root.enabled
+
+            onHeightChanged: {
+                if(textEdit.cursorVisible || textEdit.cursorPosition == textEdit.selectionEnd)
+                    ensureVisible(textEdit.cursorRectangle)
+            }
+
+            onWidthChanged: {
+                if(textEdit.cursorVisible || textEdit.cursorPosition == textEdit.selectionEnd)
+                    ensureVisible(textEdit.cursorRectangle)
+            }
 
             TextEdit {
                 id: textEdit
@@ -307,7 +317,7 @@ FocusScopeItem {
                 color: root.platformInverted ? platformStyle.colorNormalLightInverted
                                              : platformStyle.colorNormalDark
                 cursorVisible: activeFocus && !selectedText
-                selectedTextColor: root.platformInverted ? platformStyle.colorNormalLightInverted
+                selectedTextColor: root.platformInverted ? platformStyle.colorNormalDarkInverted
                                                          : platformStyle.colorNormalLight
                 selectionColor: root.platformInverted ? platformStyle.colorTextSelectionInverted
                                                       : platformStyle.colorTextSelection
@@ -326,24 +336,27 @@ FocusScopeItem {
                 }
                 onEnabledChanged: {
                     if (!enabled) {
-                        select(0, 0)
+                        deselect()
                         // De-focusing requires setting focus elsewhere, in this case editor's parent
                         if (root.parent)
                             root.parent.forceActiveFocus()
                     }
                 }
 
+                Keys.forwardTo: touchController
+
                 TextTouchController {
                     id: touchController
 
+                    //  selection handles require touch area geometry to differ from TextEdit's geometry
                     anchors {
-                        top: editor.top; topMargin: -container.verticalMargins
-                        left: editor.left; leftMargin: -container.horizontalMargins
+                        top: editor.top; topMargin: -container.verticalMargins / 2
+                        left: editor.left; leftMargin: -container.horizontalMargins / 2
                     }
                     height: Math.max(root.height, flick.contentHeight + container.verticalMargins * 2)
                     width: Math.max(root.width, flick.contentWidth + container.horizontalMargins * 2)
-                    editorScrolledX: flick.contentX - container.horizontalMargins
-                    editorScrolledY: flick.contentY - container.verticalMargins
+                    editorScrolledX: flick.contentX - (container.horizontalMargins / 2)
+                    editorScrolledY: flick.contentY - (container.verticalMargins / 2)
                     copyEnabled: textEdit.selectedText
                     cutEnabled: !textEdit.readOnly && textEdit.selectedText
                     platformInverted: root.platformInverted

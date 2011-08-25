@@ -31,10 +31,10 @@
     \since 1.0f
     \inherits Item
 
-    \brief Provides a visual indicator for a Flickable component to show the
+    \brief Provides a visual indicator for a \l{Flickable} component to show the
     size relationship between the visible and complete contents.
 
-    When the size of a \l Flickable component is larger than the size of its
+    When the size of a \l{Flickable} component is larger than the size of its
     container, it is often helpful to have some indication of where you are. For
     example, if you are navigating a long list, the scroll decorator will
     indicate how far down the list you have scrolled. The ScrollDecorator
@@ -70,4 +70,16 @@
 
     The Flickable component that the scroll decorator is attached to.
 
+*/
+
+/*!
+    \qmlproperty bool ScrollDecorator::platformInverted
+    \since 1.1
+
+    \e {Symbian:}
+
+    If platformInverted is \c true, the component is visualized with the
+    inverted style. For more information, see
+    \l {Using Inverted Style with Symbian Components}. By default
+    platformInverted is \c false.
 */

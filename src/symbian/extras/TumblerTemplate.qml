@@ -75,7 +75,7 @@ Item {
         height: firstColumn ? 0 : viewContainer.height
         width: firstColumn ? 0 : Math.round(platformStyle.paddingSmall / 2)
         source: privateStyle.imagePath("qtg_fr_tumbler_divider", template.platformInverted)
-        border { 
+        border {
             left: platformStyle.borderSizeMedium
             top: platformStyle.borderSizeMedium
             right: platformStyle.borderSizeMedium
@@ -185,7 +185,7 @@ Item {
             height: privateStyle.menuItemHeight
 
             Text {
-                text: !!value ? value : ""
+                text: modelData
                 elide: tumblerColumn.privateResizeToFit ? Text.ElideNone : Text.ElideRight
                 horizontalAlignment: tumblerColumn.privateTextAlignment
                 verticalAlignment: Text.AlignVCenter
@@ -228,7 +228,7 @@ Item {
             width: tumblerColumn ? tumblerColumn.width + divider.width : 0
             height: privateStyle.menuItemHeight
             source: privateStyle.imagePath("qtg_fr_tumbler_highlight", template.platformInverted)
-            border { 
+            border {
                 left: platformStyle.borderSizeMedium
                 top: platformStyle.borderSizeMedium
                 right: platformStyle.borderSizeMedium
@@ -248,7 +248,8 @@ Item {
                                                                  : platformStyle.colorHighlighted
 
         onDelegatesCountChanged: {
-            if (tumblerColumn.privateResizeToFit && delegatesCount == tumblerColumn.items.count)
+            var itemCount = template.view ? template.view.count : 0
+            if (tumblerColumn.privateResizeToFit && delegatesCount == itemCount)
                 asyncTimer.running = true
         }
     }

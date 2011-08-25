@@ -47,12 +47,34 @@ Window {
     property bool fullScreen: false
     default property alias content: contentItem.data
     property alias pageStack: stack
+    property variant initialPage
+    property bool softwareInputPanelEnabled: false
 
-    Component.onCompleted: console.log("warning: ApplicationWindow is an experimental component. Use Window instead.")
+    onInitialPageChanged: {
+        if (initialPage && contentArea.initialized) {
+            if (stack.depth == 0)
+                stack.push(initialPage, null, true)
+            else if (stack.depth == 1)
+                stack.replace(initialPage, null, true)
+            else
+                console.log("Cannot update ApplicationWindow.initialPage")
+        }
+    }
+
+    Component.onCompleted: {
+        console.log("warning: ApplicationWindow is an experimental component. Use Window instead.")
+        contentArea.initialized = true
+        if (initialPage && stack.depth == 0)
+            stack.push(initialPage, null, true)
+    }
 
     Item {
+        id: contentArea
+
+        property bool initialized: false
+
         anchors.top: sbar.bottom
-        anchors.bottom: tbar.top
+        anchors.bottom: sip.top
         anchors.left: parent.left
         anchors.right: parent.right
         Item {
@@ -102,6 +124,33 @@ Window {
         ]
     }
 
+    Item {
+        id: sip
+
+        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
+
+        Behavior on height { PropertyAnimation { duration: 200 } }
+
+        Component.onCompleted: inputContext.autoMove = softwareInputPanelEnabled
+
+        states: [
+            State {
+                name: "Visible"; when: inputContext.visible && softwareInputPanelEnabled
+                PropertyChanges { target: sip; height: inputContext.height }
+            },
+
+            State {
+                name: "Hidden"; when: !root.fullScreen
+                PropertyChanges { target: sip; height: tbar.height }
+            },
+
+            State {
+                name: "HiddenInFullScreen"; when: root.fullScreen
+                PropertyChanges { target: sip; height: 0 }
+            }
+        ]
+    }
+	
     ToolBar {
         id: tbar
 

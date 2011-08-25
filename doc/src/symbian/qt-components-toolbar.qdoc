@@ -34,22 +34,24 @@
 
     \brief Provides a container for accessing quickly to commonly used actions.
 
-    The ToolBar contains a current ToolBarLayout, which in turn contains tools
-    such as ToolButton components.
+    The \l{ToolBar::}{tools} binds to items to fill the toolbar. Alternatively,
+    \l{ToolBarLayout} can bind to the \c tools property, manages the positioning
+    of the tool components such as a \l{ToolButton}.
 
-    If there is a PageStack whose \c toolBar property is set to be this ToolBar,
-    the ToolBarLayout set to be the tools of the current Page will be
-    automatically set as the tools of the ToolBar, using the specified \a
-    transition. This occurs each time the current Page changes.
+    Binding a PageStack's \l{PageStack::}{toolBar} property to a ToolBar will
+    cause the toolbar to receive the current Page's \l{Page::}{tools} property
+    content and bind it to its own \l{ToolBar::}{tools} property. The toolbar
+    animates during each page transition as specified by the
+    \l{ToolBar::}{transition} property.
 
-    \sa ToolBarLayout, PageStack, Page
+    \sa ToolBarLayout, PageStack, Page, ToolButton
 
     \section1 Using the ToolBar
 
     \section2 Basic Usage
 
     The easiest way to use a ToolBar is to declare one to be anchored to the
-    bottom of your Window or Page.
+    bottom of your \l Window or \l Page.
 
     \snippet src/snippets/symbian/snippet-toolbar-basic.qml toolbar1
 
@@ -60,9 +62,9 @@
 
     \section2 Dynamically Setting the Tools in a ToolBar
 
-    In some cases, the tools required by an application Window will change
+    In some cases, the tools required by an application \l Window will change
     depending on the application state. It is straightforward to set the
-    current ToolBarLayout instance displayed on a ToolBar such as this example:
+    current \l ToolBarLayout instance displayed on a \l ToolBar such as this example:
 
     \snippet src/snippets/symbian/snippet-toolbar-settools.qml sharedtoolbar
 
@@ -77,13 +79,13 @@
     \dots 12
     \snippet src/snippets/symbian/snippet-toolbar-settools.qml toolbarlayout5b
 
-    However, note that if your application is using a PageStack, then it is not
+    However, note that if your application is using a PageStack, it is not
     necessary to set the tools directly on the ToolBar in this way, as
     described in the section on \l { Using a ToolBar with a PageStack }
 
     \section2 Using a ToolBar with a PageStack
 
-    If your application is using a PageStack to manage a number of Pages, then
+    If your application is using a PageStack to manage a number of \l {Page}s,
     there is no need to manually set the tools belonging to the ToolBar, as the
     PageStack provides the functionality.
 
@@ -97,7 +99,7 @@
 
     \snippet src/snippets/symbian/snippet-toolbar-in-page.qml pagestack
 
-    Next, set the tools property of each Page as follows:
+    Next, set the tools property of each \l Page as follows:
 
     \snippet src/snippets/symbian/snippet-toolbar-in-page.qml page1a
     \dots 8
@@ -217,4 +219,16 @@
     This sets the \a tools for the ToolBar and the \a transition type that will
     be used when the page changes on the relevant PageStack.
 
+*/
+
+/*!
+    \qmlproperty bool ToolBar::platformInverted
+    \since 1.1
+
+    \e {Symbian:}
+
+    If platformInverted is \c true, the component is visualized with the
+    inverted style. For more information, see
+    \l {Using Inverted Style with Symbian Components}. By default
+    platformInverted is \c false.
 */
