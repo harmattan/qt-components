@@ -43,6 +43,12 @@
 #include "mwindowstate.h"
 #include "mwindowstate_p.h"
 
+#ifdef Q_WS_MAEMO_5
+#define ACTIVE_APP_ATOM "_MB_CURRENT_APP_WINDOW"
+#else
+#define ACTIVE_APP_ATOM "_NET_ACTIVE_WINDOW"
+#endif
+
 MWindowStatePrivate * MWindowStatePrivate::instance = NULL;
 
 bool (*MWindowStatePrivate::origEventFilter)(void*, long int*) = NULL;
@@ -75,11 +81,9 @@ MWindowStatePrivate::~MWindowStatePrivate()
 }
 
 #ifdef Q_WS_X11
-
 namespace
 {
-    const unsigned int VisibleChangedDelay = 1000;
-    const char * MeeGoTouchWindowManagerName = "MCompositor";
+const unsigned int VisibleChangedDelay = 1000;
 }
 
 static int handleXError(Display *, XErrorEvent *)
@@ -124,7 +128,6 @@ void MWindowStatePrivate::appendEventMask(Window win)
     }
 
     newAttributes.event_mask = existingAttributes.your_event_mask |
-                               VisibilityChangeMask |
                                PropertyChangeMask |
                                FocusChangeMask;
 
@@ -136,12 +139,7 @@ bool MWindowStatePrivate::eventFilter(void *message, long int *result)
     Q_UNUSED(result);
 
     XEvent *event = reinterpret_cast<XEvent*>(message);
-    if (event->type == VisibilityNotify) {
-        XVisibilityEvent *xevent = reinterpret_cast<XVisibilityEvent *>(event);
-        instance->handleXVisibilityEvent(xevent);
-        return true;
-
-    } else if (event->type == PropertyNotify) {
+    if (event->type == PropertyNotify) {
         XPropertyEvent *xevent = reinterpret_cast<XPropertyEvent *>(event);
         instance->handleXPropertyEvent(xevent);
         return false;
@@ -160,69 +158,49 @@ bool MWindowStatePrivate::eventFilter(void *message, long int *result)
     }
 }
 
-void MWindowStatePrivate::handleXVisibilityEvent(XVisibilityEvent *xevent)
-{
-    // Check if MCompositor is running. This is done only once.
-    static const bool wmRunning = isMeeGoWindowManagerRunning();
-
-    // Listen only to synthetic events if MeeGo window
-    // manager is running. Note that VisibilityFullyObscured
-    // doesn't always mean that window is hidden. It can be
-    // "logically" visible if its thumbnail is seen in the
-    // switcher. This is why we set the fullyObscured flag and combine
-    // it later with information from Home Screen.
-
-    if (xevent->send_event || !wmRunning) {
-        Window winId = effectiveWinId(xevent->window);
-        if (xevent->window == winId) {
-            switch (xevent->state) {
-            case VisibilityFullyObscured:
-                fullyObscured = true;
-                doVisibleChanged(false);
-                break;
-            case VisibilityUnobscured:
-            case VisibilityPartiallyObscured:
-                fullyObscured = false;
-                doViewModeChanged(MWindowState::Fullsize);
-                doVisibleChanged(true);
-                break;
-            default:
-                break;
-            }
-        }
-    }
-}
-
 void MWindowStatePrivate::handleXPropertyEvent(XPropertyEvent *xevent)
 {
-    // _MEEGOTOUCH_VISIBLE_IN_SWITCHER is set by Home Screen for
-    // windows that are in the switcher and visible. Set/unset the
-    // flag because we need to combine this information with X11's
-    // visibility events.
+    static WId topLevelWindow = 0;
 
     if (xevent->state == PropertyNewValue) {
 
-        Atom           type;
-        int            format;
-        unsigned long  nItems;
-        unsigned long  bytesAfter;
-        unsigned char *data = NULL;
+        static unsigned long rootWindow = QX11Info::appRootWindow();
+        static Atom switcherAtom     = MX11Wrapper::XInternAtom(
+                    QX11Info::display(), ACTIVE_APP_ATOM, true);
 
-        static Atom switcherAtom = MX11Wrapper::XInternAtom(QX11Info::display(),
-                                                           "_MEEGOTOUCH_VISIBLE_IN_SWITCHER", True);
-
-        if (xevent->atom == switcherAtom) {
+        if (xevent->atom == switcherAtom && xevent->window == rootWindow) {
             // Read value of the property. Should be 1 or 0.
-            if (MX11Wrapper::XGetWindowProperty(QX11Info::display(), xevent->window, switcherAtom,
-                                               0, 1, False, XA_CARDINAL, &type, &format, &nItems,
-                                               &bytesAfter, &data) == Success && data) {
 
-                const bool visibleInSwitcher = *data;
-                visibleInSwitcherPropertySet = visibleInSwitcher;
+            Atom type;
+            int  format, status;
+            WId activeWindow = 0;
+            unsigned long  n, extra;
+            unsigned char *data = 0;
+
+            status = MX11Wrapper::XGetWindowProperty(
+                        QX11Info::display(), xevent->window, switcherAtom,
+                        0L, 16L, 0, XA_WINDOW, &type, &format, &n, &extra, &data);
+
+            if (status == Success && type == XA_WINDOW && format == 32 && n == 1 && data != NULL) {
+                // On fremantle we get a 0xfffffff window when we are in task switcher
+                // so logic is like this:
+                //
+                // 1. rooWindow equals to AppWindow?
+                // 1.1 yes -> we are on fullscreen mode
+                // 1.2 no  -> equals to 0xfffffff ?
+                // 1.2.1 yes -> in task mode
+                // 1.2.2 no  -> in desktop or other app
+                //
+                activeWindow =((WId*)data)[0];
+                if (!topLevelWindow) {
+                    topLevelWindow = activeWindow;
+                }
+                visibleInSwitcherPropertySet = (activeWindow == 0xFFFFFFFF);
+                fullyObscured = (activeWindow != topLevelWindow);
 
                 // Visible in switcher property was added
                 // => window is visible as a thumbnail
-                if (visibleInSwitcher) {
+                if (visibleInSwitcherPropertySet) {
                     doViewModeChanged(MWindowState::Thumbnail);
                     doVisibleChanged(true);
 
@@ -247,36 +225,14 @@ void MWindowStatePrivate::handleXPropertyEvent(XPropertyEvent *xevent)
 
 void MWindowStatePrivate::handleXFocusChangeEvent(XFocusChangeEvent *xevent)
 {
-    static bool firstFocusChange = true;
-
     Window winId = effectiveWinId(xevent->window);
 
+    // FREMANTLE: remove the first_focus stuff becouse MB WM doesn't handle Visibility
+    // events
     if (xevent->window == winId) {
         if (xevent->mode == NotifyNormal) {
             if (xevent->type == FocusIn) {
                 focus = FEFocusIn;
-
-                // The X event filter is installed at a too late stage to catch
-                // the first VisibilityNotify. This causes the window to be
-                // invisible from MWindowState's point of view until the
-                // next VisibilityNotify.
-                // 
-                // To correct this we explicitly set the window to be visible
-                // and fullsize when the first FocusIn event arrives. To keep
-                // the functionality as transparent as possible,
-                // doActiveChanged() is called _after_ the visibility is
-                // changed.
-                //
-                // We also append the event mask here in order to get the
-                // correct window id.
-
-                if (firstFocusChange && !fullyObscured) {
-                    firstFocusChange = false;
-                    appendEventMask(winId);
-                    doViewModeChanged(MWindowState::Fullsize);
-                    doVisibleChanged(true);
-                }
-
                 doActiveChanged(true);
             } else {
                 focus = FEFocusOut;
@@ -294,52 +250,6 @@ void MWindowStatePrivate::doActiveChanged(bool newActive)
         active = newActive;
         emit q->activeChanged();
     }
-}
-
-bool MWindowStatePrivate::isMeeGoWindowManagerRunning()
-{
-    bool retValue = false;
-
-    Display       *dpy = QX11Info::display();
-    Window         rootw = RootWindow(dpy, XDefaultScreen(dpy));
-    Atom           wmSupportAtom = MX11Wrapper::XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
-    Atom           type;
-    int            format;
-    unsigned long  numItems;
-    unsigned long  bytesAfter;
-    unsigned char *data = 0;
-
-    if (MX11Wrapper::XGetWindowProperty(dpy, rootw, wmSupportAtom, 0, 1, False, XA_WINDOW,
-                                       &type, &format, &numItems, &bytesAfter, &data) == Success) {
-        if (data) {
-
-            Window wid = *(reinterpret_cast<Window *>(data));
-            MX11Wrapper::XFree(data);
-            data = 0;
-
-            Atom wmNameAtom = MX11Wrapper::XInternAtom(dpy, "WM_NAME", False);
-
-            // Set error handler because window wid we got might not exist and
-            // the following name query would fail.
-            int (*previousHandler)(Display *, XErrorEvent *) = MX11Wrapper::XSetErrorHandler(handleXError);
-
-            if (MX11Wrapper::XGetWindowProperty(dpy, wid, wmNameAtom, 0, 16, False, XA_STRING,
-                                               &type, &format, &numItems, &bytesAfter, &data) == Success) {
-                if (data) {
-                    if (strcmp(reinterpret_cast<const char *>(data), MeeGoTouchWindowManagerName) == 0) {
-                        retValue = true;
-                    }
-
-                    XFree(data);
-                    data = 0;
-                }
-            }
-
-            MX11Wrapper::XSetErrorHandler(previousHandler);
-        }
-    }
-
-    return retValue;
 }
 
 void MWindowStatePrivate::_q_doVisibleChangedNotVisible()

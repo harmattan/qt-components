@@ -58,12 +58,10 @@ public:
 #ifdef Q_WS_X11
     void initVisibilityWatcher();
     void initVisibleChangedTimer();
-    void handleXVisibilityEvent(XVisibilityEvent *xevent);
     void handleXPropertyEvent(XPropertyEvent *xevent);
     void handleXFocusChangeEvent(XFocusChangeEvent *xevent);
     void appendEventMask(Window win);
     static bool eventFilter(void *message, long int *result);
-    static bool isMeeGoWindowManagerRunning();
     void doActiveChanged(bool newActive);
     void _q_doVisibleChangedNotVisible();
     void doVisibleChanged(bool newVisible);
