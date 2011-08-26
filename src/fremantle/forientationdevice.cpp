@@ -73,8 +73,6 @@ void FOrientationDevice::start(QObject *requestor)
 
         // Update orientation and enable if required accelerometers
         setOrientation(orientation == "Default" ? "Undefined": orientation);
-
-        qDebug("Started orientation");
     }
 }
 
@@ -104,8 +102,6 @@ void FOrientationDevice::stop(QObject *requestor)
         // Remove all connections
         delete proxy; proxy = 0;
         delete watcher; watcher = 0;
-
-        qDebug("Stopped orientation");
     }
 }
 
@@ -133,7 +129,6 @@ void FOrientationDevice::signalUpdated(QString orient, QString state, QString fa
 
 #undef UPDATE_ORIENTATION
 
-    qDebug() << physicalOrientation;
     Q_EMIT valueChanged();
 }
 

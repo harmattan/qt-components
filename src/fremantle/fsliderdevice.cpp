@@ -68,8 +68,6 @@ void FSliderDevice::start(QObject *requestor)
 
         // Set initial value
         QMetaObject::invokeMethod(this, "updated", Qt::QueuedConnection);
-
-        qDebug("Start keyboard suppervision");
     }
 }
 
@@ -97,8 +95,6 @@ void FSliderDevice::stop(QObject *requestor)
         // Remove all connections
         delete proxy; proxy = 0;
         delete watcher; watcher = 0;
-
-        qDebug("Stopped keyboard supervision");
     }
 }
 
