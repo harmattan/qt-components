@@ -730,9 +730,11 @@ void MDeclarativeScreen::setMinimized(bool minimized)
     if(d->topLevelWidget) {
 #ifdef Q_WS_MAEMO_5
       if (minimized) {
-	QDBusConnection c = QDBusConnection::sessionBus();
-        QDBusMessage    m = QDBusMessage::createSignal("/", "com.nokia.hildon_desktop", "exit_app_view");
-        c.send(m);
+        QDBusMessage m = QDBusMessage::createSignal("/", "com.nokia.hildon_desktop", "exit_app_view");
+	QDBusConnection::sessionBus().send(m);
+      }
+      else {
+	d->topLevelWidget->activateWindow();
       }
 #else
         d->topLevelWidget->setWindowState(minimized ? Qt::WindowMinimized : Qt::WindowFullScreen);
