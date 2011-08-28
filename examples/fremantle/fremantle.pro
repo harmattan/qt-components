@@ -4,5 +4,6 @@
 
 TEMPLATE=subdirs
 SUBDIRS += HelloWorld \
-	   TutorialApplication
+	   TutorialApplication \
+           QmlComponentGallery \
 
