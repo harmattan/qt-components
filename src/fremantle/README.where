@@ -72,3 +72,9 @@ style/CheckBoxStyle.qml					meego
 RadioButton.qml						meego
 RadioButtonStyle.qml					meego
 style/ToolButtonRowStyle.qml				new
+ProgressBar.qml						meego
+style/ProgressBarStyle.qml				meego
+SliderTemplate.qml					meego
+Slider.qml						meego
+style/SliderStyle.qml					meego
+mdeclarativemaskeditem.[h|cpp]				meego

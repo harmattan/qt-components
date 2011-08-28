@@ -72,6 +72,7 @@ SOURCES += \
     mdeclarativeimobserver.cpp \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.cpp \
+    mdeclarativemaskeditem.cpp \
     mdeclarativemousefilter.cpp \
     mdeclarativescreen.cpp \
     minversemousearea.cpp \
@@ -105,6 +106,7 @@ HEADERS += \
     mdeclarativeimobserver.h \
     mdeclarativeimplicitsizeitem.h \
     mdeclarativeinputcontext.h \
+    mdeclarativemaskeditem.h \
     mdeclarativemousefilter.h \
     mdeclarativescreen.h \
     minversemousearea.h \
@@ -189,6 +191,11 @@ QML_FILES = \
     style/ToolBarStyle.qml \
     StatusBar.qml \
     style/StatusBarStyle.qml \
+    ProgressBar.qml \
+    style/ProgressBarStyle.qml \
+    SliderTemplate.qml \
+    Slider.qml \
+    style/SliderStyle.qml \
     Page.qml \
     PageStack.js \
     PageStack.qml \

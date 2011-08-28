@@ -46,6 +46,7 @@
 #include "mdeclarativeimageprovider.h"
 #include "mdeclarativeimobserver.h"
 #include "mdeclarativeimplicitsizeitem.h"
+#include "mdeclarativemaskeditem.h"
 #include "mdeclarativeinputcontext.h"
 #include "mdeclarativescreen.h"
 #include "minversemousearea.h"
@@ -137,6 +138,7 @@ void FremantlePlugin::registerTypes(const char *uri) {
 
         // Custom primitives
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
+        qmlRegisterType<MDeclarativeMaskedItem>(uri, 1, 0, "MaskedItem");
         qmlRegisterType<MDeclarativeFocusScope>(uri, 1, 0, "FocusScope");
         qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");

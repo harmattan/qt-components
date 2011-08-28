@@ -20,6 +20,8 @@ Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml
 PageStackWindowStyle 1.0 PageStackWindowStyle.qml
+ProgressBar 1.0 ProgressBar.qml
+ProgressBarStyle 1.0 ProgressBarStyle.qml
 QueryDialog 1.0 QueryDialog.qml
 QueryDialogStyle 1.0 QueryDialogStyle.qml
 RadioButton 1.0 RadioButton.qml
@@ -28,6 +30,9 @@ ScrollDecorator 1.0 ScrollDecorator.qml
 ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
 SelectionDialog 1.0 SelectionDialog.qml
 SelectionDialogStyle 1.0 SelectionDialogStyle.qml
+Slider 1.0 Slider.qml
+SliderStyle 1.0 SliderStyle.qml
+SliderTemplate 1.0 SliderTemplate.qml
 StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
