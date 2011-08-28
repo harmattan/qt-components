@@ -81,3 +81,5 @@ mdeclarativemaskeditem.[h|cpp]				meego
 mwindowimattributeextension.[h|cpp]			meego
 style/TextArea.qml					meego
 style/TextAreaStyle.qml					meego
+TabButton.qml						meego
+style/TabButtonStyle.qml				meego

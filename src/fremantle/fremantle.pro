@@ -200,6 +200,8 @@ QML_FILES = \
     SliderTemplate.qml \
     Slider.qml \
     style/SliderStyle.qml \
+    TabButton.qml \
+    style/TabButtonStyle.qml \
     Page.qml \
     PageStack.js \
     PageStack.qml \

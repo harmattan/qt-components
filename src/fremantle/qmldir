@@ -36,6 +36,8 @@ SliderTemplate 1.0 SliderTemplate.qml
 StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
+TabButton 1.0 TabButton.qml
+TabButtonStyle 1.0 TabButtonStyle.qml
 TabGroup 1.0 TabGroup.qml
 TextArea 1.0 TextArea.qml
 TextAreaStyle 1.0 TextAreaStyle.qml
