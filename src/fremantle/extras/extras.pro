@@ -14,5 +14,8 @@ HEADERS += \
 SOURCES += \
 
 QML_FILES += \
+    qmldir \
+    constants.js \
+    ListDelegate.qml \
 
 include(../../../qml.pri)
