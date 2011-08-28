@@ -127,7 +127,7 @@ public:
     }
 
     Q_INVOKABLE void registerInputElement(QDeclarativeItem *element) const {
-#ifdef HAVE_MALIIT_FRAMEWORK
+#if defined(HAVE_MALIIT_FRAMEWORK) && QT_VERSION > 0x040700
         if (element)
             element->setProperty("meego-inputmethod-attribute-extension-id", extension.id());
 #else

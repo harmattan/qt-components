@@ -42,12 +42,13 @@
 #include <QApplication>
 
 //Add here type headers
-#include "mdeclarativemousefilter.h"
 #include "mdeclarativeimageprovider.h"
+#include "mdeclarativeimattributeextension.h"
 #include "mdeclarativeimobserver.h"
 #include "mdeclarativeimplicitsizeitem.h"
-#include "mdeclarativemaskeditem.h"
 #include "mdeclarativeinputcontext.h"
+#include "mdeclarativemaskeditem.h"
+#include "mdeclarativemousefilter.h"
 #include "mdeclarativescreen.h"
 #include "minversemousearea.h"
 #include "mscrolldecoratorsizer.h"
@@ -55,8 +56,9 @@
 #include "mtexttranslator.h"
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
-#include "plugin.h"
 #include "sdeclarative.h"
+
+#include "plugin.h"
 
 #include <QDeclarativePropertyMap>
 #include <QFont>
@@ -73,7 +75,7 @@ static const int VERSION_MAJOR = 1;
 static const int VERSION_MINOR = 0;
 
 void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri) {
-        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle"));
+        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle") || uri == QLatin1String("Qt.labs.components.native"));
 
         QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
         QDeclarativeContext *context = engine->rootContext();
@@ -124,7 +126,7 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
 }
 
 void FremantlePlugin::registerTypes(const char *uri) {
-        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle"));
+        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle") || uri == QLatin1String("Qt.labs.components.native"));
 
         // Add here custom types
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
@@ -143,6 +145,7 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
         qmlRegisterType<MDeclarativeMouseEvent>(uri, 1, 0, "MMouseEvent");
+        qmlRegisterType<MDeclarativeIMAttributeExtension>(uri, 1, 0, "SipAttributes");
         qmlRegisterType<MDeclarativeIMObserver>(uri, 1, 0, "InputMethodObserver");
 
         qmlRegisterType<MScrollDecoratorSizer>(uri, 1, 0, "ScrollDecoratorSizerCPP");
