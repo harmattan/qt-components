@@ -17,6 +17,11 @@ QML_FILES += \
     CheckableGroup.qml \
     CheckableGroup.js
 
+fremantle|maemo5 {
+    TARGETPATH = Qt/labs/components
+    TARGET = $$qtLibraryTarget(qtcomponentsplugin_1_0)
+}
+
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
     TARGET.CAPABILITY = ALL -TCB

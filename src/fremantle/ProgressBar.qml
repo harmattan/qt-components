@@ -40,7 +40,7 @@
 
 import QtQuick 1.0
 import "." 1.0
-import Qt.labs.components 1.1
+import Qt.labs.components 1.0
 
 import "TextAreaHelper.js" as AreaHelper
 
