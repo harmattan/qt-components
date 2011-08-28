@@ -93,8 +93,8 @@ function getItemWidth(item) {
 }
 
 function getSpacing(item) {
-    return typeof item.platformStyle.spacing != undefined ? 
-                item.platformStyle.spacing : 8 /* UI.PADDING_LARGE */
+    return (item.platformStyle && (typeof item.platformStyle.spacing != undefined)) ? 
+	item.platformStyle.spacing : 8 /* UI.PADDING_LARGE */
 }
 
 // Main layout function
