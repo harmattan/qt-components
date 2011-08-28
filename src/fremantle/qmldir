@@ -37,6 +37,8 @@ StatusBar 1.0 StatusBar.qml
 StatusBarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
 TabGroup 1.0 TabGroup.qml
+TextArea 1.0 TextArea.qml
+TextAreaStyle 1.0 TextAreaStyle.qml
 TextField 1.0 TextField.qml
 TextFieldStyle 1.0 TextFieldStyle.qml
 ToolBar 1.0 ToolBar.qml

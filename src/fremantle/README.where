@@ -79,3 +79,5 @@ Slider.qml						meego
 style/SliderStyle.qml					meego
 mdeclarativemaskeditem.[h|cpp]				meego
 mwindowimattributeextension.[h|cpp]			meego
+style/TextArea.qml					meego
+style/TextAreaStyle.qml					meego

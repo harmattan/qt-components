@@ -181,6 +181,8 @@ QML_FILES = \
     ToolBarLayout.js\
     style/ToolButtonStyle.qml \
     ToolButton.qml \
+    TextArea.qml \
+    style/TextAreaStyle.qml \
     TextAreaHelper.js \
     TextField.qml \
     style/TextFieldStyle.qml \
