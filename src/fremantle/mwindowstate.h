@@ -70,7 +70,7 @@ public:
 #ifdef HAVE_MALIIT_FRAMEWORK
         M::InputMethod *ims = M::InputMethod::instance();
         if (ims) {
-            M::OrientationAngle newOrientationAngle = (M::OrientationAngle)newOrientation;
+            M::OrientationAngle newOrientationAngle = static_cast<M::OrientationAngle>(newOrientation);
 
             ims->startOrientationAngleChange(newOrientationAngle);
             ims->setOrientationAngle(newOrientationAngle);

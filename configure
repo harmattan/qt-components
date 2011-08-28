@@ -111,7 +111,7 @@ while [ "$#" -gt 0 ]; do
         VAL=no
         ;;
     #Qt style yes options
-    -meego|-fremantle|-symbian|-meegotouch|-contextsubscriber|-xdamage|-xrandr|-meegographicssystem|-shader|-force-local-theme|-mobility)
+    -meego|-fremantle|-symbian|-meegotouch|-maliit|-contextsubscriber|-xdamage|-xrandr|-meegographicssystem|-shader|-force-local-theme|-mobility)
         VAR=`echo $1 | sed 's,^-\(.*\),\1,'`
         VAL=yes
         ;;
@@ -329,6 +329,9 @@ fi
 [ "$BUILD_EXAMPLES" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG examples"
 [ "$BUILD_EXTRAS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG extras"
 [ "$BUILD_TESTS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG tests"
+
+[ "$HAVE_MALIIT_FRAMEWORK" = "yes" ] && [ "$BUILD_FREMANTLE_SYLE" = "yes" ] && HAVE_MEEGOTOUCH="no"
+[ "$HAVE_MEEGOTOUCH" = "yes" ] && [ "$BUILD_MEEGO_SYLE" = "yes" ] && HAVE_MALIIT_FRAMEWORK="no"
 
 [ "$HAVE_MEEGOTOUCH" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG meegotouch"
 [ "$HAVE_MALIIT_FRAMEWORK" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG maliit"

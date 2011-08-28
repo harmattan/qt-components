@@ -69,6 +69,7 @@ xrandr:!mac {
 # Input
 SOURCES += \
     mdeclarativeimageprovider.cpp \
+    mdeclarativeimattributeextension.cpp \
     mdeclarativeimobserver.cpp \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativeinputcontext.cpp \
@@ -103,6 +104,7 @@ SOURCES += \
 
 HEADERS += \
     mdeclarativeimageprovider.h \
+    mdeclarativeimattributeextension.h \
     mdeclarativeimobserver.h \
     mdeclarativeimplicitsizeitem.h \
     mdeclarativeinputcontext.h \
