@@ -47,9 +47,16 @@ Text {
     // Styling for the Button
     property Style platformStyle: LabelStyle{}
 
-    font.family: platformStyle.fontFamily
-    font.pixelSize: platformStyle.fontPixelSize
     color: platformStyle.textColor
-
     wrapMode: Text.Wrap
+
+    font {family:""; pixelSize: 0 }
+    Component.onCompleted: {
+        if (font.family === "") {
+            font.family = platformStyle.fontFamily
+        }
+        if (font.pixelSize === 0) {
+            font.pixelSize = platformStyle.fontPixelSize
+        }
+    }
 }
