@@ -137,14 +137,13 @@ function initPage(page, properties) {
             throw new Error("Error while loading page: " + pageComp.errorString());
         } else {
             // instantiate page from component
-            page = pageComp.createObject(container, properties || {});
+            page = pageComp.createObject(container);
         }
-    } else {
-        // copy properties to the page
-        for (var prop in properties) {
-            if (properties.hasOwnProperty(prop)) {
-                page[prop] = properties[prop];
-            }
+    }
+    // copy properties to the page
+    for (var prop in properties) {
+        if (properties.hasOwnProperty(prop)) {
+            page[prop] = properties[prop];
         }
     }
 
