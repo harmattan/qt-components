@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 1.0
+import org.maemo.fremantle 1.0
 
 Page {
     id: root
@@ -47,7 +47,7 @@ Page {
     anchors.margins: UiConstants.DefaultMargin
 
     property int textColumnWidth: 350
-    property int sliderWidth: 384
+    property int sliderWidth: 330
 
     Flickable {
         id: flickable

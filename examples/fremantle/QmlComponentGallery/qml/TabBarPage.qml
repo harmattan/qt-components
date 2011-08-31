@@ -38,9 +38,9 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.1
-import Qt.labs.components 1.1
-import com.nokia.meego 1.0
+import QtQuick 1.0
+import Qt.labs.components 1.0
+import org.maemo.fremantle 1.0
 
 Page {
     id: tabbarPage
@@ -110,11 +110,11 @@ Page {
                      onClicked: {
                          for (var i = 0, l = tabbarPage.tools.children.length; i < l; i++) {
                              var row = tabbarPage.tools.children[i];
-                             if (row.hasOwnProperty("checkedButton")) {
+                             if (row.checkedButton !== undefined) {
                                  for (var j = 0, l2 = row.children.length; j < l2; j++) {
                                      var child = row.children[j];
                                      child.text = child.text ? "" : "Tab" + (j+1);
-                                     child.iconSource = child.iconSource != "" ? "" : "image://theme/icon-m-toolbar-search";
+				     child.iconSource = child.iconSource != "" ? "" : "image://theme/icon-m-toolbar-search";
                                  }
                              }
                          }

@@ -38,9 +38,9 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.1
+import QtQuick 1.0
+import org.maemo.fremantle 1.0
+import org.maemo.extras 1.0
 
 Page {
     id: sectionScrollerPage
@@ -118,7 +118,7 @@ Page {
             section.criteria: ViewSection.FullString
             section.delegate: Item {
                 // "GroupHeader" component?
-                width: parent.width
+                width: parent ? parent.width : 0
                 height: 40
                 Text {
                     id: headerLabel
