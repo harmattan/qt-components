@@ -87,3 +87,6 @@ MultiSelectionDialog.qml				meego
 MultiSelectionDialog.js					meego
 ContextMenu.qml						meego
 style/ContextMenuStyle.qml				meego
+SectionScroller.[js|qml]				meego
+style/SectionScrollerStyle.qml				meego
+SectionScrollerLabel.qml				meego

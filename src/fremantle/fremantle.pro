@@ -206,6 +206,10 @@ QML_FILES = \
     style/SliderStyle.qml \
     TabButton.qml \
     style/TabButtonStyle.qml \
+    SectionScroller.js \
+    SectionScrollerLabel.qml \
+    SectionScroller.qml \
+    style/SectionScrollerStyle.qml \
     Page.qml \
     PageStack.js \
     PageStack.qml \

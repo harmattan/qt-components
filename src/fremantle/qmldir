@@ -31,6 +31,8 @@ RadioButton 1.0 RadioButton.qml
 RadioButtonStyle 1.0 RadioButtonStyle.qml
 ScrollDecorator 1.0 ScrollDecorator.qml
 ScrollDecoratorStyle 1.0 ScrollDecoratorStyle.qml
+SectionScroller 1.0 SectionScroller.qml
+SectionScrollerStyle 1.0 SectionScrollerStyle.qml
 SelectionDialog 1.0 SelectionDialog.qml
 SelectionDialogStyle 1.0 SelectionDialogStyle.qml
 Slider 1.0 Slider.qml
