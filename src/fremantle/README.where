@@ -97,3 +97,5 @@ style/SheetButtonAccentStyle.qml			meego
 style/SheetButtonStyle.qml				meego
 BusyIndicator.qml					meego
 style/BusyIndicator.qml					meego
+Switch.qml						meego
+style/Switch.qml					meego

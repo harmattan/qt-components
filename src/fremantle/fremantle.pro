@@ -227,5 +227,7 @@ QML_FILES = \
     style/Style.qml \
     PageStackWindow.qml \
     style/PageStackWindowStyle.qml \
+    Switch.qml \
+    style/SwitchStyle.qml \
 
 include(../../qml.pri)
