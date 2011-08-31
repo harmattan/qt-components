@@ -230,7 +230,7 @@ void MWindowStatePrivate::handleXFocusChangeEvent(XFocusChangeEvent *xevent)
     // FREMANTLE: remove the first_focus stuff becouse MB WM doesn't handle Visibility
     // events
     if (xevent->window == winId) {
-        if (xevent->mode == NotifyNormal) {
+        if (xevent->mode == NotifyNormal || xevent->mode == NotifyWhileGrabbed) {
             if (xevent->type == FocusIn) {
                 focus = FEFocusIn;
                 doActiveChanged(true);
