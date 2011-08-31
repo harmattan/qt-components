@@ -187,6 +187,8 @@ QML_FILES = \
     ToolButton.qml \
     TextArea.qml \
     style/TextAreaStyle.qml \
+    BusyIndicator.qml \
+    style/BusyIndicatorStyle.qml \
     TextAreaHelper.js \
     TextField.qml \
     style/TextFieldStyle.qml \
@@ -210,6 +212,11 @@ QML_FILES = \
     SectionScrollerLabel.qml \
     SectionScroller.qml \
     style/SectionScrollerStyle.qml \
+    Sheet.qml \
+    style/SheetStyle.qml \
+    SheetButton.qml \
+    style/SheetButtonAccentStyle.qml \
+    style/SheetButtonStyle.qml \
     Page.qml \
     PageStack.js \
     PageStack.qml \

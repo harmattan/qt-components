@@ -1,4 +1,6 @@
 plugin fremantleplugin
+BusyIndicator 1.0 BusyIndicator.qml
+BusyIndicatorStyle 1.0 BusyIndicatorStyle.qml
 Button 1.0 Button.qml
 ButtonColumn 1.0 ButtonColumn.qml
 ButtonRow 1.0 ButtonRow.qml
@@ -35,6 +37,11 @@ SectionScroller 1.0 SectionScroller.qml
 SectionScrollerStyle 1.0 SectionScrollerStyle.qml
 SelectionDialog 1.0 SelectionDialog.qml
 SelectionDialogStyle 1.0 SelectionDialogStyle.qml
+Sheet 1.0 Sheet.qml
+SheetStyle 1.0 SheetStyle.qml
+SheetButton 1.0 SheetButton.qml
+SheetButtonStyle 1.0 SheetButtonStyle.qml
+SheetButtonAccentStyle 1.0 SheetButtonAccentStyle.qml
 Slider 1.0 Slider.qml
 SliderStyle 1.0 SliderStyle.qml
 SliderTemplate 1.0 SliderTemplate.qml

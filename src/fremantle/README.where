@@ -90,3 +90,10 @@ style/ContextMenuStyle.qml				meego
 SectionScroller.[js|qml]				meego
 style/SectionScrollerStyle.qml				meego
 SectionScrollerLabel.qml				meego
+Sheet.qml						meego
+style/SheetStyle.qml					meego
+SheetButton.qml						meego
+style/SheetButtonAccentStyle.qml			meego
+style/SheetButtonStyle.qml				meego
+BusyIndicator.qml					meego
+style/BusyIndicator.qml					meego
