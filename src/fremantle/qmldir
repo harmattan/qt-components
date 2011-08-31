@@ -5,6 +5,8 @@ ButtonRow 1.0 ButtonRow.qml
 ButtonStyle 1.0 ButtonStyle.qml
 CheckBox 1.0 CheckBox.qml
 CheckBoxStyle 1.0 CheckBoxStyle.qml
+ContextMenu 1.0 ContextMenu.qml
+ContextMenuStyle 1.0 ContextMenuStyle.qml
 Dialog 1.0 Dialog.qml
 DialogStyle 1.0 DialogStyle.qml
 EditBubble 1.0 EditBubble.qml
@@ -16,6 +18,7 @@ MenuItem 1.0 MenuItem.qml
 MenuItemStyle 1.0 MenuItemStyle.qml
 MenuLayout 1.0 MenuLayout.qml
 MenuStyle 1.0 MenuStyle.qml
+MultiSelectionDialog 1.0 MultiSelectionDialog.qml
 Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
 PageStackWindow 1.0 PageStackWindow.qml

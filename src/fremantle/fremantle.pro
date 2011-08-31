@@ -158,6 +158,8 @@ QML_FILES = \
     style/SelectionDialogStyle.qml \
     QueryDialog.qml \
     style/QueryDialogStyle.qml \
+    MultiSelectionDialog.js \
+    MultiSelectionDialog.qml \
     ScrollDecorator.qml \
     style/ScrollDecoratorStyle.qml \
     AbstractMenu.qml \
@@ -166,6 +168,8 @@ QML_FILES = \
     MenuItem.qml \
     style/MenuItemStyle.qml \
     MenuLayout.qml \
+    ContextMenu.qml \
+    style/ContextMenuStyle.qml \
     Label.qml \
     style/LabelStyle.qml \
     Button.qml \

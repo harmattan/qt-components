@@ -83,3 +83,7 @@ style/TextArea.qml					meego
 style/TextAreaStyle.qml					meego
 TabButton.qml						meego
 style/TabButtonStyle.qml				meego
+MultiSelectionDialog.qml				meego
+MultiSelectionDialog.js					meego
+ContextMenu.qml						meego
+style/ContextMenuStyle.qml				meego
