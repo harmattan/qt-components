@@ -37,9 +37,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.1
+import QtQuick 1.0
+import org.maemo.fremantle 1.0
+import org.maemo.extras 1.0
 import "NetPromoterScore.js" as NPS
 
 Page {

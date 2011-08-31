@@ -38,10 +38,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.1
-import Qt.labs.components 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.1
+import QtQuick 1.0
+import Qt.labs.components 1.0
+import org.maemo.fremantle 1.0
+import org.maemo.extras 1.0
 
 
 Page {
