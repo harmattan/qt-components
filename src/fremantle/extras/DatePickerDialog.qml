@@ -105,7 +105,7 @@ Dialog {
     property alias rejectButtonText: rejectButton.text
 
     // TODO do not dismiss the dialog when empty area is clicked
-    style: DialogStyle {
+    platformStyle: DialogStyle {
         titleBarHeight: 48
         leftMargin: screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted ? 16 : 215
         rightMargin: screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted ? 16 : 215
@@ -186,7 +186,7 @@ Dialog {
             text: "CONFIRM"
             onClicked: accept()
             width: (root.width / 2) - 3
-            style: ButtonStyle { inverted: true }
+            platformStyle: ButtonStyle { inverted: true }
         }
         Button {
             id: rejectButton

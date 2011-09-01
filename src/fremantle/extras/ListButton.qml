@@ -41,10 +41,10 @@
 import QtQuick 1.0
 import Qt.labs.components 1.0
 import "." 1.0
-import "../meego/UIConstants.js" as UI
+import "../fremantle/UIConstants.js" as UI
 import org.maemo.fremantle 1.0
 
-Item {
+ImplicitSizeItem {
     id: button
 
     // Common public API
@@ -61,9 +61,6 @@ Item {
 
     // Styling for the Button
     property Style platformStyle: ButtonStyle {}
-
-    // Deprecated, TODO remove
-    property alias style: button.platformStyle
 
     implicitWidth: iconAndLabel.prefferedWidth
     implicitHeight: platformStyle.buttonHeight

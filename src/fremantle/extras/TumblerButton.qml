@@ -75,7 +75,10 @@ Item {
      */
     property alias pressed: mouse.pressed
 
-    property QtObject style: TumblerButtonStyle{}
+    property QtObject platformStyle: TumblerButtonStyle{}
+
+    //Deprecated, TODO remove
+    property alias style: tumblerbutton.platformStyle
 
     /*
      * Event: clicked
@@ -91,8 +94,8 @@ Item {
             left: UI.CORNER_MARGINS; right: UI.CORNER_MARGINS }
         anchors.fill: parent
         source: mouse.pressed ?
-                tumblerbutton.style.pressedBackground : tumblerbutton.enabled ?
-                    tumblerbutton.style.background : tumblerbutton.style.disabledBackground;
+		platformStyle.pressedBackground : tumblerbutton.enabled ?
+                    platformStyle.background : platformStyle.disabledBackground;
     }
 
     MouseArea {
@@ -116,7 +119,7 @@ Item {
         height: sourceSize.height
         width: sourceSize.width
         source: "image://theme/meegotouch-combobox-indicator" +
-                (tumblerbutton.style.inverted ? "-inverted" : "") +
+                (platformStyle.inverted ? "-inverted" : "") +
                 (tumblerbutton.enabled ? "" : "-disabled") +
                 (mouse.pressed ? "-pressed" : "")
     }
@@ -128,12 +131,12 @@ Item {
             leftMargin: UI.INDENT_DEFAULT; rightMargin: UI.INDENT_DEFAULT;
             verticalCenter: parent.verticalCenter }
         font { family: UI.FONT_FAMILY; pixelSize: UI.FONT_DEFAULT_SIZE;
-            bold: UI.FONT_BOLD_BUTTON; capitalization: tumblerbutton.style.fontCapitalization }
+            bold: UI.FONT_BOLD_BUTTON; capitalization: platformStyle.fontCapitalization }
         text: tumblerbutton.text
         color: (mouse.pressed) ? 
-            tumblerbutton.style.pressedTextColor :
+            platformStyle.pressedTextColor :
                 (tumblerbutton.enabled) ?
-                    tumblerbutton.style.textColor : tumblerbutton.style.disabledTextColor ;
+                    platformStyle.textColor : platformStyle.disabledTextColor ;
         horizontalAlignment: Text.AlignLeft
         elide: Text.ElideRight
     }

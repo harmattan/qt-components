@@ -67,9 +67,8 @@ ImplicitSizeItem {
     property list<Item> privateTemplates
 
     implicitWidth: C.TUMBLER_WIDTH
-    implicitHeight: screen.width > screen.height ?
-                        C.TUMBLER_HEIGHT_LANDSCAPE :
-                        C.TUMBLER_HEIGHT_PORTRAIT
+    implicitHeight: screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted ? 
+                        C.TUMBLER_HEIGHT_PORTRAIT: C.TUMBLER_HEIGHT_LANDSCAPE
 
     /* private */
     function privateInitialize() {
