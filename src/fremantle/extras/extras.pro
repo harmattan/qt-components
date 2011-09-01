@@ -18,6 +18,8 @@ QML_FILES += \
     constants.js\
     CountBubble.qml \
     DatePickerDialog.qml \
+    InfoBanner.qml \
+    style/InfoBannerStyle.qml \
     ListDelegate.qml \
     ListButton.qml \
     MoreIndicator.qml \

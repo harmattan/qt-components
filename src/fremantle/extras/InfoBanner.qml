@@ -42,12 +42,6 @@ import QtQuick 1.0
 import org.maemo.fremantle 1.0
 import "constants.js" as UI
 
-/*
-   Class: InfoBanner
-   The InfoBanner component is used to display information to the user. The number of lines of text
-   shouldn't exceed 3.
-*/
-
 ImplicitSizeItem {
     id: root
 
@@ -86,13 +80,23 @@ ImplicitSizeItem {
      * [int=8 pix] Allows user to customize left margin if needed
      */
     property alias leftMargin: root.x
+    /* whether banner should respond to mouse events */
+    property bool interactive : false
 
+    property Style platformStyle: InfoBannerStyle {}
+
+    signal clicked
     /*
      * Function: show
      * Show InfoBanner
      */
     function show() {
-        animationShow.running = true;
+        root.parent = internal.rootObject();
+        internal.setZOrder();
+        background.source = root.interactive ?
+                    platformStyle.backgroundInteractive : platformStyle.backgroundNormal //"image://theme/meegotouch-notification-system-background"
+
+        stateGroup.state = "Visible"
         if (root.timerEnabled)
             sysBannerTimer.restart();
     }
@@ -102,7 +106,7 @@ ImplicitSizeItem {
      * Hide InfoBanner
      */
     function hide() {
-        animationHide.running = true;
+        stateGroup.state = "Hidden"
     }
 
     implicitHeight: internal.getBannerHeight()
@@ -111,17 +115,19 @@ ImplicitSizeItem {
     scale: 0
 
     BorderImage {
-        source: "image://theme/meegotouch-notification-system-background"
+        id: background
         anchors.fill: root
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Stretch
-        border { left: 10; top: 10; right: 10; bottom: 10 }
+        border { left: UI.INFO_BANNER_BORDER_MARGIN; top:UI.INFO_BANNER_BORDER_MARGIN;
+            right: UI.INFO_BANNER_BORDER_MARGIN; bottom: UI.INFO_BANNER_BORDER_MARGIN }
         opacity: UI.INFO_BANNER_OPACITY
     }
 
     Image {
         id: image
-        anchors { left: parent.left; leftMargin: 16; top: parent.top; topMargin: 16 }
+        anchors { left: parent.left; leftMargin: UI.INFO_BANNER_INDENT_DEFAULT;
+            top: parent.top; topMargin: UI.INFO_BANNER_INDENT_DEFAULT }
         source: root.iconSource
         visible: root.iconSource != ""
     }
@@ -129,20 +135,31 @@ ImplicitSizeItem {
     Text {
         id: text
         width: internal.getTextWidth()
-        anchors { left: (image.visible ? image.right : parent.left); leftMargin: (image.visible ? 14:16);
+        anchors { left: (image.visible ? image.right : parent.left); leftMargin: (image.visible ? UI_INFO_BANNER_INDENT_MEDIUM : UI.INFO_BANNER_INDENT_DEFAULT);
             top: parent.top; topMargin: internal.getTopMargin(); bottom: parent.bottom }
-        color: "white"
         wrapMode: Text.Wrap
         verticalAlignment: Text.AlignHCenter
-        font.pixelSize: UI.FONT_DEFAULT_SIZE
-        font.family: UI.FONT_FAMILY
-        font.letterSpacing: UI.INFO_BANNER_LETTER_SPACING
-        maximumLineCount: 3
+        font {
+            family: platformStyle.fontFamily
+            pixelSize: platformStyle.fontPixelSize
+            letterSpacing: platformStyle.fontLetterSpacing
+        }
+        //{QTQUICK1.1
+        //maximumLineCount: 3
+        //}
         elide: Text.ElideRight
+        color: mouseArea.pressed ? platformStyle.pressedTextColor : platformStyle.textColor
     }
 
     QtObject {
         id: internal
+
+        function rootObject() {
+            var next = root.parent
+            while (next && next.parent)
+                next = next.parent
+            return next
+        }
 
         function getBannerHeight() {
             if (image.visible) {
@@ -187,30 +204,114 @@ ImplicitSizeItem {
             // equal to screen.displayWidth minus banner.width
             return root.x*2/root.width + 1;
         }
+
+        function setZOrder() {
+            if (root.parent) {
+                var maxZ = 0;
+                var siblings = root.parent.children;
+                for (var i = 0; i < siblings.length; ++i)
+                    maxZ = Math.max(maxZ, siblings[i].z);
+                root.z = maxZ + 1;
+            }
+        }
+        function press() {
+            if (root.interactive) {
+                background.source = platformStyle.backgroundPressed;
+            }
+        }
+
+        function release() {
+            if (root.interactive)
+                background.source = platformStyle.backgroundReleased;
+        }
+
+        function click() {
+            if (root.interactive) {
+                root.clicked();
+            }
+        }
     }
 
     Timer {
         id: sysBannerTimer
         repeat: false
         running: false
-        interval: 3000
+        interval: platformStyle.dismissTimer
         onTriggered: hide()
     }
 
     MouseArea {
         anchors.fill: parent
+        onPressed: if (root.interactive) stateGroup.state = "Pressed"
+        onReleased: if (root.interactive) {
+                        if (stateGroup.state != "Cancelled" && stateGroup.state != "Hidden")
+                            stateGroup.state = "Released";
+                    } else {
+                        stateGroup.state = "Hidden";
+                    }
+        onPressAndHold: if (root.interactive) {
+                            if (sysBannerTimer.running) sysBannerTimer.stop();
+                            stateGroup.state = "PressAndHold";
+                        }
+        onExited: if (root.interactive) {
+                      if (stateGroup.state == "Pressed") {
+                          stateGroup.state = "Cancelled";
+                      } else if (stateGroup.state == "PressAndHold") {
+                          stateGroup.state = "Cancelled";
+                          if (sysBannerTimer.interval) sysBannerTimer.restart();
+                      } else stateGroup.state = "Hidden"
+                  }
         onClicked: hide()
     }
+    StateGroup {
+        id: stateGroup
+        state: "Hidden"
 
-    SequentialAnimation {
-        id: animationShow
-        NumberAnimation { target: root; property: "scale"; from: 0; to: internal.getScaleValue(); duration: 200; easing.type: Easing.OutQuad}
-        NumberAnimation { target: root; property: "scale"; from: internal.getScaleValue(); to: 1; duration: 200 }
-    }
-
-    NumberAnimation {
-        id: animationHide
-        target: root; property: "scale"; to: 0; duration: 200; easing.type: Easing.InExpo
+        states: [
+            State {
+                name: "Visible"
+                PropertyChanges { target: root; scale: internal.getScaleValue() }
+            },
+            State {
+                name: "Hidden"
+                PropertyChanges { target: root; scale: 0 }
+            },
+            State { name: "Pressed" },
+            State { name: "PressAndHold" },
+            State { name: "Released" },
+            State { name: "Cancelled" }
+        ]
+        transitions: [
+            Transition {
+                to: "Pressed"
+                ScriptAction { script: internal.press(); }
+            },
+            Transition {
+                from: "Pressed"; to: "Released"
+                ScriptAction { script: internal.release(); }
+                ScriptAction { script: internal.click(); }
+            },
+            Transition {
+                from: "PressAndHold"; to: "Released"
+                ScriptAction { script: internal.release(); }
+                ScriptAction { script: internal.click(); }
+            },
+            Transition {
+                to: "Cancelled"
+                ScriptAction { script: internal.release(); }
+            },
+            Transition {
+                from: "Hidden"; to: "Visible"
+                SequentialAnimation {
+                    NumberAnimation { target: root; property: "scale"; from: 0; to: internal.getScaleValue(); duration: 200; easing.type: Easing.OutQuad}
+                    NumberAnimation { target: root; property: "scale"; from: internal.getScaleValue(); to: 1; duration: 200 }
+                }
+            },
+            Transition {
+                to: "Hidden"
+                NumberAnimation { target: root; properties: "scale"; to: 0; duration: 200; easing.type: Easing.InExpo }
+            }
+        ]
     }
 }
 

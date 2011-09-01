@@ -1,6 +1,8 @@
 plugin fremantleextrasplugin
 CountBubble 1.0 CountBubble.qml
 DatePickerDialog 1.0 DatePickerDialog.qml
+InfoBanner 1.0 InfoBanner.qml
+InfoBannerStyle 1.0 InfoBannerStyle.qml
 ListDelegate 1.0 ListDelegate.qml
 MoreIndicator 1.0 MoreIndicator.qml
 NetPromoterScore 1.0 NetPromoterScore.qml
