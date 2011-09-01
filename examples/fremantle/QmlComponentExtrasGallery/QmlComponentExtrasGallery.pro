@@ -1,5 +1,8 @@
 TEMPLATE = app
 QT += declarative
+target.path = $$INSTALL_PREFIX/qt-components/bin
+
+include(../util/util.pri)
 
 CONFIG -= app_bundle
 
@@ -10,11 +13,6 @@ OTHER_FILES += \
     qml/*.qml \
     qml/*.js
 
-desktop.files = qmlcomponentextrasgallery.desktop
-desktop.path = $$INSTALL_PREFIX/share/applications
-
-target.path = $$INSTALL_PREFIX/bin
-
 RESOURCES = qml/qmlfiles.qrc
 
-INSTALLS += target desktop
+INSTALLS += target
