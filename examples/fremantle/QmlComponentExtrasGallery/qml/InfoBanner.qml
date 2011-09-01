@@ -234,6 +234,15 @@ Page {
                     anchors.top: banner5.bottom
                     anchors.topMargin: 10
                 }
+
+                InfoBanner{
+                    id:banner7
+                    text: "Interactive banner."
+                    iconSource: "assets/system_banner_thumbnail.png"
+                    anchors.top: banner6.bottom
+                    anchors.topMargin: 10
+			        interactive: true
+                }
             }
         }
     }

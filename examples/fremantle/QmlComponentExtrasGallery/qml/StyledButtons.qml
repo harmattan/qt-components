@@ -60,7 +60,7 @@ Page {
             spacing: 30
 
             Label {
-                width: 400
+                width: 370
                 text: "Enabled buttons of different styles"
                 font.bold: true
                 wrapMode: Text.Wrap
@@ -72,17 +72,17 @@ Page {
 
             Button {
                 text: "ListButtonStyle"
-                style: ListButtonStyle {}
+                platformStyle: ListButtonStyle {}
             }
 
             Button {
                 text: "NegativeButtonStyle"
-                style: NegativeButtonStyle {}
+                platformStyle: NegativeButtonStyle {}
             }
 
             Button {
                 text: "PositiveButtonStyle"
-                style: PositiveButtonStyle {}
+                platformStyle: PositiveButtonStyle {}
             }
 
             TumblerButton {
@@ -91,7 +91,7 @@ Page {
 
             TumblerButton {
                 text: "InvertedTumblerButtonStyle"
-                style: TumblerButtonStyle { inverted: true }
+                platformStyle: TumblerButtonStyle { inverted: true }
             }
         }
 
@@ -101,7 +101,7 @@ Page {
             anchors {left: col1.right}
 
             Label {
-                width: 400
+                width: 370
                 text: "Disabled buttons of different styles"
                 font.bold: true
                 wrapMode: Text.Wrap
@@ -114,19 +114,19 @@ Page {
 
             Button {
                 text: "ListButtonStyle"
-                style: ListButtonStyle {}
+                platformStyle: ListButtonStyle {}
                 enabled: false
             }
 
             Button {
                 text: "NegativeButtonStyle"
-                style: NegativeButtonStyle {}
+                platformStyle: NegativeButtonStyle {}
                 enabled: false
             }
 
             Button {
                 text: "PositiveButtonStyle"
-                style: PositiveButtonStyle {}
+                platformStyle: PositiveButtonStyle {}
                 enabled: false
             }
 
@@ -137,7 +137,7 @@ Page {
 
             TumblerButton {
                 text: "InvertedTumblerButtonStyle"
-                style: TumblerButtonStyle { inverted: true }
+                platformStyle: TumblerButtonStyle { inverted: true }
                 enabled: false
             }
         }

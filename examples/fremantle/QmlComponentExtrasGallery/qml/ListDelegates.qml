@@ -85,7 +85,7 @@ Page {
             }
             ListButton {
                 text: buttonText
-                style: ListButtonStyle {}
+                platformStyle: ListButtonStyle {}
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 50
