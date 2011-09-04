@@ -87,6 +87,7 @@ SOURCES += \
     sdeclarative.cpp \
     themedaemon/mabstractthemedaemonclient.cpp \
     themedaemon/mlocalthemedaemonclient.cpp \
+    themedaemon/msystemdirectories.cpp \
     shadereffectitem/3d/qarray.cpp \
     shadereffectitem/3d/qcolor4ub.cpp \
     shadereffectitem/3d/qcustomdataarray.cpp \
@@ -123,6 +124,7 @@ HEADERS += \
     sdeclarative.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
+    themedaemon/msystemdirectories.h \
     shadereffectitem/3d/qarray.h \
     shadereffectitem/3d/qcolor4ub.h \
     shadereffectitem/3d/qcustomdataarray.h \

@@ -51,18 +51,8 @@ MLocalThemeDaemonClient::MLocalThemeDaemonClient(const QString &path, QObject *p
     m_imageDirNodes()
 {
     if (m_path.isEmpty()) {
-        m_path = qgetenv("M_THEME_DIR");
-        if (m_path.isEmpty()) {
-            //qWarning() << "No theme path is provided for MLocalThemeDaemonClient";
-
-            #ifdef Q_OS_WIN
-            m_path = "c:\\";
-            #else
-            m_path = "/usr/share/themes";
-            #endif
-        }
-
-        m_path += QDir::separator()
+      m_path = MSystemDirectories::systemThemeDirectory();
+      m_path += QDir::separator()
                 + QLatin1String("blanco") + QDir::separator()
                 + QLatin1String("meegotouch");
     }
