@@ -47,7 +47,13 @@
 #include <QPixmap>
 #include <QString>
 
+#include <QSettings>
+
+#include "msystemdirectories.h"
+
 class QDir;
+class MLocalThemeDaemonClientPrivate;
+
 /**
  * \brief Allows to request pixmaps from a local themedaemon server.
  *
@@ -60,18 +66,19 @@ class MLocalThemeDaemonClient : public MAbstractThemeDaemonClient
 
 public:
     /**
-     * \param path   File path where the icons and images are located.
-     *               If no file path is provided, the default path defined
-     *               by the define THEME_DIR is used.
      * \param parent Parent object.
      */
-    MLocalThemeDaemonClient(const QString &path = QString(), QObject *parent = 0);
+    MLocalThemeDaemonClient(QObject *parent = 0);
     virtual ~MLocalThemeDaemonClient();
 
     /**
      * \see MAbstractThemeDaemonClient::requestPixmap()
      */
     virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);
+
+protected:
+
+    MLocalThemeDaemonClientPrivate *const d_ptr;
 
 private:
     /**
@@ -104,7 +111,6 @@ private:
         QStringList suffixList;
     };
 
-    QString m_path;
     QHash<PixmapIdentifier, QPixmap> m_pixmapCache;
     QList<ImageDirNode> m_imageDirNodes;
 
@@ -112,6 +118,8 @@ private:
 
     friend uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id);
     friend class tst_MLocalThemeDaemonClient; // Unit tests
+
+    Q_DECLARE_PRIVATE(MLocalThemeDaemonClient)
 };
 
 #endif

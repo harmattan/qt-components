@@ -6,6 +6,8 @@ TARGET = $$qtLibraryTarget(fremantleplugin)
 INCLUDEPATH += $$PWD $$PWD/indicators
 
 DEFINES += THEME_DIR=\\\"\"$$THEME_DIR\"\\\"
+DEFINES += CACHE_DIR=\\\"\"$$CACHE_DIR\"\\\"
+
 force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
@@ -124,6 +126,7 @@ HEADERS += \
     sdeclarative.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
+    themedaemon/mlocalthemedaemonclient_p.h \
     themedaemon/msystemdirectories.h \
     shadereffectitem/3d/qarray.h \
     shadereffectitem/3d/qcolor4ub.h \

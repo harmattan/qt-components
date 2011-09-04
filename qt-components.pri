@@ -24,6 +24,7 @@ meego {
     } else {
         THEME_DIR = /usr/share/themes
     }
+    CACHE_DIR = /var/cache
 }
 
 fremantle {
@@ -31,6 +32,7 @@ fremantle {
         load(maliit_defines)
     }
     THEME_DIR = /usr/share/themes
+    CACHE_DIR = /opt/var/cache
 }
 
 unix:!symbian {
