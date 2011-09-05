@@ -38,64 +38,33 @@
 **
 ****************************************************************************/
 
-#ifndef MLOCALTHEMEDAEMONCLIENT_H
-#define MLOCALTHEMEDAEMONCLIENT_H
+#ifndef MLOCALTHEMEDAEMONCLIENT_P_H
+#define MLOCALTHEMEDAEMONCLIENT_P_H
 
-#include <themedaemon/mabstractthemedaemonclient.h>
-
-#include <QHash>
-#include <QPixmap>
-#include <QString>
-
-#include <QSettings>
-
-#include "msystemdirectories.h"
-
-class QDir;
-class MLocalThemeDaemonClientPrivate;
-
-/**
- * \brief Allows to request pixmaps from a local themedaemon server.
- *
- * The requested pixmaps are cached so that multiple requests of the
- * same pixmap can be handled fast.
- */
-class MLocalThemeDaemonClient : public MAbstractThemeDaemonClient
+class MLocalThemeDaemonClientPrivate
 {
-    Q_OBJECT
-
 public:
-    /**
-     * \param parent Parent object.
-     */
-    MLocalThemeDaemonClient(QObject *parent = 0);
-    virtual ~MLocalThemeDaemonClient();
 
+    MLocalThemeDaemonClientPrivate();
+    virtual ~MLocalThemeDaemonClientPrivate();
+
+    QString currentTheme();
+
+    bool activateTheme(const QString& new_theme);
     /**
-     * \see MAbstractThemeDaemonClient::requestPixmap()
+     * Reads the image \a id from the available directories specified
+     * by m_imageDirNodes.
      */
-    virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);
+    QImage readImage(const QString &id) const;
 
 protected:
 
-    MLocalThemeDaemonClientPrivate *const d_ptr;
+    MLocalThemeDaemonClient * q_ptr;
 
 private:
 
-    static QString findFileRecursively(const QDir& rootDir, const QString& name);
-
-    /**
-     * Cache entry that identifies a pixmap by a string-ID and size.
-     */
-    struct PixmapIdentifier
-    {
-        PixmapIdentifier();
-        PixmapIdentifier(const QString &imageId, const QSize &size);
-        QString imageId;
-        QSize size;
-        bool operator==(const PixmapIdentifier &other) const;
-        bool operator!=(const PixmapIdentifier &other) const;
-    };
+    QString currentThemeName;
+    QStringList themeInheritance;
 
     struct ImageDirNode
     {
@@ -104,13 +73,25 @@ private:
         QStringList suffixList;
     };
 
-    QHash<PixmapIdentifier, QPixmap> m_pixmapCache;
+    QHash<QString, QString> m_filenameHash;
+    QList<ImageDirNode> m_imageDirNodes;
 
-    friend uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id);
-    friend class tst_MLocalThemeDaemonClient; // Unit tests
+    /**
+     * Load a theme from cache
+     */
+    bool activateThemeFromCache(const QString &theme);
 
-    Q_DECLARE_PRIVATE(MLocalThemeDaemonClient)
+    /**
+     * Save current theme to binary cache
+     */
+    bool saveThemeToBinaryCache(const QString &theme);
+
+    /**
+     * Get a hash recursively for each image available on rootDir
+     */
+    void buildHash(const QDir& rootDir, const QStringList& nameFilter);
+
+    Q_DECLARE_PUBLIC(MLocalThemeDaemonClient)
 };
 
-#endif
-
+#endif // MLOCALTHEMEDAEMONCLIENT_P_H

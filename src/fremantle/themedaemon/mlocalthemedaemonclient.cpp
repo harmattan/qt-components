@@ -42,41 +42,20 @@
 #include "mlocalthemedaemonclient_p.h"
 
 #include <QCoreApplication>
-#include <QDebug>
+#include <QDate>
+#include <QTime>
 #include <QDir>
 
-#define DEFAULT_THEME "base"
+#include <QDebug>
 
-MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate() 
-    : currentThemeName(""),
-      themeInheritance(0)
-{
 
+namespace {
+const QString DEFAULT_THEME  = "base";
+const unsigned int CACHE_VERSION = 1;
 }
 
-MLocalThemeDaemonClientPrivate::~MLocalThemeDaemonClientPrivate()
-{
-}
-
-MLocalThemeDaemonClient::MLocalThemeDaemonClient(QObject *parent) :
-    MAbstractThemeDaemonClient(parent),
-    d_ptr(new MLocalThemeDaemonClientPrivate),
-    m_pixmapCache(),
-    m_imageDirNodes()
-{
-    d_ptr->q_ptr = this;
-
-    m_imageDirNodes.append(ImageDirNode("icons" , QStringList() << ".svg" << ".png" << ".jpg"));
-    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("theme"), QStringList() << ".png" << ".jpg"));
-    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("backgrounds"), QStringList() << ".png" << ".jpg"));
-
-    d_ptr->activateTheme("blanco");
-}
-
-MLocalThemeDaemonClient::~MLocalThemeDaemonClient()
-{
-    delete d_ptr;
-}
+#define THEME_CACHE_DIR \
+    MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponents"
 
 const QSettings *themeFile(const QString &theme)
 {
@@ -100,12 +79,29 @@ const QSettings *themeFile(const QString &theme)
     return themeIndexFile;
 }
 
+MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate() 
+    : currentThemeName(""),
+      themeInheritance(0),
+      m_filenameHash(),
+      m_imageDirNodes()
+{
+    m_imageDirNodes.append(ImageDirNode("icons" , QStringList() << ".svg" << ".png" << ".jpg"));
+    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("theme"), QStringList() << ".png" << ".jpg"));
+    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("backgrounds"), QStringList() << ".png" << ".jpg"));
+}
+
+MLocalThemeDaemonClientPrivate::~MLocalThemeDaemonClientPrivate()
+{
+}
 
 bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
 {
     QString tmpTheme = newTheme;
     QDir dir(MSystemDirectories::systemThemeDirectory() + QDir::separator() + newTheme);
 
+    if (!currentThemeName.isEmpty() && (currentThemeName == newTheme)) {
+        return false;
+    }
     if (!dir.exists()) {
         qDebug() << "Theme" << newTheme << "does not exist! Not changing theme";
         if (!currentTheme().isEmpty()) {
@@ -116,7 +112,13 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
     }
 
     // Change the theme
-    // 1: find out the inheritance chain for the new theme
+    //1: Try to load from cache
+    if (activateThemeFromCache(tmpTheme)) {
+        qDebug() << "Preloading theme" << tmpTheme << "from cache";
+        currentThemeName = newTheme;
+        return true;
+    }
+    // 2: find out the inheritance chain for the new theme
     QStringList newThemeInheritanceChain;
 
     while (true) {
@@ -145,56 +147,87 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
     }
     themeInheritance = newThemeInheritanceChain;
 
-    QString linkToCurrentTheme = MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponentsTheme";
+    QString linkToCurrentTheme = THEME_CACHE_DIR + QDir::separator() + "default";
     QFile::remove(linkToCurrentTheme);
     QFile::link(MSystemDirectories::systemThemeDirectory() + QDir::separator() + themeInheritance.last(), linkToCurrentTheme);
 
     // include the path to theme inheritance chain
     for (int i = 0; i != themeInheritance.count(); ++i) {
-        themeInheritance[i] = MSystemDirectories::systemThemeDirectory() + QDir::separator() + themeInheritance[i] + QDir::separator();
-        qDebug() << "LocalThemeDaemonClient: Looking for assets in" << themeInheritance[i];
+        themeInheritance[i] = MSystemDirectories::systemThemeDirectory() + QDir::separator() + themeInheritance[i];
+        qDebug() << "Looking for assets in" << themeInheritance[i];
 
         // Update Hashes
-        q_ptr->buildHash(themeInheritance[i] + "icons", QStringList() << "*.svg" << "*.png" << "*.jpg");
-        q_ptr->buildHash(themeInheritance[i] + "images" + QDir::separator() + "theme", QStringList() << "*.png" << "*.jpg");
-        q_ptr->buildHash(themeInheritance[i] + "images" + QDir::separator() + "backgrounds", QStringList() << "*.png" << "*.jpg");
+        themeInheritance[i] = themeInheritance[i] + QDir::separator() + "meegotouch" + QDir::separator();
+        buildHash(themeInheritance[i] + "icons", QStringList() << "*.svg" << "*.png" << "*.jpg");
+        buildHash(themeInheritance[i] + "images" + QDir::separator() + "theme", QStringList() << "*.png" << "*.jpg");
+        buildHash(themeInheritance[i] + "images" + QDir::separator() + "backgrounds", QStringList() << "*.png" << "*.jpg");
     }
+    saveThemeToBinaryCache(newTheme);
     currentThemeName = newTheme;
     return true;
 }
 
-
-QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &requestedSize)
+bool MLocalThemeDaemonClientPrivate::activateThemeFromCache(const QString &theme)
 {
-    QPixmap pixmap;
+    const QString cacheFileName = THEME_CACHE_DIR + QDir::separator() + theme + QDir::separator() + "theme.cache";
 
-    QSize size = requestedSize;
-    if (size.width() < 1) {
-        size.rwidth() = 0;
-    }
-    if (size.height() < 1) {
-        size.rheight() = 0;
-    }
 
-    const PixmapIdentifier pixmapId(id, size);
-    pixmap = m_pixmapCache.value(pixmapId);
-    if (pixmap.isNull()) {
-        // The pixmap is not cached yet. Decode the image and
-        // store it into the cache as pixmap.
-        const QImage image = readImage(id);
-        if (!image.isNull()) {
-            pixmap = QPixmap::fromImage(image);
-            if (requestedSize.isValid() && (pixmap.size() != requestedSize)) {
-                pixmap = pixmap.scaled(requestedSize);
+    if (QFile::exists(cacheFileName)) {
+        QFile file(cacheFileName);
+        if (file.open(QFile::ReadOnly)) {
+            QDataStream stream(&file);
+            uint version;
+            stream >> version;
+            if (version != CACHE_VERSION) {
+                // will be replaced with up to date version
+                file.close();
+                return false;
             }
 
-            m_pixmapCache.insert(pixmapId, pixmap);
+            uint timestamp;
+            stream >> timestamp;
+            if (timestamp != QFileInfo(cacheFileName).lastModified().toTime_t()) {
+                // will be replaced with up to date version
+                file.close();
+                return false;
+            }
+
+            // Read cache contents
+            stream >> m_filenameHash;
+            file.close();
+            return true;
+        } else {
+            qDebug() << "[MLogicalValuesPrivate]" << "Failed to load values from cache" << cacheFileName;
         }
     }
-    return pixmap;
+    return false;
 }
 
-QImage MLocalThemeDaemonClient::readImage(const QString &id) const
+bool MLocalThemeDaemonClientPrivate::saveThemeToBinaryCache(const QString &theme)
+{
+    const QString cacheFileName = THEME_CACHE_DIR + QDir::separator() + theme + QDir::separator() + "theme.cache";
+
+    QFile file(cacheFileName);
+    if (!file.open(QFile::WriteOnly)) {
+        //Maybe it failed because the directory doesn't exist
+        QDir().mkpath(QFileInfo(cacheFileName).absolutePath());
+        if (!file.open(QFile::WriteOnly)) {
+            qDebug() << "[MLogicalValuesPrivate]" << "Failed to save cache file for" << theme << "to" << cacheFileName;
+            return false;
+        }
+    }
+
+    QDataStream stream(&file);
+    stream << CACHE_VERSION;
+    stream << QFileInfo(cacheFileName).lastModified().toTime_t();
+    //QDateTime(QDate::currentDate(), QTime::currentTime(), Qt::LocalTime).toTime_t();
+    stream << m_filenameHash;
+    qDebug() <<  QFileInfo(cacheFileName).lastModified().toTime_t();
+    file.close();
+    return true;
+}
+
+QImage MLocalThemeDaemonClientPrivate::readImage(const QString &id) const
 {
     foreach (const ImageDirNode &imageDirNode, m_imageDirNodes) {
         foreach (const QString &suffix, imageDirNode.suffixList) {
@@ -214,6 +247,75 @@ QImage MLocalThemeDaemonClient::readImage(const QString &id) const
     return QImage();
 }
 
+void MLocalThemeDaemonClientPrivate::buildHash(const QDir& rootDir, const QStringList& nameFilter)
+{
+    QDir rDir = rootDir;
+    rDir.setNameFilters(nameFilter);
+    QStringList files = rDir.entryList(QDir::Files);
+    foreach (const QString filename, files) {
+        m_filenameHash.insert(filename, rootDir.absolutePath());
+    }
+
+    QStringList dirList = rootDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    foreach(const QString nextDirString, dirList){
+        QDir nextDir(rootDir.absolutePath() + QDir::separator() + nextDirString);
+        buildHash(nextDir, nameFilter);
+    }
+}
+
+MLocalThemeDaemonClientPrivate::ImageDirNode::ImageDirNode(const QString &directory, const QStringList &suffixList) :
+    directory(directory),
+    suffixList(suffixList)
+{
+}
+
+MLocalThemeDaemonClient::MLocalThemeDaemonClient(QObject *parent) :
+    MAbstractThemeDaemonClient(parent),
+    d_ptr(new MLocalThemeDaemonClientPrivate),
+    m_pixmapCache()
+{
+    Q_D(MLocalThemeDaemonClient);
+    d->q_ptr = this;
+    d->activateTheme("blanco");
+}
+
+MLocalThemeDaemonClient::~MLocalThemeDaemonClient()
+{
+    delete d_ptr;
+}
+
+QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &requestedSize)
+{
+    QPixmap pixmap;
+    QSize size = requestedSize;
+
+    Q_D(MLocalThemeDaemonClient);
+
+    if (size.width() < 1) {
+        size.rwidth() = 0;
+    }
+    if (size.height() < 1) {
+        size.rheight() = 0;
+    }
+
+    const PixmapIdentifier pixmapId(id, size);
+    pixmap = m_pixmapCache.value(pixmapId);
+    if (pixmap.isNull()) {
+        // The pixmap is not cached yet. Decode the image and
+        // store it into the cache as pixmap.
+        const QImage image = d->readImage(id);
+        if (!image.isNull()) {
+            pixmap = QPixmap::fromImage(image);
+            if (requestedSize.isValid() && (pixmap.size() != requestedSize)) {
+                pixmap = pixmap.scaled(requestedSize);
+            }
+
+            m_pixmapCache.insert(pixmapId, pixmap);
+        }
+    }
+    return pixmap;
+}
+
 QString MLocalThemeDaemonClient::findFileRecursively(const QDir& rootDir, const QString& name)
 {
     QStringList files = rootDir.entryList(QStringList(name));
@@ -229,22 +331,6 @@ QString MLocalThemeDaemonClient::findFileRecursively(const QDir& rootDir, const 
     }
 
     return QString();
-}
-
-void MLocalThemeDaemonClient::buildHash(const QDir& rootDir, const QStringList& nameFilter)
-{
-    QDir rDir = rootDir;
-    rDir.setNameFilters(nameFilter);
-    QStringList files = rDir.entryList(QDir::Files);
-    foreach (const QString filename, files) {
-        m_filenameHash.insert(filename, rootDir.absolutePath());
-    }
-
-    QStringList dirList = rootDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-    foreach(const QString nextDirString, dirList){
-        QDir nextDir(rootDir.absolutePath() + QDir::separator() + nextDirString);
-        buildHash(nextDir, nameFilter);
-    }
 }
 
 MLocalThemeDaemonClient::PixmapIdentifier::PixmapIdentifier() :
@@ -265,12 +351,6 @@ bool MLocalThemeDaemonClient::PixmapIdentifier::operator==(const PixmapIdentifie
 bool MLocalThemeDaemonClient::PixmapIdentifier::operator!=(const PixmapIdentifier &other) const
 {
     return imageId != other.imageId || size != other.size;
-}
-
-MLocalThemeDaemonClient::ImageDirNode::ImageDirNode(const QString &directory, const QStringList &suffixList) :
-    directory(directory),
-    suffixList(suffixList)
-{
 }
 
 uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id)

@@ -23,14 +23,13 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
+#include <QDebug>
 
 #include <cstdlib>
 
-#include <QDebug>
-
 namespace {
-    QString cacheDirPrefix = QString();
-    QString themeDirPrefix = QString();
+QString cacheDirPrefix = QString();
+QString themeDirPrefix = QString();
 bool prefixChanged = false;
 }
 
@@ -43,13 +42,12 @@ QString MSystemDirectories::systemThemeDirectory()
         themeDir  = themeDirPrefix;
         themeDir += THEME_DIR;
     }
-    qDebug() << "Theme dir:" << themeDir;
     return themeDir;
 }
 
 QString MSystemDirectories::systemThemeCacheDirectory()
 {
-  return cacheDirectory();
+    return cacheDirectory();
 }
 
 QString MSystemDirectories::cacheDirectory()
@@ -64,7 +62,7 @@ QString MSystemDirectories::cacheDirectory()
         QFileInfo cacheDirInfo(cacheDir);
         if (!(cacheDirInfo.isWritable() && cacheDirInfo.isDir())) {
             // now we try a standard cache location
-            cacheDir = cacheDirPrefix + QDesktopServices::storageLocation(QDesktopServices::CacheLocation) + QDir::separator() + QLatin1String("meegotouch") + QDir::separator();
+            cacheDir = cacheDirPrefix + QDesktopServices::storageLocation(QDesktopServices::CacheLocation) + QDir::separator() + QLatin1String("meegotouch");
             QDir().mkpath(cacheDir);
             cacheDirInfo.setFile(cacheDir);
             if (!cacheDirInfo.isWritable() && cacheDirInfo.isDir()) {
@@ -75,7 +73,6 @@ QString MSystemDirectories::cacheDirectory()
 
         prefixChanged = false;
     }
-    qDebug() << "Cache dir:" << cacheDir;
     return cacheDir;
 }
 
