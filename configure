@@ -42,7 +42,9 @@
 BUILD_TREE=`/bin/pwd`
 SOURCE_TREE=`dirname $0`
 SOURCE_TREE=`cd "$SOURCE_TREE"; /bin/pwd`
+
 INSTALL_PREFIX=/usr
+INSTALL_SYSCONFDIR=/etc
 
 BUILD_MEEGO_STYLE=no
 BUILD_FREMANTLE_STYLE=no
@@ -60,8 +62,10 @@ HAVE_MEEGOGRAPHICSSYSTEM=no
 HAVE_SHADER=no
 HAVE_THEMEDAEMON_PROTOCOL_V1=yes
 FORCE_LOCAL_THEME=no
+DEFAULT_THEME="blanco"
 HAVE_MOBILITY=auto
 HAVE_SYMBIAN_INTERNAL=no
+HAVE_GCONF=no
 QMAKE_CONFIG=
 QMAKE_DEBUG=
 OPT_HELP=no
@@ -94,6 +98,7 @@ if [ $? -eq 0 ]; then
     pkg-config --atleast-version=0.5.25 contextsubscriber-1.0 && HAVE_CONTEXTSUBSCRIBER=yes
     pkg-config --exists xdamage && HAVE_XDAMAGE=yes
     pkg-config --exists xrandr && HAVE_XRANDR=yes
+    pkg-config --exists gconf-2.0 && HAVE_GCONF=yes
 fi
 
 #-------------------------------------------------------------------------------
@@ -115,7 +120,7 @@ while [ "$#" -gt 0 ]; do
         VAR=`echo $1 | sed 's,^-\(.*\),\1,'`
         VAL=yes
         ;;
-    -prefix)
+    -prefix|-sysconfdir|-theme)
         VAR=`echo $1 | sed 's,^-\(.*\),\1,'`
         shift
         VAL="$1"
@@ -142,6 +147,12 @@ while [ "$#" -gt 0 ]; do
     prefix)
         INSTALL_PREFIX=$VAL
         ;;
+    sysconfdir)
+	INSTALL_SYSCONFDIR=$VAL
+	;;
+    theme)
+	DEFAULT_THEME=$VAL
+	;;
     meego)
         BUILD_MEEGO_STYLE=yes
         ;;
@@ -214,6 +225,13 @@ while [ "$#" -gt 0 ]; do
     meegotouch)
         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
             HAVE_MEEGOTOUCH=$VAL
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
+    gconf)
+        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+            HAVE_GCONF=$VAL
         else
             UNKNOWN_OPT=yes
         fi
@@ -342,7 +360,7 @@ fi
 [ "$HAVE_XDAMAGE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG xdamage"
 [ "$HAVE_XRANDR" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG xrandr"
 [ "$FORCE_LOCAL_THEME" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG force-local-theme"
-
+[ "$FORCE_LOCAL_THEME" = "yes" ] && [ "$HAVE_GCONF" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG gconf"
 [ "$HAVE_MOBILITY" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG mobility"
 [ "$HAVE_MOBILITY" = "no" ] && QMAKE_CONFIG="$QMAKE_CONFIG no_mobility"
 
@@ -355,7 +373,7 @@ echo "Q_COMPONENTS_BUILD_TREE = $BUILD_TREE" >> $QMAKE_CACHE
 echo
 echo "Running qmake..."
 
-QMAKEFEATURES=$QMAKEFEATURES $QMAKE $QMAKE_DEBUG -r "CONFIG+=$QMAKE_CONFIG" $SOURCE_TREE/qt-components.pro INSTALL_PREFIX="$INSTALL_PREFIX"
+QMAKEFEATURES=$QMAKEFEATURES $QMAKE $QMAKE_DEBUG -r "CONFIG+=$QMAKE_CONFIG" $SOURCE_TREE/qt-components.pro INSTALL_PREFIX="$INSTALL_PREFIX" INSTALL_SYSCONFDIR="$INSTALL_SYSCONFDIR" DEFAULT_THEME="$DEFAULT_THEME"
 if [ $? != 0 ]; then
     echo "ERROR: qmake run failed."
     exit 1
@@ -382,6 +400,10 @@ if [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
     echo "  XDamage support  ............... $HAVE_XDAMAGE"
     echo "  XRandr support  ................ $HAVE_XRANDR"
     echo "  Shader support ................. $HAVE_SHADER"
+    if [ "$FORCE_LOCAL_THEME" = "yes" ]; then
+	echo "  Default theme .................. $DEFAULT_THEME"
+	echo "  Gconf support .................. $HAVE_GCONF"
+    fi
 fi
 echo "Symbian Style .................... $BUILD_SYMBIAN_STYLE"
 if [ "$BUILD_SYMBIAN_STYLE" = "yes" ]; then

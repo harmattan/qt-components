@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/qtcomponents/theme</key>
+      <applyto>/qtcomponents/theme</applyto>
+      <owner>qtcomponents</owner>
+      <type>string</type>
+      <default>@DEFAULT_THEME@</default>
+      <locale name="C">
+        <short>Default QtComponents theme</short>
+        <long>Default theme to be used by qtComponents</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>

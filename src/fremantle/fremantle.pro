@@ -7,6 +7,7 @@ INCLUDEPATH += $$PWD $$PWD/indicators
 
 DEFINES += THEME_DIR=\\\"\"$$THEME_DIR\"\\\"
 DEFINES += CACHE_DIR=\\\"\"$$CACHE_DIR\"\\\"
+DEFINES += DEFAULT_THEME=\\\"\"$$DEFAULT_THEME\"\\\"
 
 force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 
@@ -39,10 +40,6 @@ QT += declarative svg opengl
 
 }
 
-maemo5 {
-    DEFINES += Q_WS_MAEMO_5
-}
-
 mobility {
     QT += network
     MOBILITY += sensors systeminfo
@@ -56,6 +53,28 @@ maliit {
 
 shader {
     DEFINES += HAVE_SHADER
+}
+
+gconf {
+    DEFINES += HAVE_GCONF
+    PKGCONFIG += gconf-2.0
+    
+    in  = $$PWD/themedaemon/qtcomponents.schemas.in
+    out = $$OUT_PWD/qtcomponents.schemas
+
+    command  = "sed -e \"s:@DEFAULT_THEME@:$$DEFAULT_THEME:g\""
+    command += $$in > $$out
+
+    system(mkdir -p $$dirname(out))
+    system($$command)
+    system(chmod --reference=$$in $$out)
+
+    schemas.files = $$OUT_PWD/qtcomponents.schemas
+    schemas.path  = $$INSTALL_SYSCONFDIR/gconf/schemas
+
+    HEADERS  += themedaemon/mimsettings.h
+    SOURCES  += themedaemon/mimsettings.cpp
+    INSTALLS += schemas
 }
 
 xdamage {

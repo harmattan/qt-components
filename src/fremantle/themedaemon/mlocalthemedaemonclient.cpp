@@ -38,19 +38,22 @@
 **
 ****************************************************************************/
 
-#include "mlocalthemedaemonclient.h"
-#include "mlocalthemedaemonclient_p.h"
-
 #include <QCoreApplication>
 #include <QDate>
 #include <QTime>
 #include <QDir>
 
+#include "mlocalthemedaemonclient.h"
+#include "mlocalthemedaemonclient_p.h"
+
+#ifdef HAVE_GCONF
+# include "mimsettings.h"
+#endif
+
 #include <QDebug>
 
-
 namespace {
-const QString DEFAULT_THEME  = "base";
+const QString FALLBACK_THEME     = "base";
 const unsigned int CACHE_VERSION = 1;
 }
 
@@ -107,7 +110,7 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
         if (!currentTheme().isEmpty()) {
             return false;
         }
-        tmpTheme = DEFAULT_THEME;
+        tmpTheme = FALLBACK_THEME;
         qDebug() << "Fallback to theme Base";
     }
 
@@ -276,7 +279,13 @@ MLocalThemeDaemonClient::MLocalThemeDaemonClient(QObject *parent) :
 {
     Q_D(MLocalThemeDaemonClient);
     d->q_ptr = this;
-    d->activateTheme("blanco");
+
+#ifdef HAVE_GCONF
+    d->activateTheme(DEFAULT_THEME);
+#else
+    d->activateTheme(DEFAULT_THEME);
+#endif
+
 }
 
 MLocalThemeDaemonClient::~MLocalThemeDaemonClient()
