@@ -34,6 +34,7 @@ qrc_*.cpp
 *.loc
 *.rss
 *.app
+*.schemas
 .DS_Store
 *~
 bld.inf
@@ -54,6 +55,8 @@ release/
 /examples/meego/TutorialApplication/TutorialApplication
 /examples/fremantle/HelloWorld/HelloWorld
 /examples/fremantle/TutorialApplication/TutorialApplication
+/examples/fremantle/QmlComponentGallery/QmlComponentGallery
+/examples/fremantle/QmlComponentExtrasGallery/QmlComponentExtrasGallery
 /examples/symbian/extrasgallery/qmlextrasgallery
 /examples/symbian/gallery/qmlgallery
 /examples/symbian/scalefm/scalefm

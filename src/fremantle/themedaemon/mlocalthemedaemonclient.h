@@ -72,9 +72,19 @@ public:
     virtual ~MLocalThemeDaemonClient();
 
     /**
+     * By default, whenever system theme changes, theme is also updated. Clients could
+     * use this method to override default theme and use custom one
+     */
+    bool setTheme(const QString &newTheme);
+    QString getTheme();
+
+    /**
      * \see MAbstractThemeDaemonClient::requestPixmap()
      */
     virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);
+
+Q_SIGNALS:
+    void themeChanged();
 
 protected:
 
@@ -97,13 +107,7 @@ private:
         bool operator!=(const PixmapIdentifier &other) const;
     };
 
-    struct ImageDirNode
-    {
-        ImageDirNode(const QString &directory, const QStringList &suffixList);
-        QString directory;
-        QStringList suffixList;
-    };
-
+    QString m_CurrentTheme;
     QHash<PixmapIdentifier, QPixmap> m_pixmapCache;
 
     friend uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id);

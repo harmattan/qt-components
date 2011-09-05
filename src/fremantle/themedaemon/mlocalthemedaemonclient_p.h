@@ -41,14 +41,20 @@
 #ifndef MLOCALTHEMEDAEMONCLIENT_P_H
 #define MLOCALTHEMEDAEMONCLIENT_P_H
 
+#ifdef HAVE_GCONF
+# include "mimsettings.h"
+#endif
+
 class MLocalThemeDaemonClientPrivate
 {
 public:
 
-    MLocalThemeDaemonClientPrivate();
+    MLocalThemeDaemonClientPrivate(QObject *parent);
     virtual ~MLocalThemeDaemonClientPrivate();
 
-    QString currentTheme();
+#ifdef HAVE_GCONF
+    MImSettings m_currentThemeConf;
+#endif
 
     bool activateTheme(const QString& new_theme);
     /**

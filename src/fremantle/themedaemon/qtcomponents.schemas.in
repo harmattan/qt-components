@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/qtcomponents/theme</key>
-      <applyto>/qtcomponents/theme</applyto>
+      <key>/schemas/qtcomponents/themes/current</key>
+      <applyto>/qtcomponents/themes/current</applyto>
       <owner>qtcomponents</owner>
       <type>string</type>
       <default>@DEFAULT_THEME@</default>
