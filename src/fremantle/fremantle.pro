@@ -72,8 +72,8 @@ gconf {
     schemas.files = $$OUT_PWD/qtcomponents.schemas
     schemas.path  = $$INSTALL_SYSCONFDIR/gconf/schemas
 
-    HEADERS  += themedaemon/mimsettings.h
-    SOURCES  += themedaemon/mimsettings.cpp
+    HEADERS  += mimsettings.h
+    SOURCES  += mimsettings.cpp
     INSTALLS += schemas
 }
 
@@ -101,6 +101,7 @@ SOURCES += \
     mscrolldecoratorsizer.cpp \
     msnapshot.cpp \
     mtexttranslator.cpp \
+    mthemedaemon.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
     mx11wrapper.cpp \
@@ -137,6 +138,7 @@ HEADERS += \
     mscrolldecoratorsizer.h \
     msnapshot.h \
     mtexttranslator.h \
+    mthemedaemon.h \
     mthemeplugin.h \
     mwindowstate.h \
     mwindowstate_p.h \

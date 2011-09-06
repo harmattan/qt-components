@@ -43,17 +43,12 @@
 
 #include <qdeclarativeimageprovider.h>
 
-class MAbstractThemeDaemonClient;
-
 class MDeclarativeImageProvider : public QDeclarativeImageProvider
 {
 public:
     MDeclarativeImageProvider();
     virtual ~MDeclarativeImageProvider();
     virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
-
-private:
-    MAbstractThemeDaemonClient *m_themeDaemonClient;
 };
 
 #endif

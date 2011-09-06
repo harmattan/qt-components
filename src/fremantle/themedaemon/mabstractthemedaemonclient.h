@@ -56,6 +56,11 @@ public:
     virtual ~MAbstractThemeDaemonClient();
 
     /**
+     * \param newTheme      Requested theme.
+     */
+    virtual bool requestTheme(const QString &newTheme) = 0;
+
+    /**
      * \param id            Identifier of the pixmap.
      * \param requestedSize Requested size of the pixmap. If the size is invalid,
      *                      the returned pixmap will have the original size. Otherwise

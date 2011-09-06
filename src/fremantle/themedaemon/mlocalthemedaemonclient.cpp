@@ -46,10 +46,6 @@
 #include "mlocalthemedaemonclient.h"
 #include "mlocalthemedaemonclient_p.h"
 
-#ifdef HAVE_GCONF
-# include "mimsettings.h"
-#endif
-
 #include <QDebug>
 
 namespace {
@@ -84,9 +80,6 @@ const QSettings *themeFile(const QString &theme)
 
 MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate(QObject *parent)
     :
-      #ifdef HAVE_GCONF
-      m_currentThemeConf("/qtcomponents/themes/current"),
-      #endif
       q_ptr(qobject_cast<MLocalThemeDaemonClient *>(parent)),
       currentThemeName(""),
       themeInheritance(0),
@@ -96,10 +89,6 @@ MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate(QObject *parent)
     m_imageDirNodes.append(ImageDirNode("icons" , QStringList() << ".svg" << ".png" << ".jpg"));
     m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("theme"), QStringList() << ".png" << ".jpg"));
     m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("backgrounds"), QStringList() << ".png" << ".jpg"));
-
-#ifdef HAVE_GCONF
-    QObject::connect(&m_currentThemeConf, SIGNAL(valueChanged()), q_ptr, SIGNAL(themeChanged()));
-#endif
 }
 
 MLocalThemeDaemonClientPrivate::~MLocalThemeDaemonClientPrivate()
@@ -281,11 +270,8 @@ MLocalThemeDaemonClientPrivate::ImageDirNode::ImageDirNode(const QString &direct
 MLocalThemeDaemonClient::MLocalThemeDaemonClient(QObject *parent):
     MAbstractThemeDaemonClient(parent),
     d_ptr(new MLocalThemeDaemonClientPrivate(this)),
-    m_CurrentTheme(""),
     m_pixmapCache()
 {
-    Q_D(MLocalThemeDaemonClient);
-    getTheme().isEmpty() ? d->activateTheme(QString(FALLBACK_THEME)) : d->activateTheme(getTheme());
 }
 
 MLocalThemeDaemonClient::~MLocalThemeDaemonClient()
@@ -325,6 +311,13 @@ QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &r
     return pixmap;
 }
 
+
+bool MLocalThemeDaemonClient::requestTheme(const QString &newTheme)
+{
+    Q_D(MLocalThemeDaemonClient);
+    return d->activateTheme(newTheme);
+}
+
 QString MLocalThemeDaemonClient::findFileRecursively(const QDir& rootDir, const QString& name)
 {
     QStringList files = rootDir.entryList(QStringList(name));
@@ -340,38 +333,6 @@ QString MLocalThemeDaemonClient::findFileRecursively(const QDir& rootDir, const 
     }
 
     return QString();
-}
-
-bool MLocalThemeDaemonClient::setTheme(const QString &newTheme)
-{
-    Q_D(MLocalThemeDaemonClient);
-
-    QString appTheme = getTheme();
-
-    if (d->activateTheme(newTheme)) {
-        // Non system theme update
-        if (appTheme != newTheme) {
-            m_CurrentTheme = newTheme;
-            Q_EMIT themeChanged();
-        }
-        return true;
-    }
-    // Theme hasn't changed
-    return false;
-}
-
-QString MLocalThemeDaemonClient::getTheme()
-{
-    Q_D(MLocalThemeDaemonClient);
-
-    if (! m_CurrentTheme.isEmpty()) {
-        return m_CurrentTheme;
-    }
-#ifdef HAVE_GCONF
-    return d->m_currentThemeConf.value().toString();
-#else
-    return QString(DEFAULT_THEME);
-#endif
 }
 
 MLocalThemeDaemonClient::PixmapIdentifier::PixmapIdentifier() :

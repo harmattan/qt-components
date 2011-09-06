@@ -42,15 +42,32 @@
 #include <QPointer>
 
 #include "mthemeplugin.h"
+#include "mthemedaemon.h"
+
+#ifdef HAVE_GCONF
+# include "mimsettings.h"
+#endif
+
 
 MThemePlugin::MThemePlugin(QDeclarativeItem *parent)
-    : QObject(parent)
+    : QObject(parent),
+      m_inverted(false),
+      m_name("")
+    #ifdef HAVE_GCONF
+    ,m_nameConf(new MImSettings ("/qtcomponents/themes/current"))
+    #endif
 {
-    m_inverted = false;
+    // Load default system theme
+    MThemeDaemon::instance()->requestTheme(name());
+
+#ifdef HAVE_GCONF
+    QObject::connect(m_nameConf, SIGNAL(valueChanged()), this, SLOT(onValueChanged()));
+#endif
 }
 
 MThemePlugin::~MThemePlugin()
 {
+    delete m_nameConf;
 }
 
 bool MThemePlugin::isInverted() const
@@ -63,6 +80,50 @@ void MThemePlugin::setInverted(bool inverted)
     if (m_inverted != inverted) {
         m_inverted = inverted;
         emit invertedChanged();
+    }
+}
+
+bool MThemePlugin::setName(const QString &newTheme)
+{
+    // If newTheme is empty, fallback to system theme
+    QString tmpTheme = newTheme;
+    if (tmpTheme.isEmpty()) {
+#ifdef HAVE_GCONF
+        tmpTheme = m_nameConf->value().toString();
+#else
+        tmpTheme = QString(DEFAULT_THEME);
+#endif
+    }
+    if (MThemeDaemon::instance()->requestTheme(tmpTheme)) {
+        // Notify about theme change
+        qDebug() << "Theme changed to " << newTheme;
+        m_name = newTheme;
+        emit nameChanged();
+
+        // This is a hack. Force components to update its images
+        emit invertedChanged();
+        return true;
+    }
+    // Theme hasn't changed
+    return false;
+}
+
+QString MThemePlugin::name() const
+{
+    if (! m_name.isEmpty()) {
+        return m_name;
+    }
+#ifdef HAVE_GCONF
+    return m_nameConf->value().toString();
+#else
+    return QString(DEFAULT_THEME);
+#endif
+}
+
+void MThemePlugin::onValueChanged()
+{
+    if (m_name.isEmpty()){
+        setName("");
     }
 }
 

@@ -41,10 +41,6 @@
 #ifndef MLOCALTHEMEDAEMONCLIENT_P_H
 #define MLOCALTHEMEDAEMONCLIENT_P_H
 
-#ifdef HAVE_GCONF
-# include "mimsettings.h"
-#endif
-
 class MLocalThemeDaemonClientPrivate
 {
 public:
@@ -52,11 +48,8 @@ public:
     MLocalThemeDaemonClientPrivate(QObject *parent);
     virtual ~MLocalThemeDaemonClientPrivate();
 
-#ifdef HAVE_GCONF
-    MImSettings m_currentThemeConf;
-#endif
-
     bool activateTheme(const QString& new_theme);
+
     /**
      * Reads the image \a id from the available directories specified
      * by m_imageDirNodes.

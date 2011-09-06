@@ -38,77 +38,62 @@
 **
 ****************************************************************************/
 
-#ifndef MLOCALTHEMEDAEMONCLIENT_H
-#define MLOCALTHEMEDAEMONCLIENT_H
+#include "mthemedaemon.h"
 
-#include <themedaemon/mabstractthemedaemonclient.h>
-
-#include <QHash>
-#include <QPixmap>
-#include <QString>
-
-#include <QSettings>
-
-#include "msystemdirectories.h"
-
-class QDir;
-class MLocalThemeDaemonClientPrivate;
-
-/**
- * \brief Allows to request pixmaps from a local themedaemon server.
- *
- * The requested pixmaps are cached so that multiple requests of the
- * same pixmap can be handled fast.
- */
-class MLocalThemeDaemonClient : public MAbstractThemeDaemonClient
-{
-    Q_OBJECT
-
-public:
-    /**
-     * \param parent Parent object.
-     */
-    MLocalThemeDaemonClient(QObject *parent = 0);
-    virtual ~MLocalThemeDaemonClient();
-
-    /**
-     * \see MAbstractThemeDaemonClient::requestTheme()
-     */
-    virtual bool requestTheme(const QString &newTheme);
-
-    /**
-     * \see MAbstractThemeDaemonClient::requestPixmap()
-     */
-    virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);
-
-protected:
-
-    MLocalThemeDaemonClientPrivate *const d_ptr;
-
-private:
-
-    static QString findFileRecursively(const QDir& rootDir, const QString& name);
-
-    /**
-     * Cache entry that identifies a pixmap by a string-ID and size.
-     */
-    struct PixmapIdentifier
-    {
-        PixmapIdentifier();
-        PixmapIdentifier(const QString &imageId, const QSize &size);
-        QString imageId;
-        QSize size;
-        bool operator==(const PixmapIdentifier &other) const;
-        bool operator!=(const PixmapIdentifier &other) const;
-    };
-
-    QHash<PixmapIdentifier, QPixmap> m_pixmapCache;
-
-    friend uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id);
-    friend class tst_MLocalThemeDaemonClient; // Unit tests
-
-    Q_DECLARE_PRIVATE(MLocalThemeDaemonClient)
-};
-
+#include <themedaemon/mlocalthemedaemonclient.h>
+#ifndef FORCE_LOCAL_THEME
+# include <themedaemon/mremotethemedaemonclient.h>
 #endif
 
+static MThemeDaemon *self = 0;
+
+MThemeDaemon* MThemeDaemon::instance()
+{
+    if (!self) {
+        self = new MThemeDaemon();
+    }
+    return self;
+}
+
+MThemeDaemon::MThemeDaemon(QObject *parent)
+    : MAbstractThemeDaemonClient(parent),
+      m_themeDaemonClient(0)
+{
+#ifndef FORCE_LOCAL_THEME
+
+    bool QuseRemoteThemeDaemon = qgetenv("M_FORCE_LOCAL_THEME").isEmpty();
+#if defined Q_WS_MAC || defined Q_WS_WIN32 || defined FORCE_LOCAL_THEME
+    useRemoteThemeDaemon = false;
+#endif
+    MRemoteThemeDaemonClient *remoteThemeDaemonClient = 0;
+    if (useRemoteThemeDaemon)
+        remoteThemeDaemonClient = new MRemoteThemeDaemonClient();
+
+    if (remoteThemeDaemonClient && remoteThemeDaemonClient->isConnected()) {
+        m_themeDaemonClient = remoteThemeDaemonClient;
+    } else {
+        if (remoteThemeDaemonClient)
+            delete remoteThemeDaemonClient;
+#else
+    {
+#endif
+        m_themeDaemonClient = new MLocalThemeDaemonClient();
+    }
+}
+
+MThemeDaemon::~MThemeDaemon()
+{
+    delete m_themeDaemonClient;
+}
+
+bool MThemeDaemon::requestTheme(const QString &newTheme)
+{
+    return m_themeDaemonClient->requestTheme(newTheme);
+}
+
+QPixmap MThemeDaemon::requestPixmap(const QString &id, const QSize &requestedSize)
+{
+    return m_themeDaemonClient->requestPixmap(id, requestedSize);
+}
+
+#include "moc_mthemedaemon.cpp"

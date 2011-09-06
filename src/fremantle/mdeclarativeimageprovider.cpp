@@ -39,48 +39,21 @@
 ****************************************************************************/
 
 #include "mdeclarativeimageprovider.h"
-
-#include <themedaemon/mlocalthemedaemonclient.h>
-#ifndef FORCE_LOCAL_THEME
-# include <themedaemon/mremotethemedaemonclient.h>
-#endif
-
+#include "mthemedaemon.h"
 #include <qglobal.h>
 
 MDeclarativeImageProvider::MDeclarativeImageProvider() :
-    QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap),
-    m_themeDaemonClient(0)
+    QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap)
 {
-#ifndef FORCE_LOCAL_THEME
-
-    bool QuseRemoteThemeDaemon = qgetenv("M_FORCE_LOCAL_THEME").isEmpty();
-#if defined Q_WS_MAC || defined Q_WS_WIN32 || defined FORCE_LOCAL_THEME
-    useRemoteThemeDaemon = false;
-#endif
-    MRemoteThemeDaemonClient *remoteThemeDaemonClient = 0;
-    if (useRemoteThemeDaemon)
-        remoteThemeDaemonClient = new MRemoteThemeDaemonClient();
-
-    if (remoteThemeDaemonClient && remoteThemeDaemonClient->isConnected()) {
-        m_themeDaemonClient = remoteThemeDaemonClient;
-    } else {
-        if (remoteThemeDaemonClient)
-            delete remoteThemeDaemonClient;
-#else
-    {
-#endif
-        m_themeDaemonClient = new MLocalThemeDaemonClient();
-    }
 }
 
 MDeclarativeImageProvider::~MDeclarativeImageProvider()
 {
-    delete m_themeDaemonClient;
 }
 
 QPixmap MDeclarativeImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    const QPixmap pixmap = m_themeDaemonClient->requestPixmap(id, requestedSize);
+    const QPixmap pixmap = MThemeDaemon::instance()->requestPixmap(id, requestedSize);
     if (!pixmap.isNull() && size) {
         *size = pixmap.size();
     }

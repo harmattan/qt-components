@@ -44,11 +44,14 @@
 #include <qdeclarativeitem.h>
 #include <qglobal.h>
 
+class MImSettings;
+
 class MThemePlugin : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(bool inverted READ isInverted WRITE setInverted NOTIFY invertedChanged FINAL)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
 
 public:
     MThemePlugin(QDeclarativeItem *parent = 0);
@@ -57,13 +60,25 @@ public:
     bool isInverted() const;
     void setInverted(bool inverted);
 
+    QString name() const;
+    bool setName(const QString &newTheme);
+
 Q_SIGNALS:
     void invertedChanged();
+    void nameChanged();
 
 private:
     bool m_inverted;
+
+    QString m_name;
+    MImSettings *m_nameConf;
+
     Q_DISABLE_COPY(MThemePlugin)
+
+private Q_SLOTS:
+    void onValueChanged();
 };
 
 QML_DECLARE_TYPE(MThemePlugin)
+
 #endif // MTHEMEPLUGIN_H

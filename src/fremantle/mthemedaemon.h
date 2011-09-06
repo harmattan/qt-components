@@ -38,38 +38,20 @@
 **
 ****************************************************************************/
 
-#ifndef MLOCALTHEMEDAEMONCLIENT_H
-#define MLOCALTHEMEDAEMONCLIENT_H
+#ifndef MTHEMEDAEMON_H
+#define MTHEMEDAEMON_H
+
+#include <QObject>
 
 #include <themedaemon/mabstractthemedaemonclient.h>
 
-#include <QHash>
-#include <QPixmap>
-#include <QString>
-
-#include <QSettings>
-
-#include "msystemdirectories.h"
-
-class QDir;
-class MLocalThemeDaemonClientPrivate;
-
-/**
- * \brief Allows to request pixmaps from a local themedaemon server.
- *
- * The requested pixmaps are cached so that multiple requests of the
- * same pixmap can be handled fast.
- */
-class MLocalThemeDaemonClient : public MAbstractThemeDaemonClient
+class MThemeDaemon : public MAbstractThemeDaemonClient
 {
     Q_OBJECT
 
 public:
-    /**
-     * \param parent Parent object.
-     */
-    MLocalThemeDaemonClient(QObject *parent = 0);
-    virtual ~MLocalThemeDaemonClient();
+    static MThemeDaemon* instance();
+    virtual ~MThemeDaemon();
 
     /**
      * \see MAbstractThemeDaemonClient::requestTheme()
@@ -81,34 +63,10 @@ public:
      */
     virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);
 
-protected:
-
-    MLocalThemeDaemonClientPrivate *const d_ptr;
-
 private:
-
-    static QString findFileRecursively(const QDir& rootDir, const QString& name);
-
-    /**
-     * Cache entry that identifies a pixmap by a string-ID and size.
-     */
-    struct PixmapIdentifier
-    {
-        PixmapIdentifier();
-        PixmapIdentifier(const QString &imageId, const QSize &size);
-        QString imageId;
-        QSize size;
-        bool operator==(const PixmapIdentifier &other) const;
-        bool operator!=(const PixmapIdentifier &other) const;
-    };
-
-    QHash<PixmapIdentifier, QPixmap> m_pixmapCache;
-
-    friend uint qHash(const MLocalThemeDaemonClient::PixmapIdentifier &id);
-    friend class tst_MLocalThemeDaemonClient; // Unit tests
-
-    Q_DECLARE_PRIVATE(MLocalThemeDaemonClient)
+    MThemeDaemon(QObject *parent = 0);
+    MAbstractThemeDaemonClient *m_themeDaemonClient;
+    Q_DISABLE_COPY(MThemeDaemon)
 };
 
 #endif
-
