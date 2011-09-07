@@ -46,6 +46,8 @@
 #include "mlocalthemedaemonclient.h"
 #include "mlocalthemedaemonclient_p.h"
 
+#include "mlogicalvalues.h"
+
 #include <QDebug>
 
 namespace {
@@ -84,7 +86,8 @@ MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate(QObject *parent)
       currentThemeName(""),
       themeInheritance(0),
       m_filenameHash(),
-      m_imageDirNodes()
+      m_imageDirNodes(),
+      m_constants(new MLogicalValues())
 {
     m_imageDirNodes.append(ImageDirNode("icons" , QStringList() << ".svg" << ".png" << ".jpg"));
     m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("theme"), QStringList() << ".png" << ".jpg"));
@@ -93,6 +96,7 @@ MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate(QObject *parent)
 
 MLocalThemeDaemonClientPrivate::~MLocalThemeDaemonClientPrivate()
 {
+    delete m_constants;
 }
 
 bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
@@ -122,7 +126,7 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
         return true;
     }
     // 2: find out the inheritance chain for the new theme
-    QStringList newThemeInheritanceChain;
+    QStringList newThemeInheritance;
 
     while (true) {
         const QSettings *themeIndexFile = themeFile(tmpTheme);
@@ -131,7 +135,7 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
             return false;
         }
 
-        newThemeInheritanceChain.prepend(tmpTheme);
+        newThemeInheritance.prepend(tmpTheme);
         QString parentTheme = themeIndexFile->value("X-MeeGoTouch-Metatheme/X-Inherits", "").toString();
         delete themeIndexFile;
 
@@ -141,7 +145,7 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
         tmpTheme = parentTheme;
 
         // check that there is no cyclic dependencies
-        foreach(const QString & themeName, newThemeInheritanceChain) {
+        foreach(const QString & themeName, newThemeInheritance) {
             if (tmpTheme == themeName) {
                 qDebug() << "Cyclic dependency in theme:" << newTheme;
                 return false;
@@ -150,16 +154,21 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
     }
 
     // include the path to theme inheritance chain
-    themeInheritance = newThemeInheritanceChain;
-    for (int i = 0; i != themeInheritance.count(); ++i) {
-        themeInheritance[i] = MSystemDirectories::systemThemeDirectory() + QDir::separator() + themeInheritance[i];
-        qDebug() << "Looking for assets in" << themeInheritance[i];
+    themeInheritance = newThemeInheritance;
+
+    // Update Constants
+    m_constants->load(themeInheritance);
+
+    for (int i = 0; i != newThemeInheritance.count(); ++i) {
+        newThemeInheritance[i] = MSystemDirectories::systemThemeDirectory() + QDir::separator() + newThemeInheritance[i];
+        qDebug() << "Looking for assets in" << newThemeInheritance[i];
 
         // Update Hashes
-        themeInheritance[i] = themeInheritance[i] + QDir::separator() + "meegotouch" + QDir::separator();
-        buildHash(themeInheritance[i] + "icons", QStringList() << "*.svg" << "*.png" << "*.jpg");
-        buildHash(themeInheritance[i] + "images" + QDir::separator() + "theme", QStringList() << "*.png" << "*.jpg");
-        buildHash(themeInheritance[i] + "images" + QDir::separator() + "backgrounds", QStringList() << "*.png" << "*.jpg");
+        newThemeInheritance[i] = newThemeInheritance[i] + QDir::separator() + "meegotouch" + QDir::separator();
+        buildHash(newThemeInheritance[i] + "icons", QStringList() << "*.svg" << "*.png" << "*.jpg");
+        buildHash(newThemeInheritance[i] + "images" + QDir::separator() + "theme", QStringList() << "*.png" << "*.jpg");
+        buildHash(newThemeInheritance[i] + "images" + QDir::separator() + "backgrounds", QStringList() << "*.png" << "*.jpg");
+
     }
     saveThemeToBinaryCache(newTheme);
     currentThemeName = newTheme;
@@ -225,6 +234,11 @@ bool MLocalThemeDaemonClientPrivate::saveThemeToBinaryCache(const QString &theme
     return true;
 }
 
+bool MLocalThemeDaemonClientPrivate::updateValues(QDeclarativePropertyMap *map,  QList<MAbstractThemeDaemonClient::ThemeProperty> *updated)
+{
+    return false;
+}
+
 QImage MLocalThemeDaemonClientPrivate::readImage(const QString &id) const
 {
     foreach (const ImageDirNode &imageDirNode, m_imageDirNodes) {
@@ -279,6 +293,18 @@ MLocalThemeDaemonClient::~MLocalThemeDaemonClient()
     delete d_ptr;
 }
 
+bool MLocalThemeDaemonClient::requestTheme(const QString &newTheme)
+{
+    Q_D(MLocalThemeDaemonClient);
+    return d->activateTheme(newTheme);
+}
+
+bool MLocalThemeDaemonClient::requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated)
+{
+    Q_D(MLocalThemeDaemonClient);
+    return d->updateValues(map, updated);
+}
+
 QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &requestedSize)
 {
     QPixmap pixmap;
@@ -309,13 +335,6 @@ QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &r
         }
     }
     return pixmap;
-}
-
-
-bool MLocalThemeDaemonClient::requestTheme(const QString &newTheme)
-{
-    Q_D(MLocalThemeDaemonClient);
-    return d->activateTheme(newTheme);
 }
 
 QString MLocalThemeDaemonClient::findFileRecursively(const QDir& rootDir, const QString& name)

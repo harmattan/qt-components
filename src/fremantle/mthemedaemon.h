@@ -59,6 +59,11 @@ public:
     virtual bool requestTheme(const QString &newTheme);
 
     /**
+     * \see MAbstractThemeDaemonClient::requestValues()
+     */
+    virtual bool requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated = 0);
+
+    /**
      * \see MAbstractThemeDaemonClient::requestPixmap()
      */
     virtual QPixmap requestPixmap(const QString &id, const QSize &requestedSize);

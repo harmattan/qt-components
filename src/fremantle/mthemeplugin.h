@@ -45,6 +45,7 @@
 #include <qglobal.h>
 
 class MImSettings;
+class QDeclarativePropertyMap;
 
 class MThemePlugin : public QObject
 {
@@ -52,6 +53,7 @@ class MThemePlugin : public QObject
 
     Q_PROPERTY(bool inverted READ isInverted WRITE setInverted NOTIFY invertedChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
+    Q_PROPERTY(QDeclarativePropertyMap constants READ constants FINAL)
 
 public:
     MThemePlugin(QDeclarativeItem *parent = 0);
@@ -63,6 +65,8 @@ public:
     QString name() const;
     bool setName(const QString &newTheme);
 
+    QDeclarativePropertyMap *constants() const;
+
 Q_SIGNALS:
     void invertedChanged();
     void nameChanged();
@@ -72,6 +76,7 @@ private:
 
     QString m_name;
     MImSettings *m_nameConf;
+    QDeclarativePropertyMap *m_constants;
 
     Q_DISABLE_COPY(MThemePlugin)
 

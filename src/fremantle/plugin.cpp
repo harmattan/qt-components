@@ -120,9 +120,6 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
             app->setCursorFlashTime(0);
             app->setDoubleClickInterval(MEEGOTOUCH_DOUBLETAP_INTERVAL);
         } 
-
-        // Set style constants
-        context->setContextProperty("UiConstants", uiConstants());
 }
 
 void FremantlePlugin::registerTypes(const char *uri) {
@@ -158,61 +155,6 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterType<ShaderEffectItemNull>(uri, 1, 0, "ShaderEffectItem");
         qmlRegisterType<ShaderEffectSourceNull>(uri, 1, 0, "ShaderEffectSource");
 #endif
-}
-
-QDeclarativePropertyMap *FremantlePlugin::uiConstants() {
-        QDeclarativePropertyMap *uiConstantsData = new QDeclarativePropertyMap();
-        uiConstantsData->insert("DefaultMargin", QVariant(16));
-        uiConstantsData->insert("ButtonSpacing", QVariant(6));
-        uiConstantsData->insert("HeaderDefaultHeightPortrait", QVariant(72));
-        uiConstantsData->insert("HeaderDefaultHeightLandscape", QVariant(46));
-        uiConstantsData->insert("HeaderDefaultTopSpacingPortrait", QVariant(20));
-        uiConstantsData->insert("HeaderDefaultBottomSpacingPortrait", QVariant(20));
-        uiConstantsData->insert("HeaderDefaultTopSpacingLandscape", QVariant(16));
-        uiConstantsData->insert("HeaderDefaultBottomSpacingLandscape", QVariant(14));
-        uiConstantsData->insert("ListItemHeightSmall", QVariant(64));
-        uiConstantsData->insert("ListItemHeightDefault", QVariant(80));
-
-        QFont bodyTextFont;
-        bodyTextFont.setFamily("Nokia Pure Text Light");
-        bodyTextFont.setPixelSize(24);
-        uiConstantsData->insert("BodyTextFont", QVariant(bodyTextFont));
-
-        QFont headerFont;
-        headerFont.setFamily("Nokia Pure Text Light");
-        headerFont.setPixelSize(32);
-        uiConstantsData->insert("HeaderFont", QVariant(headerFont));
-
-        QFont groupHeaderFont;
-        groupHeaderFont.setFamily("Nokia Pure Text");
-        groupHeaderFont.setPixelSize(18);
-        groupHeaderFont.setBold(true);
-        uiConstantsData->insert("GroupHeaderFont", QVariant(groupHeaderFont));
-
-        QFont titleFont;
-        titleFont.setFamily("Nokia Pure Text");
-        titleFont.setPixelSize(26);
-        titleFont.setBold(true);
-        uiConstantsData->insert("TitleFont", QVariant(titleFont));
-
-        QFont smallTitleFont;
-        smallTitleFont.setFamily("Nokia Pure Text");
-        smallTitleFont.setPixelSize(24);
-        smallTitleFont.setBold(true);
-        uiConstantsData->insert("SmallTitleFont", QVariant(titleFont));
-
-        QFont fieldLabelFont;
-        fieldLabelFont.setFamily("Nokia Pure Text Light");
-        fieldLabelFont.setPixelSize(22);
-        uiConstantsData->insert("FieldLabelFont", QVariant(fieldLabelFont));
-        uiConstantsData->insert("FieldLabelColor", QVariant(QColor("#505050")));
-
-        QFont subTitleFont;
-        subTitleFont.setFamily("Nokia Pure Text Light");
-        subTitleFont.setPixelSize(22);
-        uiConstantsData->insert("SubtitleFont", QVariant(subTitleFont));
-
-        return uiConstantsData;
 }
 
 #include "moc_plugin.cpp"

@@ -41,6 +41,9 @@
 #ifndef MLOCALTHEMEDAEMONCLIENT_P_H
 #define MLOCALTHEMEDAEMONCLIENT_P_H
 
+class MLogicalValues;
+class QDeclarativePropertyMap;
+class MAbstractThemeDaemonClient;
 class MLocalThemeDaemonClientPrivate
 {
 public:
@@ -48,7 +51,15 @@ public:
     MLocalThemeDaemonClientPrivate(QObject *parent);
     virtual ~MLocalThemeDaemonClientPrivate();
 
+    /**
+     * Activate theme
+     */
     bool activateTheme(const QString& new_theme);
+
+    /**
+     * Update property map with all available groups
+     */
+    bool updateValues(QDeclarativePropertyMap *map, QList<MAbstractThemeDaemonClient::ThemeProperty> *updated);
 
     /**
      * Reads the image \a id from the available directories specified
@@ -74,6 +85,7 @@ private:
 
     QHash<QString, QString> m_filenameHash;
     QList<ImageDirNode> m_imageDirNodes;
+    MLogicalValues *m_constants;
 
     /**
      * Load a theme from cache

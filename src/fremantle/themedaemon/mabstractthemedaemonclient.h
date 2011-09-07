@@ -41,6 +41,8 @@
 #ifndef MABSTRACTTHEMEDAEMONCLIENT_H
 #define MABSTRACTTHEMEDAEMONCLIENT_H
 
+#include <QtDeclarative/QDeclarativePropertyMap>
+
 #include <QObject>
 #include <QPixmap>
 
@@ -55,10 +57,24 @@ public:
     MAbstractThemeDaemonClient(QObject *parent = 0);
     virtual ~MAbstractThemeDaemonClient();
 
+    struct ThemeProperty
+    {
+        ThemeProperty(QObject *owner, const QString &key, const QVariant &value);
+        QObject *owner;
+        QString  key;
+        QVariant value;
+    };
+
     /**
      * \param newTheme      Requested theme.
      */
     virtual bool requestTheme(const QString &newTheme) = 0;
+
+    /**
+     *\paran map            A property map to be filled with theme values.
+     *\param updated        List of updated properties
+     */
+    virtual bool requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated = 0) = 0;
 
     /**
      * \param id            Identifier of the pixmap.
