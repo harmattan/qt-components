@@ -48,7 +48,3 @@ MAbstractThemeDaemonClient::MAbstractThemeDaemonClient(QObject *parent) :
 MAbstractThemeDaemonClient::~MAbstractThemeDaemonClient()
 {
 }
-MAbstractThemeDaemonClient::ThemeProperty::ThemeProperty(QObject *owner, const QString &key, const QVariant &value) :
-  owner(owner), key(key), value(value)
-{
-}

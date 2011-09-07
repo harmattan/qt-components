@@ -57,14 +57,6 @@ public:
     MAbstractThemeDaemonClient(QObject *parent = 0);
     virtual ~MAbstractThemeDaemonClient();
 
-    struct ThemeProperty
-    {
-        ThemeProperty(QObject *owner, const QString &key, const QVariant &value);
-        QObject *owner;
-        QString  key;
-        QVariant value;
-    };
-
     /**
      * \param newTheme      Requested theme.
      */
@@ -74,7 +66,7 @@ public:
      *\paran map            A property map to be filled with theme values.
      *\param updated        List of updated properties
      */
-    virtual bool requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated = 0) = 0;
+    virtual bool requestValues(QVariantMap *map) = 0;
 
     /**
      * \param id            Identifier of the pixmap.

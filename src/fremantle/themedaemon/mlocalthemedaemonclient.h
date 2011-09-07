@@ -79,7 +79,7 @@ public:
     /**
      * \see MAbstractThemeDaemonClient::requestValues()
      */
-    virtual bool requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated = 0);
+    virtual bool requestValues(QVariantMap *map);
 
     /**
      * \see MAbstractThemeDaemonClient::requestPixmap()

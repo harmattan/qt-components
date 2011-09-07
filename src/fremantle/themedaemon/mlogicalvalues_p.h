@@ -37,9 +37,8 @@ public:
 
 public:
     bool parse(const QFileInfo &fileInfo, Groups &groups);
-    bool loadFromBinaryCache(const QFileInfo &fileInfo, Groups &groups);
-    bool saveToBinaryCache(const QFileInfo &fileInfo, const Groups &groups) const;
-    QString createBinaryFilename(const QFileInfo &fileInfo) const;
+    bool loadFromBinaryCache(const QString &theme, const QFileInfo &fileInfo, Groups &groups);
+    bool saveToBinaryCache(const QString &theme, const QFileInfo &fileInfo, const Groups &groups) const;
     void mergeGroups(const Groups &groups);
 };
 

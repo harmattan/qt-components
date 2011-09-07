@@ -55,8 +55,11 @@ const QString FALLBACK_THEME = "base";
 const unsigned int CACHE_VERSION = 1;
 }
 
-#define THEME_CACHE_DIR \
-    MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponents"
+#define THEME_CACHE_DIR(_X)			\
+    MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponents" + QDir::separator() + _X + QDir::separator()
+
+#define THEME_INDEX_DIR(_X)			\
+    MSystemDirectories::systemThemeDirectory() + QDir::separator() + _X + QDir::separator() + QLatin1String("meegotouch") + QDir::separator()
 
 const QSettings *themeFile(const QString &theme)
 {
@@ -177,8 +180,8 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
 
 bool MLocalThemeDaemonClientPrivate::activateThemeFromCache(const QString &theme)
 {
-    const QString cacheFileName = THEME_CACHE_DIR + QDir::separator() + theme + QDir::separator() + "theme.cache";
-
+    const QString cacheFileName = THEME_CACHE_DIR(theme) + "theme.cache";
+    const QString indexFileName = THEME_INDEX_DIR(theme) + "index.theme";
 
     if (QFile::exists(cacheFileName)) {
         QFile file(cacheFileName);
@@ -194,11 +197,15 @@ bool MLocalThemeDaemonClientPrivate::activateThemeFromCache(const QString &theme
 
             uint timestamp;
             stream >> timestamp;
-            if (timestamp != QFileInfo(cacheFileName).lastModified().toTime_t()) {
+            if (timestamp != QFileInfo(indexFileName).lastModified().toTime_t()) {
                 // will be replaced with up to date version
                 file.close();
                 return false;
             }
+
+            // Read theme inheritance
+            stream >> themeInheritance;
+            m_constants->load(themeInheritance);
 
             // Read cache contents
             stream >> m_filenameHash;
@@ -213,7 +220,8 @@ bool MLocalThemeDaemonClientPrivate::activateThemeFromCache(const QString &theme
 
 bool MLocalThemeDaemonClientPrivate::saveThemeToBinaryCache(const QString &theme)
 {
-    const QString cacheFileName = THEME_CACHE_DIR + QDir::separator() + theme + QDir::separator() + "theme.cache";
+    const QString cacheFileName = THEME_CACHE_DIR(theme) + "theme.cache";
+    const QString indexFileName = THEME_INDEX_DIR(theme) + "index.theme";
 
     QFile file(cacheFileName);
     if (!file.open(QFile::WriteOnly)) {
@@ -227,16 +235,36 @@ bool MLocalThemeDaemonClientPrivate::saveThemeToBinaryCache(const QString &theme
 
     QDataStream stream(&file);
     stream << CACHE_VERSION;
-    stream << QFileInfo(cacheFileName).lastModified().toTime_t();
+    stream << QFileInfo(indexFileName).lastModified().toTime_t();
+    stream << themeInheritance;
     stream << m_filenameHash;
     file.close();
 
     return true;
 }
 
-bool MLocalThemeDaemonClientPrivate::updateValues(QDeclarativePropertyMap *map,  QList<MAbstractThemeDaemonClient::ThemeProperty> *updated)
+bool MLocalThemeDaemonClientPrivate::updateValues(QVariantMap *maps)
 {
-    return false;
+    Groups groups = m_constants->data();
+    Groups::const_iterator i = groups.constBegin();
+
+    while (i != groups.constEnd()) {
+        QVariantMap current;
+        if (! maps->contains(i.key())) {
+            current = maps->value(i.key()).toMap();
+        }
+
+        Values::const_iterator j = i.value().constBegin();
+        while (j != i.value().constEnd()) {
+            if (current.value(j.key()) != j.value()) {
+                current.insert(j.key(), j.value());
+            }
+            ++j;
+        }
+        maps->insert(i.key(), current);
+        ++i;
+    }
+    return true;
 }
 
 QImage MLocalThemeDaemonClientPrivate::readImage(const QString &id) const
@@ -299,10 +327,10 @@ bool MLocalThemeDaemonClient::requestTheme(const QString &newTheme)
     return d->activateTheme(newTheme);
 }
 
-bool MLocalThemeDaemonClient::requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated)
+bool MLocalThemeDaemonClient::requestValues(QVariantMap *map)
 {
     Q_D(MLocalThemeDaemonClient);
-    return d->updateValues(map, updated);
+    return d->updateValues(map);
 }
 
 QPixmap MLocalThemeDaemonClient::requestPixmap(const QString &id, const QSize &requestedSize)

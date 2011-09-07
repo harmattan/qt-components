@@ -40,6 +40,12 @@ namespace {
 const unsigned int CACHE_VERSION = 1;
 }
 
+#define THEME_CACHE_DIR(_X)			\
+    MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponents" + QDir::separator() + _X + QDir::separator() + "constants" + QDir::separator()
+
+#define THEME_INDEX_DIR(_X)			\
+    MSystemDirectories::systemThemeDirectory() + QDir::separator() + _X + QDir::separator() + QLatin1String("meegotouch")
+
 MLogicalValues::MLogicalValues() :
     d_ptr(new MLogicalValuesPrivate)
 {
@@ -115,7 +121,6 @@ bool MLogicalValuesPrivate::parse(const QFileInfo &fileInfo, Groups &groups)
                 Values &values = groups[group];
 
                 if (!values.contains(key)) {
-                    // TODO: Process value:
                     QVariant v(value.constData());
                     QString s = v.toString();
                     int pos;
@@ -130,7 +135,6 @@ bool MLogicalValuesPrivate::parse(const QFileInfo &fileInfo, Groups &groups)
                         else {
                             QUrl url(s);
                             if (url.isValid() && (url.scheme() != "")) {
-                                qDebug() << "Scheme" << url.path();
                                 v.convert(QVariant::Url);
                             }
                         }
@@ -141,16 +145,17 @@ bool MLogicalValuesPrivate::parse(const QFileInfo &fileInfo, Groups &groups)
         }
     }
 
-    saveToBinaryCache(fileInfo, groups);
     file.close();
     return true;
 }
 
-bool MLogicalValuesPrivate::loadFromBinaryCache(const QFileInfo &fileInfo, Groups &groups) {
-    const QString cacheFileName = createBinaryFilename(fileInfo);
-    qDebug() << cacheFileName;
+bool MLogicalValuesPrivate::loadFromBinaryCache(const QString &theme, const QFileInfo &fileInfo, Groups &groups) {
+
+    const QString cacheFileName = THEME_CACHE_DIR(theme) + fileInfo.fileName();
+
     if (QFile::exists(cacheFileName)) {
         QFile file(cacheFileName);
+
         if (file.open(QFile::ReadOnly)) {
             QDataStream stream(&file);
             uint version;
@@ -167,9 +172,8 @@ bool MLogicalValuesPrivate::loadFromBinaryCache(const QFileInfo &fileInfo, Group
                 file.close();
                 return false;
             }
-
             stream >> groups;
-
+            qDebug() << groups;
             file.close();
             return true;
         } else {
@@ -180,8 +184,8 @@ bool MLogicalValuesPrivate::loadFromBinaryCache(const QFileInfo &fileInfo, Group
     return false;
 }
 
-bool MLogicalValuesPrivate::saveToBinaryCache(const QFileInfo &fileInfo, const Groups &groups) const {
-    const QString cacheFileName = createBinaryFilename(fileInfo);
+bool MLogicalValuesPrivate::saveToBinaryCache(const QString &theme, const QFileInfo &fileInfo, const Groups &groups) const {
+    const QString cacheFileName = THEME_CACHE_DIR(theme) + fileInfo.fileName();
 
     QFile file(cacheFileName);
     if (!file.open(QFile::WriteOnly)) {
@@ -202,17 +206,6 @@ bool MLogicalValuesPrivate::saveToBinaryCache(const QFileInfo &fileInfo, const G
     return true;
 }
 
-QString MLogicalValuesPrivate::createBinaryFilename(const QFileInfo &fileInfo) const {
-    QString binaryDirectory = MSystemDirectories::cacheDirectory() + QLatin1String("logicalValues") + QDir::separator();
-    QString binaryFilename(binaryDirectory);
-
-    QString absoluteFilePathEncoded(fileInfo.absoluteFilePath());
-    absoluteFilePathEncoded.replace('_', "__");
-    absoluteFilePathEncoded.replace('/', "_.");
-    binaryFilename += absoluteFilePathEncoded;
-    return binaryFilename;
-}
-
 void MLogicalValuesPrivate::mergeGroups(const Groups &groups)
 {
     Groups::const_iterator i = groups.constBegin();
@@ -220,19 +213,17 @@ void MLogicalValuesPrivate::mergeGroups(const Groups &groups)
         Values &values = data[i.key()];
         Values::const_iterator j = i.value().constBegin();
         while (j != i.value().constEnd()) {
-            if (!values.contains(j.key())) {
-                values.insert(j.key(), j.value());
-            }
+            values.insert(j.key(), j.value());
             ++j;
         }
         ++i;
     }
 }
 
-bool MLogicalValues::append(const QString &fileName)
+bool MLogicalValues::append(const QString &fileName, const QString &theme)
 {
     Q_D(MLogicalValues);
-    qDebug() << fileName;
+
     // make sure that the file exists
     if (!QFile(fileName).exists())
         return false;
@@ -240,14 +231,14 @@ bool MLogicalValues::append(const QString &fileName)
     Groups groups;
     QFileInfo fileInfo(fileName);
 
-    if (true || !d->loadFromBinaryCache(fileInfo, groups)) {
+    if (theme.isEmpty() || !d->loadFromBinaryCache(theme, fileInfo, groups)) {
         if (!d->parse(fileInfo, groups)) {
             return false;
         }
+        d->saveToBinaryCache(theme, fileInfo, groups);
     }
 
     d->timestamps << fileInfo.lastModified().toTime_t();
-    qDebug() << "mergin";
     d->mergeGroups(groups);
 
     return true;
@@ -260,17 +251,16 @@ void MLogicalValues::load(const QStringList &themeInheritanceChain, const QStrin
     d->data.clear();
     d->timestamps.clear();
 
-    // load locale-specific constant definitions
-    if (!locale.isEmpty()) {
-        // go through whole inheritance hierarchy
-        foreach(QString path, themeInheritanceChain) {
-            append(path + QDir::separator() + QString("meegotouch") + QDir::separator() + QString("locale") + QDir::separator() + locale + QDir::separator() + QString("constants.ini"));
-        }
-    }
+    //TODO: Handle locales. Keep in mind the case when a third party add
+    //a constants file only on meegotuch and not for every locale
+    Q_UNUSED (locale);
 
-    // go through whole inheritance hierarchy
-    foreach(QString path, themeInheritanceChain) {
-        append(path + QString("constants.ini"));
+    foreach(QString theme, themeInheritanceChain) {
+        QDir dir(THEME_INDEX_DIR(theme));
+        dir.setNameFilters(QStringList("*.ini"));
+        foreach (QString file, dir.entryList(QDir::Files)) {
+            append(dir.canonicalPath() + QDir::separator() + file, theme);
+        }
     }
 }
 
@@ -293,7 +283,6 @@ bool MLogicalValues::findKey(const QByteArray &key, QByteArray &group, QVariant 
 
     return false;
 }
-
 
 bool MLogicalValues::value(const QByteArray &group, const QByteArray &key, QVariant &value) const
 {
@@ -324,6 +313,12 @@ QList<QByteArray> MLogicalValues::groups() const
         keys << iterator.key();
     }
     return keys;
+}
+
+Groups MLogicalValues::data() const
+{
+    Q_D(const MLogicalValues);
+    return d->data;
 }
 
 QHash<QByteArray, QVariant> MLogicalValues::values(const QByteArray &group) const

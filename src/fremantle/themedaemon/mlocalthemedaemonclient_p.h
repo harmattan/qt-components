@@ -59,7 +59,7 @@ public:
     /**
      * Update property map with all available groups
      */
-    bool updateValues(QDeclarativePropertyMap *map, QList<MAbstractThemeDaemonClient::ThemeProperty> *updated);
+    bool updateValues(QVariantMap *maps);
 
     /**
      * Reads the image \a id from the available directories specified

@@ -91,9 +91,9 @@ bool MThemeDaemon::requestTheme(const QString &newTheme)
     return m_themeDaemonClient->requestTheme(newTheme);
 }
 
-bool MThemeDaemon::requestValues(QDeclarativePropertyMap *map, QList<ThemeProperty> *updated)
+bool MThemeDaemon::requestValues(QVariantMap *map)
 {
-    return m_themeDaemonClient->requestValues(map, updated);
+    return m_themeDaemonClient->requestValues(map);
 }
 
 QPixmap MThemeDaemon::requestPixmap(const QString &id, const QSize &requestedSize)

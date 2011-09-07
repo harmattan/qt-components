@@ -22,6 +22,9 @@
 
 #include <QStringList>
 
+typedef QHash<QByteArray, QVariant> Values;
+typedef QHash<QByteArray, Values> Groups;
+
 class MLogicalValuesPrivate;
 
 //! \internal
@@ -31,15 +34,17 @@ public:
     MLogicalValues();
     ~MLogicalValues();
 
-    void load(const QStringList &themeInheritanceChain, const QString &locale = QString());
-    bool append(const QString &fileName);
+    void load(const QStringList &themeInheritance, const QString &locale = QString());
+    bool append(const QString &fileName, const QString &theme = QString());
 
     bool findKey(const QByteArray &key, QByteArray &group, QVariant &value) const;
     bool value(const QByteArray &group, const QByteArray &key, QVariant &value) const;
 
-    QList<uint> timestamps() const;
+    Groups data() const;
     QList<QByteArray> groups() const;
     QHash<QByteArray, QVariant> values(const QByteArray &group) const;
+
+    QList<uint> timestamps() const;
 
 protected:
     MLogicalValuesPrivate *const d_ptr;

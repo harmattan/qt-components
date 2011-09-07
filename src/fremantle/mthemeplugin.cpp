@@ -39,8 +39,6 @@
 ****************************************************************************/
 
 #include <QtDeclarative/QDeclarativePropertyMap>
-//#include <QApplication>
-//#include <QPointer>
 
 #include "mthemeplugin.h"
 #include "mthemedaemon.h"
@@ -49,6 +47,7 @@
 # include "mimsettings.h"
 #endif
 
+#include <QDebug>
 
 MThemePlugin::MThemePlugin(QDeclarativeItem *parent)
     : QObject(parent),
@@ -57,11 +56,11 @@ MThemePlugin::MThemePlugin(QDeclarativeItem *parent)
       #ifdef HAVE_GCONF
       m_nameConf(new MImSettings ("/qtcomponents/themes/current")),
       #endif
-      m_constants(new QDeclarativePropertyMap())
+      m_constants()
 {
     // Load default system theme
     MThemeDaemon::instance()->requestTheme(name());
-    MThemeDaemon::instance()->requestValues(m_constants);
+    MThemeDaemon::instance()->requestValues(&m_constants);
 
 #ifdef HAVE_GCONF
     QObject::connect(m_nameConf, SIGNAL(valueChanged()), this, SLOT(onValueChanged()));
@@ -71,7 +70,6 @@ MThemePlugin::MThemePlugin(QDeclarativeItem *parent)
 MThemePlugin::~MThemePlugin()
 {
     delete m_nameConf;
-    delete m_constants;
 }
 
 bool MThemePlugin::isInverted() const
@@ -91,7 +89,6 @@ bool MThemePlugin::setName(const QString &newTheme)
 {
     // If newTheme is empty, fallback to system theme
     QString tmpTheme = newTheme;
-    QList<MThemeDaemon::ThemeProperty> updated;
 
     if (tmpTheme.isEmpty()) {
 #ifdef HAVE_GCONF
@@ -101,18 +98,13 @@ bool MThemePlugin::setName(const QString &newTheme)
 #endif
     }
     if (MThemeDaemon::instance()->requestTheme(tmpTheme)) {
-        // Notify about theme change
         qDebug() << "Theme changed to " << newTheme;
+        MThemeDaemon::instance()->requestValues(&m_constants);
+
+        // Notify about theme change
         m_name = newTheme;
         emit nameChanged();
 
-        // Notify of each property updated
-        MThemeDaemon::instance()->requestValues(m_constants, &updated);
-#if 0
-        foreach(const MThemeDaemon::ThemeProperty & value, updated) {
-            emit qobject_cast<QDeclarativePropertyMap *>(value.owner)->valueChanged(value.key, value.value);
-        }
-#endif
         // This is a hack. Force components to update its images
         emit invertedChanged();
         return true;
@@ -131,6 +123,11 @@ QString MThemePlugin::name() const
 #else
     return QString(DEFAULT_THEME);
 #endif
+}
+
+QVariantMap MThemePlugin::constants() const
+{
+    return m_constants;
 }
 
 void MThemePlugin::onValueChanged()
