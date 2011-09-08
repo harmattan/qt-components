@@ -173,7 +173,6 @@ bool MLogicalValuesPrivate::loadFromBinaryCache(const QString &theme, const QFil
                 return false;
             }
             stream >> groups;
-            qDebug() << groups;
             file.close();
             return true;
         } else {
