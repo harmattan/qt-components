@@ -44,6 +44,7 @@
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
+#include <QtDeclarative/QDeclarativePropertyMap>
 
 class FremantlePlugin : public QDeclarativeExtensionPlugin
 {
@@ -52,6 +53,7 @@ class FremantlePlugin : public QDeclarativeExtensionPlugin
 public:
     void initializeEngine(QDeclarativeEngine *engine, const char *uri);
     void registerTypes(const char *uri);
+    QDeclarativePropertyMap *uiConstants();
 };
 
 #endif // FREMANTLE_PLUGIN_H
