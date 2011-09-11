@@ -1,4 +1,4 @@
-#/bin/bash
+#/bin/bash -x
 
 function fremantle()
 {
@@ -9,6 +9,7 @@ function fremantle()
 
     for FILE in ${FILES[@]}; do
 	sed -i -e 's/^\(import[ \t]\+QtQuick[ \t]\+\)1.1[ \t]*$/\11.0/g' $FILE
+	sed -i -e 's/^\(import[ \t]\+\).*components[ \t].*$/\1Qt.labs.components 1.0/' $FILE
 	sed -i -e 's/^\(import[ \t]\+\).*meego[ \t].*$/\1org.maemo.fremantle 1.0/' $FILE
 	sed -i -e 's/^\(import[ \t]\+\).*meego.extras[ \t].*$/\1org.maemo.fremantle.extras 1.0/' $FILE
     done
