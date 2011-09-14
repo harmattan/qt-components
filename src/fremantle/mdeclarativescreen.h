@@ -107,8 +107,6 @@ public:
     static MDeclarativeScreen* instance();
     virtual ~MDeclarativeScreen();
 
-    Q_INVOKABLE void updatePlatformStatusBarRect(QDeclarativeItem * statusBar);
-
     Orientation currentOrientation() const;
 
     Orientations allowedOrientations() const;
