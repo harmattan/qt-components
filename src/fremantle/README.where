@@ -18,7 +18,7 @@ style/Style.qml						meego
 style/WindowStyle.qml					new
 PageStack[qml|js]					symbian
 Page.qml						symbian
-sdeclarative.[cpp|h]					symbian
+mdeclarative.[cpp|h]					symbian
 ToolBar.qml						meego
 style/ToolBarStyle.qml					meego
 StatusBar.qml						symbian

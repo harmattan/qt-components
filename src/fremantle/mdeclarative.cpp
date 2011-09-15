@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
+** $QT_BEGIN_LICENSE:BMD$
+** You may use this file under the terms of the BMD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,107 +38,71 @@
 **
 ****************************************************************************/
 
-#include "sdeclarative.h"
+#include "mdeclarative.h"
+
 #include <QCoreApplication>
 #include <QTime>
 #include <QTimer>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QPixmapCache>
-#include <QSysInfo>
 
-//#define Q_DEBUG_SDECLARATIVE
-#if defined(Q_DEBUG_SDECLARATIVE)
 #include <QDebug>
-#endif // Q_DEBUG_SDECLARATIVE
 
 static const int MINUTE_MS = 60*1000;
 
-class SDeclarativePrivate
+class MDeclarativePrivate
 {
 public:
-    SDeclarativePrivate()
-        : mListInteractionMode(SDeclarative::TouchInteraction)
-        , foreground(true)
-        , rightToLeftDisplayLanguage(false) {
-    }
-
-    SDeclarative::InteractionMode mListInteractionMode;
     QTimer timer;
-    bool foreground;
-    bool rightToLeftDisplayLanguage;
+    MDeclarativePrivate() {}
 };
 
-
-SDeclarative::SDeclarative(QObject *parent) :
+MDeclarative::MDeclarative(QObject *parent) :
     QObject(parent),
-    d_ptr(new SDeclarativePrivate)
+    d_ptr(new MDeclarativePrivate)
 {
-    d_ptr->timer.start(MINUTE_MS);
-    connect(&d_ptr->timer, SIGNAL(timeout()), this, SIGNAL(currentTimeChanged()));
+    Q_D(MDeclarative);
+    d->timer.start(MINUTE_MS);
+    connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(currentTimeChanged()));
 
     QCoreApplication *application = QCoreApplication::instance();
     if (application)
         application->installEventFilter(this);
 }
 
-SDeclarative::~SDeclarative()
+MDeclarative::~MDeclarative()
 {
     d_ptr->timer.stop();
+    delete d_ptr;
 }
 
-SDeclarative::InteractionMode SDeclarative::listInteractionMode() const
-{
-    return d_ptr->mListInteractionMode;
-}
-
-void SDeclarative::setListInteractionMode(SDeclarative::InteractionMode mode)
-{
-    if (d_ptr->mListInteractionMode != mode) {
-        d_ptr->mListInteractionMode = mode;
-        emit listInteractionModeChanged();
-    }
-}
-
-QString SDeclarative::currentTime()
+QString MDeclarative::currentTime()
 {
     return QTime::currentTime().toString(QLatin1String("h:mm"));
 }
 
-bool SDeclarative::isForeground()
-{
-    return d_ptr->foreground;
-}
-
-void SDeclarative::privateClearIconCaches()
+void MDeclarative::privateClearIconCaches()
 {
     QPixmapCache::clear();
 }
 
-void SDeclarative::privateClearComponentCache()
+void MDeclarative::privateClearComponentCache()
 {
     QDeclarativeContext *context = qobject_cast<QDeclarativeContext*>(this->parent());
-    if (context)
+    if (context) {
         context->engine()->clearComponentCache();
+    }
 }
 
-bool SDeclarative::rightToLeftDisplayLanguage() const
-{
-    return d_ptr->rightToLeftDisplayLanguage;
-}
-
-bool SDeclarative::eventFilter(QObject *obj, QEvent *event)
+bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == QCoreApplication::instance()) {
         if (event->type() == QEvent::ApplicationActivate) {
             emit currentTimeChanged();
             d_ptr->timer.start(MINUTE_MS);
-            d_ptr->foreground = true;
-            emit foregroundChanged();
         } else if (event->type() == QEvent::ApplicationDeactivate) {
             d_ptr->timer.stop();
-            d_ptr->foreground = false;
-            emit foregroundChanged();
         }
     }
     return QObject::eventFilter(obj, event);

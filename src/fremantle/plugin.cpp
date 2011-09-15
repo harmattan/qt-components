@@ -56,7 +56,7 @@
 #include "mtexttranslator.h"
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
-#include "sdeclarative.h"
+#include "mdeclarative.h"
 
 #include "plugin.h"
 
@@ -105,7 +105,7 @@ void FremantlePlugin::initializeEngine(QDeclarativeEngine *engine, const char *u
         context->setContextProperty("inputContext", new MDeclarativeInputContext);
         qmlRegisterUncreatableType<MDeclarativeInputContext>(uri, 1, 0, "InputContext", "");
 
-        SDeclarative *declarative = new SDeclarative(context);
+        MDeclarative *declarative = new MDeclarative(context);
         context->setContextProperty("maemo", declarative);
 
         context->setContextProperty("platformWindow", MWindowState::instance());
@@ -131,10 +131,10 @@ void FremantlePlugin::registerTypes(const char *uri) {
         // Add here custom types
         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
 
-        qmlRegisterUncreatableType<SPageStatus>(uri, 1, 0, "PageStatus", "");
+        qmlRegisterUncreatableType<MPageStatus>(uri, 1, 0, "PageStatus", "");
         qmlRegisterUncreatableType<MDialogStatus>(uri, 1, 0, "DialogStatus", "");
         qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState","");
-        qmlRegisterUncreatableType<SPageOrientation>(uri, 1, 0, "PageOrientation", "");
+        qmlRegisterUncreatableType<MPageOrientation>(uri, 1, 0, "PageOrientation", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
         qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
 
