@@ -48,14 +48,12 @@ Style {
             ((screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted) ? "portrait" : "landscape") +
             __invertedString + "-background"
 
-	// Fremantle only buttons to replace Harmattan swipe functionality
+    // Fremantle only buttons to replace Harmattan swipe functionality
     property url closeButton: "image://theme/icon-f-statusbar-close"
     property url homeButton:  "image://theme/icon-f-statusbar-home"
 
-    //property int statusBarHeight: 36
-
     // Default separation between elements
-    property int paddingSmall:     6
+    property int paddingSmall: 6
 
     // StatusBar default font color
     property color clockColor: inverted ? UI.COLOR_STATUSBAR_INVERTED_FOREGROUND : UI.COLOR_STATUSBAR_FOREGROUND
@@ -64,7 +62,13 @@ Style {
     // transitions
     property int visibilityTransitionDuration: 250
 
-	// Fremantle help transitions
+    // Fremantle help transitions
     property int showHelpDuration: 1600
     property int helpTransitionDuration: 400
-}
+
+    // Fremantle Battery indicators
+    property int batteryLevels: 8
+    property int batteryPeriod: 3500 
+    property url batteryFrames: "image://theme/icon-s-status-battery"
+ }
+

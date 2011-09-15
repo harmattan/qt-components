@@ -68,6 +68,35 @@ Item {
         width: root.width
         source: platformStyle.background
 
+        // battery indicator
+        Item {
+            id: batteryIndicator
+	    height: parent.height
+            property int animatedLevel : 0
+
+	    anchors {
+	        left: parent.left
+                leftMargin: platformStyle.paddingSmall
+	    }
+
+            Image {
+                id: indicator
+                source: platformStyle.batteryFrames + (maemo.batteryInfo.charging ?
+                            (parent.animatedLevel > 0 ? parent.animatedLevel : "-low")    :
+                            (maemo.batteryInfo.batteryLevel > 0 ? maemo.batteryInfo.batteryLevel : "-verylow"))
+
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            NumberAnimation {
+                id: batteryChargingAnimation
+                running: maemo.batteryInfo.charging && root.visible && platformWindow.active
+                target: batteryIndicator; property: "animatedLevel"
+                from: 0; to: platformStyle.batteryLevels; duration: platformStyle.batteryPeriod
+                loops: Animation.Infinite
+            }
+        }
+
         // clock
         Text {
             id: timeItem
@@ -130,7 +159,7 @@ Item {
         }
     }
 
-     Timer{
+    Timer{
         id: stimer
         interval: platformStyle.showHelpDuration; running: showHelp; repeat: false;
     }
@@ -139,7 +168,7 @@ Item {
         id: mouseArea
         anchors.fill: parent
 
-        onClicked: {
+        onPressed: {
             //FIXME: Implement a StatusApplet. See symbian Belle for details
             console.log("Area clicked")
         }
@@ -151,6 +180,21 @@ Item {
         property int contentHeight: Math.round(root.height * 18 / 26)
         property int paddingSmallOneQuarter: Math.round(platformStyle.paddingSmall / 4)
         property int paddingSmallThreeQuarters: Math.round(platformStyle.paddingSmall * 3 / 4)
+
+        function signalWidthPercentage(signalStrength) {
+            if (signalStrength < 10)
+                return 0;
+            else if (signalStrength < 20)
+                return 1/5;
+            else if (signalStrength < 30)
+                return 2/5;
+            else if (signalStrength < 60)
+                return 3/5;
+            else if (signalStrength < 100)
+                return 4/5;
+            else
+                return 1;
+        }
     }
 
     states: [
@@ -175,7 +219,7 @@ Item {
             from: ""; to: "hidden"; reversible: true
             ParallelAnimation {
                 PropertyAnimation {properties: "anchors.topMargin"; easing.type: Easing.InOutExpo;  duration: platformStyle.visibilityTransitionDuration }
-			    PropertyAnimation { target: statusBar; properties: "visible"; }
+                PropertyAnimation { target: statusBar; properties: "visible"; }
             }
         },
         Transition {
