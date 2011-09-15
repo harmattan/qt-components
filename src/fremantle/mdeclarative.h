@@ -81,18 +81,21 @@ public:
 
 };
 
+class MBatteryInfo;
 class MDeclarativePrivate;
 
 class MDeclarative : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString currentTime READ currentTime NOTIFY currentTimeChanged)
+    Q_PROPERTY(MBatteryInfo * batteryInfo READ batteryInfo CONSTANT FINAL)
 
 public:
     explicit MDeclarative(QObject *parent = 0);
     virtual ~MDeclarative();
 
     static QString currentTime();
+    MBatteryInfo * batteryInfo();
 
     Q_INVOKABLE void privateClearIconCaches();
     Q_INVOKABLE void privateClearComponentCache();

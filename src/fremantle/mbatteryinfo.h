@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BMD$
-** You may use this file under the terms of the BMD license as follows:
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,80 +38,43 @@
 **
 ****************************************************************************/
 
-#include "mdeclarative.h"
-#include "mbatteryinfo.h"
+#ifndef MBATTERYINFO_H
+#define MBATTERYINFO_H
 
-#include <QCoreApplication>
-#include <QTime>
-#include <QTimer>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QPixmapCache>
+#include <QtCore/qscopedpointer.h>
+#include <QtDeclarative/qdeclarativeitem.h>
 
-#include <QDebug>
+class MBatteryInfoPrivate;
 
-static const int MINUTE_MS = 60*1000;
-
-class MDeclarativePrivate
+class MBatteryInfo : public QObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
+    Q_PROPERTY(bool charging READ charging NOTIFY chargingChanged)
+    Q_PROPERTY(bool powerSaveModeEnabled READ powerSaveModeEnabled NOTIFY powerSaveModeEnabledChanged)
+
 public:
-    QTimer timer;
-    MBatteryInfo batteryInfo;
-    MDeclarativePrivate() {}
+    explicit MBatteryInfo(QObject *parent = 0);
+    ~MBatteryInfo();
+
+    int batteryLevel() const;
+    bool charging() const;
+    bool powerSaveModeEnabled() const;
+
+Q_SIGNALS:
+    void batteryLevelChanged(int level);
+    void chargingChanged(bool charging);
+    void powerSaveModeEnabledChanged(bool enabled);
+
+protected:
+    MBatteryInfoPrivate* d_ptr;
+
+private:
+    Q_DISABLE_COPY(MBatteryInfo)
+    Q_DECLARE_PRIVATE(MBatteryInfo)
 };
 
-MDeclarative::MDeclarative(QObject *parent) :
-    QObject(parent),
-    d_ptr(new MDeclarativePrivate)
-{
-    Q_D(MDeclarative);
-    d->timer.start(MINUTE_MS);
-    connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(currentTimeChanged()));
+QML_DECLARE_TYPE(MBatteryInfo)
 
-    QCoreApplication *application = QCoreApplication::instance();
-    if (application)
-        application->installEventFilter(this);
-}
-
-MDeclarative::~MDeclarative()
-{
-    d_ptr->timer.stop();
-    delete d_ptr;
-}
-
-QString MDeclarative::currentTime()
-{
-    return QTime::currentTime().toString(QLatin1String("h:mm"));
-}
-
-MBatteryInfo *MDeclarative::batteryInfo()
-{
-    Q_D(MDeclarative);
-    return &d->batteryInfo;
-}
-
-void MDeclarative::privateClearIconCaches()
-{
-    QPixmapCache::clear();
-}
-
-void MDeclarative::privateClearComponentCache()
-{
-    QDeclarativeContext *context = qobject_cast<QDeclarativeContext*>(this->parent());
-    if (context) {
-        context->engine()->clearComponentCache();
-    }
-}
-
-bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
-{
-    if (obj == QCoreApplication::instance()) {
-        if (event->type() == QEvent::ApplicationActivate) {
-            emit currentTimeChanged();
-            d_ptr->timer.start(MINUTE_MS);
-        } else if (event->type() == QEvent::ApplicationDeactivate) {
-            d_ptr->timer.stop();
-        }
-    }
-    return QObject::eventFilter(obj, event);
-}
+#endif // MBATTERYINFO_H

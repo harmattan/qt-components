@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BMD$
-** You may use this file under the terms of the BMD license as follows:
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,80 +38,44 @@
 **
 ****************************************************************************/
 
-#include "mdeclarative.h"
 #include "mbatteryinfo.h"
 
-#include <QCoreApplication>
-#include <QTime>
-#include <QTimer>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QPixmapCache>
-
-#include <QDebug>
-
-static const int MINUTE_MS = 60*1000;
-
-class MDeclarativePrivate
+// dummy private class
+class MBatteryInfoPrivate
 {
+    Q_DECLARE_PUBLIC(MBatteryInfo)
+
 public:
-    QTimer timer;
-    MBatteryInfo batteryInfo;
-    MDeclarativePrivate() {}
+    MBatteryInfoPrivate(MBatteryInfo *qq) : q_ptr(qq) {}
+
+private:
+    MBatteryInfo *q_ptr;
 };
 
-MDeclarative::MDeclarative(QObject *parent) :
-    QObject(parent),
-    d_ptr(new MDeclarativePrivate)
-{
-    Q_D(MDeclarative);
-    d->timer.start(MINUTE_MS);
-    connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(currentTimeChanged()));
 
-    QCoreApplication *application = QCoreApplication::instance();
-    if (application)
-        application->installEventFilter(this);
+MBatteryInfo::MBatteryInfo(QObject *parent) :
+    QObject(parent), d_ptr(new MBatteryInfoPrivate(this))
+{
 }
 
-MDeclarative::~MDeclarative()
+MBatteryInfo::~MBatteryInfo()
 {
-    d_ptr->timer.stop();
     delete d_ptr;
 }
 
-QString MDeclarative::currentTime()
+int MBatteryInfo::batteryLevel() const
 {
-    return QTime::currentTime().toString(QLatin1String("h:mm"));
+    return 1;
 }
 
-MBatteryInfo *MDeclarative::batteryInfo()
+bool MBatteryInfo::charging() const
 {
-    Q_D(MDeclarative);
-    return &d->batteryInfo;
+    return false;
 }
 
-void MDeclarative::privateClearIconCaches()
+bool MBatteryInfo::powerSaveModeEnabled() const
 {
-    QPixmapCache::clear();
+    return false;
 }
 
-void MDeclarative::privateClearComponentCache()
-{
-    QDeclarativeContext *context = qobject_cast<QDeclarativeContext*>(this->parent());
-    if (context) {
-        context->engine()->clearComponentCache();
-    }
-}
-
-bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
-{
-    if (obj == QCoreApplication::instance()) {
-        if (event->type() == QEvent::ApplicationActivate) {
-            emit currentTimeChanged();
-            d_ptr->timer.start(MINUTE_MS);
-        } else if (event->type() == QEvent::ApplicationDeactivate) {
-            d_ptr->timer.stop();
-        }
-    }
-    return QObject::eventFilter(obj, event);
-}
+#include "moc_mbatteryinfo.cpp"

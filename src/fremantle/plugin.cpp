@@ -57,6 +57,7 @@
 #include "mthemeplugin.h"
 #include "mwindowstate.h"
 #include "mdeclarative.h"
+#include "mbatteryinfo.h"
 
 #include "plugin.h"
 
@@ -137,6 +138,9 @@ void FremantlePlugin::registerTypes(const char *uri) {
         qmlRegisterUncreatableType<MPageOrientation>(uri, 1, 0, "PageOrientation", "");
         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
         qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
+
+        // Fremantle statusbar 
+        qmlRegisterUncreatableType<MBatteryInfo>(uri, 1, 0, "BatteryInfo", "");
 
         // Custom primitives
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");

@@ -99,3 +99,4 @@ BusyIndicator.qml					meego
 style/BusyIndicator.qml					meego
 Switch.qml						meego
 style/Switch.qml					meego
+mbatteryinfo[h|cpp]					symbian

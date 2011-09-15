@@ -14,7 +14,8 @@ force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
 QT += declarative svg opengl
-!win32:!macx:!simulator {
+
+maemo5 {
     SOURCES += \
         asyncdbusinterface.cpp \
         fdbusproxy.cpp \
@@ -22,6 +23,7 @@ QT += declarative svg opengl
         fmceservice.cpp \
         forientationdevice.cpp \
         fsliderdevice.cpp \
+        mbatteryinfo_fremantle.cpp \
 
     HEADERS += \
         asyncdbusinterface.h \
@@ -33,6 +35,10 @@ QT += declarative svg opengl
 
     QT += dbus
     DEFINES += HAVE_DBUS  
+}
+else {
+    SOURCES += \
+        mbatteryinfo.cpp \
 }
 
 !win32:!embedded:!mac:!symbian {
@@ -127,6 +133,7 @@ SOURCES += \
     shadereffectitem/utilities.cpp \
 
 HEADERS += \
+    mbatteryinfo.h \
     mdeclarativeimageprovider.h \
     mdeclarativeimattributeextension.h \
     mdeclarativeimobserver.h \
