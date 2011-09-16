@@ -95,6 +95,10 @@ void FSliderDevice::stop(QObject *requestor)
         // Remove all connections
         delete proxy; proxy = 0;
         delete watcher; watcher = 0;
+
+	// Set open property to initial state. This will force an update
+	// if, on service reactivation. keyboard is open
+	open = false;
     }
 }
 
