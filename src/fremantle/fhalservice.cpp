@@ -1,5 +1,6 @@
 
 #include <QDBusServiceWatcher>
+#include <QDBusMetaType>
 #include <fhalservice.h>
 
 #define HAL_SERVICE_NAME "org.freedesktop.Hal"
@@ -20,7 +21,14 @@ FHALService::FHALService(const QString& path, QObject *parent):
     FDBusProxy(path, parent),
     watcher(0)
 {
-    serviceName   = HAL_SERVICE_NAME;
+    static bool property_registered = false;
+    serviceName = HAL_SERVICE_NAME;
+ 
+   if (!property_registered) {
+      qDBusRegisterMetaType< FHALProperty >();
+      qDBusRegisterMetaType< QList<FHALProperty> >();
+      property_registered = true;
+    }
 }
 
 void FHALService::start(QObject *requestor)
@@ -68,5 +76,20 @@ bool FHALService::isReady() const
     return ready;
 }
 
+const QDBusArgument & operator<<(QDBusArgument &arg, const FHALProperty &change)
+{
+    arg.beginStructure();
+    arg << change.name << change.added << change.removed;
+    arg.endStructure();
+    return arg;
+}
+
+const QDBusArgument & operator>>(const QDBusArgument &arg, FHALProperty &change)
+{
+    arg.beginStructure();
+    arg >> change.name >> change.added >> change.removed;
+    arg.endStructure();
+    return arg;
+}
 
 #include "moc_fhalservice.cpp"

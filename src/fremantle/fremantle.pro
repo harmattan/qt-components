@@ -18,15 +18,17 @@ QT += declarative svg opengl
 maemo5 {
     SOURCES += \
         asyncdbusinterface.cpp \
+        fbatteryinfo.cpp \
+        fbmedevice.cpp \
         fdbusproxy.cpp \
         fhalservice.cpp \
         fmceservice.cpp \
         forientationdevice.cpp \
         fsliderdevice.cpp \
-        mbatteryinfo_fremantle.cpp \
 
     HEADERS += \
         asyncdbusinterface.h \
+        fbmedevice.h \
         fdbusproxy.h \
         fhalservice.h \
         fmceservice.h \

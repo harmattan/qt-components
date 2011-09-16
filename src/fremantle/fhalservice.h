@@ -9,6 +9,16 @@
 
 #define HAL_BUS QDBusConnection::systemBus()
 
+struct FHALProperty 
+{
+    FHALProperty(): name(""), added(false), removed(false) {}
+    FHALProperty(QString name) : name(name), added(false), removed(false) {}
+
+    QString name;
+    bool    added;
+    bool    removed;
+};
+
 class FHALService : public FDBusProxy
 {
     Q_OBJECT
@@ -42,5 +52,8 @@ private Q_SLOTS:
     void isDown();
     void isUp();
 };
+
+Q_DECLARE_METATYPE(FHALProperty)
+Q_DECLARE_METATYPE(QList<FHALProperty>)
 
 #endif /* ! FHALSERVICE_H */

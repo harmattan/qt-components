@@ -65,7 +65,7 @@ MBatteryInfo::~MBatteryInfo()
 
 int MBatteryInfo::batteryLevel() const
 {
-    return 1;
+    return 0;
 }
 
 bool MBatteryInfo::charging() const

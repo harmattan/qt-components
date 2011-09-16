@@ -38,43 +38,53 @@
 **
 ****************************************************************************/
 
-#ifndef MBATTERYINFO_H
-#define MBATTERYINFO_H
+#include "fbmedevice.h"
+#include "mbatteryinfo.h"
 
-#include <QtCore/qscopedpointer.h>
-#include <QtDeclarative/qdeclarativeitem.h>
-
-class MBatteryInfoPrivate;
-
-class MBatteryInfo : public QObject
+class MBatteryInfoPrivate
 {
-    Q_OBJECT
-
-    Q_PROPERTY(int batteryLevel READ batteryLevel NOTIFY batteryLevelChanged)
-    Q_PROPERTY(bool charging READ charging NOTIFY chargingChanged)
-    Q_PROPERTY(bool powerSaveModeEnabled READ powerSaveModeEnabled NOTIFY powerSaveModeEnabledChanged)
+    Q_DECLARE_PUBLIC(MBatteryInfo)
 
 public:
-    explicit MBatteryInfo(QObject *parent = 0);
-    ~MBatteryInfo();
-
-    int batteryLevel() const;
-    bool charging() const;
-    bool powerSaveModeEnabled() const;
-
-Q_SIGNALS:
-    void batteryLevelChanged();
-    void chargingChanged();
-    void powerSaveModeEnabledChanged();
-
-protected:
-    MBatteryInfoPrivate* d_ptr;
+    MBatteryInfoPrivate(MBatteryInfo *qq) : bme(BME_DEVICE), q_ptr(qq) {}
+    FBMEDevice bme;
 
 private:
-    Q_DISABLE_COPY(MBatteryInfo)
-    Q_DECLARE_PRIVATE(MBatteryInfo)
+    MBatteryInfo *q_ptr;
 };
 
-QML_DECLARE_TYPE(MBatteryInfo)
+MBatteryInfo::MBatteryInfo(QObject *parent) :
+    QObject(parent), d_ptr(new MBatteryInfoPrivate(this))
+{
+    Q_D(MBatteryInfo);
 
-#endif // MBATTERYINFO_H
+    QObject::connect(&d->bme, SIGNAL(levelChanged()), this, SIGNAL(batteryLevelChanged()));
+    QObject::connect(&d->bme, SIGNAL(chargingChanged()), this, SIGNAL(chargingChanged()));
+
+    //Start to listen to events
+    d->bme.start();
+}
+
+MBatteryInfo::~MBatteryInfo()
+{
+    delete d_ptr;
+}
+
+int MBatteryInfo::batteryLevel() const
+{
+    const Q_D(MBatteryInfo);
+    return d->bme.batteryLevel();
+}
+
+bool MBatteryInfo::charging() const
+{
+    const Q_D(MBatteryInfo);
+    return d->bme.isCharging();
+}
+
+bool MBatteryInfo::powerSaveModeEnabled() const
+{
+    return false;
+}
+
+#include "moc_mbatteryinfo.cpp"
