@@ -92,9 +92,9 @@ MLocalThemeDaemonClientPrivate::MLocalThemeDaemonClientPrivate(QObject *parent)
       m_imageDirNodes(),
       m_constants(new MLogicalValues())
 {
-    m_imageDirNodes.append(ImageDirNode("icons" , QStringList() << ".svg" << ".png" << ".jpg"));
-    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("theme"), QStringList() << ".png" << ".jpg"));
-    m_imageDirNodes.append(ImageDirNode(QLatin1String("images") + QDir::separator() + QLatin1String("backgrounds"), QStringList() << ".png" << ".jpg"));
+    m_imageDirNodes.append(ImageDirNode(QLatin1String("apps"),   QStringList() << ".svg" << ".png" << ".jpg"));
+    m_imageDirNodes.append(ImageDirNode(QLatin1String("icons") , QStringList() << ".svg" << ".png" << ".jpg"));
+    m_imageDirNodes.append(ImageDirNode(QLatin1String("images"), QStringList() << ".svg" << ".png" << ".jpg"));
 }
 
 MLocalThemeDaemonClientPrivate::~MLocalThemeDaemonClientPrivate()
@@ -168,10 +168,9 @@ bool MLocalThemeDaemonClientPrivate::activateTheme(const QString &newTheme)
 
         // Update Hashes
         newThemeInheritance[i] = newThemeInheritance[i] + QDir::separator() + "meegotouch" + QDir::separator();
-        buildHash(newThemeInheritance[i] + "icons", QStringList() << "*.svg" << "*.png" << "*.jpg");
-        buildHash(newThemeInheritance[i] + "images" + QDir::separator() + "theme", QStringList() << "*.png" << "*.jpg");
-        buildHash(newThemeInheritance[i] + "images" + QDir::separator() + "backgrounds", QStringList() << "*.png" << "*.jpg");
-
+        buildHash(newThemeInheritance[i] + "apps",   QStringList() << "*.svg" << "*.png" << "*.jpg");
+        buildHash(newThemeInheritance[i] + "icons" , QStringList() << "*.svg" << "*.png" << "*.jpg");
+        buildHash(newThemeInheritance[i] + "images", QStringList() << "*.svg" << "*.png" << "*.jpg");
     }
     saveThemeToBinaryCache(newTheme);
     currentThemeName = newTheme;
