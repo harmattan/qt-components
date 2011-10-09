@@ -41,8 +41,6 @@
 import QtQuick 1.0
 import "." 1.0
 
-import "UIConstants.js" as UI
-
 Item {
     id: root
     width: screen.displayWidth
@@ -83,11 +81,11 @@ Item {
         MouseArea {
             id: switchButton
             enabled: allowSwitch && screen.allowSwipe
-            z: UI.STATUS_BAR_Z_INDEX
+            z: platformStyle.buttonZIndex
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
                 top: parent.top; left: parent.left
-                topMargin: platformStyle.paddingSmall; leftMargin: platformStyle.paddingSmall
+                topMargin: platformStyle.buttonVerticalMargin; leftMargin: platformStyle.buttonHorizontalMargin
             }
             onClicked: screen.minimized = true
         }
@@ -95,11 +93,11 @@ Item {
         MouseArea {
             id: closeButton
             enabled: allowClose && screen.allowSwipe
-            z: UI.STATUS_BAR_Z_INDEX
+            z: platformStyle.buttonZIndex
             width: platformStyle.buttonWidth; height: platformStyle.buttonHeight
             anchors {
                 top: parent.top; right: parent.right
-                topMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall
+                topMargin: platformStyle.buttonVerticalMargin; rightMargin: platformStyle.buttonHorizontalMargin
             }
             onClicked: Qt.quit()
         }

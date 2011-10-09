@@ -39,11 +39,19 @@
 ****************************************************************************/
 
 import QtQuick 1.0
-import "UIConstants.js" as UI
+import "." 1.0
 
 Style {
     property color colorBackground: "black"
-    property int buttonWidth:  UI.SIZE_BUTTON
-    property int buttonHeight:  UI.SIZE_BUTTON
-    property int paddingSmall: UI.PADDING_SMALL
+
+    // pseudo buttons size
+    property int buttonWidth:  theme.constants.QtcCore.WINDOW_BUTTON_WIDTH
+    property int buttonHeight:  theme.constants.QtcCore.WINDOW_BUTTON_HEIGHT
+
+    // pseudo buttons position
+    property double buttonVerticalMargin: 0
+    property double buttonHorizontalMargin: 0
+
+    // ppseudo buttons index
+    property int buttonZIndex: theme.constants.QtcCore.STATUS_BAR_Z_INDEX
 }
