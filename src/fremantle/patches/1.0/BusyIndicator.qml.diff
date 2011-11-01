@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/BusyIndicator.qml b/src/fremantle/BusyIndicator.qml
+index cdeeeb1..64578ad 100644
+--- b/src/fremantle/BusyIndicator.qml
++++ a/src/fremantle/BusyIndicator.qml
+@@ -74,7 +74,7 @@
+         NumberAnimation on index {
+             from: 1; to: root.platformStyle.numberOfFrames
+             duration: root.platformStyle.period
+-            running: root.running && root.visible && Qt.application.active && !internal.offScreen
++            running: root.running && root.visible && platformWindow.active && !internal.offScreen
+             loops: Animation.Infinite
+         }
+     }
