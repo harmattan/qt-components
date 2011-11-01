@@ -1,0 +1,15 @@
+diff --git a/src/fremantle/PageStackWindow.qml b/src/fremantle/PageStackWindow.qml
+index 802ff97..5aa551a 100644
+--- b/src/fremantle/PageStackWindow.qml
++++ a/src/fremantle/PageStackWindow.qml
+@@ -62,10 +62,6 @@
+         showStatusBar: window.showStatusBar
+     }
+ 
+-    onOrientationChangeStarted: {
+-        statusBar.orientation = screen.currentOrientation
+-    }
+-
+     Rectangle {
+         id: background
+         visible: platformStyle.background == ""
