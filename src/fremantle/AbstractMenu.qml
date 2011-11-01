@@ -58,7 +58,9 @@ Popup {
 
     // platformStyle API
     property Style platformStyle: MenuStyle{}
+    property alias style: root.platformStyle // Deprecated
     property alias platformTitle: titleBar.children
+    property alias title: titleBar.children // Deprecated
     property alias __footer: footerBar.children
 
     // private api
@@ -193,7 +195,8 @@ Popup {
 
         BorderImage {
            id: backgroundImage
-           source: "image://theme/meegotouch-menu-background"
+           source: // !enabled ? root.platformStyle.disabledBackground :
+                   root.platformStyle.background
            anchors.fill : parent
            border { left: 22; top: 22;
                     right: 22; bottom: 22 }

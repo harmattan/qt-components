@@ -38,6 +38,8 @@
 **
 ****************************************************************************/
 
+// The ToolBar is a container for toolbar items such as ToolItem or ToolButton.
+
 import QtQuick 1.0
 import "." 1.0
 
@@ -45,15 +47,96 @@ Item {
     id: root
 
     width: parent ? parent.width : 0
-    height: background.height
+    height: bgImage.height
+
+    // Dummy property to allow qt component deprecated API clients to fail more gracefully
+    property bool __hidden: false
 
     property int privateVisibility: ToolBarVisibility.Visible
 
     // Styling for the ToolBar
     property Style platformStyle: ToolBarStyle {}
 
+    // Deprecated, TODO remove
+    property alias style: root.platformStyle
+
+    // Shadows:
+    Image {
+        anchors.top : bgImage.top
+        anchors.right: bgImage.left
+        anchors.bottom : bgImage.bottom
+        source: "image://theme/meegotouch-menu-shadow-left"
+    }
+    Image {
+        anchors.bottom : bgImage.top
+        anchors.left: bgImage.left
+        anchors.right : bgImage.right
+        source: "image://theme/meegotouch-menu-shadow-top"
+    }
+    Image {
+        anchors.top : bgImage.top
+        anchors.left: bgImage.right
+        anchors.bottom : bgImage.bottom
+        source: "image://theme/meegotouch-menu-shadow-right"
+    }
+    Image {
+        anchors.top : bgImage.bottom
+        anchors.left: bgImage.left
+        anchors.right : bgImage.right
+        source: "image://theme/meegotouch-menu-shadow-bottom"
+    }
+    // Toolbar background.
+    BorderImage {
+        id: bgImage
+        width: root.width
+        border.left: 10
+        border.right: 10
+        border.top: 10
+        border.bottom: 10
+        source: platformStyle.background
+
+        // Mousearea that eats clicks so they don't go through the toolbar to content
+        // that may exist below it in z-order, such as unclipped listview items.
+        MouseArea { anchors.fill: parent }
+    }
+
+    states: [
+        // Inactive state.
+        State {
+            name: "hidden"
+            when: privateVisibility == ToolBarVisibility.Hidden || tools == null
+            PropertyChanges { target: root; height: 0; }
+        },
+        State {
+            name: "HiddenImmediately"
+            when: privateVisibility == ToolBarVisibility.HiddenImmediately
+            PropertyChanges { target: root; height: 0; }
+        },
+        State {
+            name: ""
+            when: !(privateVisibility == ToolBarVisibility.Visible || tools == null)
+            PropertyChanges { target: root; height: bgImage.height }
+        }
+
+    ]
+
+    transitions: [
+        // Transition between active and inactive states.
+        Transition {
+            from: ""; to: "hidden"; reversible: true
+            ParallelAnimation {
+                PropertyAnimation { properties: "height"; easing.type: Easing.InOutExpo; duration: platformStyle.visibilityTransitionDuration }
+            }
+        }
+    ]
+
     // The current set of tools.
     property Item tools: null
+
+    onToolsChanged: {
+        __performTransition(__transition || transition);
+        __transition = undefined;
+    }
 
     // The transition type. One of the following:
     //      set         an instantaneous change (default)
@@ -62,28 +145,64 @@ Item {
     //      replace     follows page stack replace animation
     property string transition: "set"
 
+    // The currently displayed container; null if none.
+    property Item __currentContainer: null
+
+    // Alternating containers used for transitions.
+    property Item __containerA: null
+    property Item __containerB: null
+
+    // The transition to perform next.
+    property variant __transition
+
     // Sets the tools with a transition.
     function setTools(tools, transition) {
-        stateGroup.state = tools ? "" : "hidden"
-        priv.transition = transition
-        root.tools = tools
+        __transition = transition;
+        root.tools = tools;
     }
 
-    // Toolbar background.
-    BorderImage {
-        id: background
-        width: root.width
-        source: platformStyle.background
-        border {left: 10; right: 10; top: 10; bottom: 10 }
+    // Performs a transition between tools in the toolbar.
+    function __performTransition(transition) {
+        // lazily create containers if they have not been created
+        if (!__currentContainer) {
+            // Parent is bgImage because it doesn't change height when toolbar gets hidden
+            __containerA = containerComponent.createObject(bgImage);
+            __containerB = containerComponent.createObject(bgImage);
+            __currentContainer = __containerB;
+        }
 
-        // Mousearea that eats clicks so they don't go through the toolbar to content
-        // that may exist below it in z-order, such as unclipped listview items.
-        MouseArea { anchors.fill: parent }
-    }
+        // no transition if the tools are unchanged
+        if (__currentContainer.tools == tools) {
+            return;
+        }
 
-    onToolsChanged: {
-        priv.performTransition(priv.transition || transition)
-        priv.transition = undefined
+        // select container states based on the transition animation
+        var transitions = {
+            "set":      { "new": "",        "old": "hidden" },
+            "push":     { "new": "right",   "old": "left" },
+            "pop":      { "new": "left",    "old": "right" },
+            "replace":  { "new": "front",   "old": "back" }
+        };
+        var animation = transitions[transition];
+
+        // initialize the free container
+        var container = __currentContainer == __containerA ? __containerB : __containerA;
+        container.state = "hidden";
+        if (tools) {
+            container.tools = tools;
+            container.owner = tools.parent;
+            tools.parent = container;
+            tools.visible = true;
+        }
+
+        // perform transition
+        __currentContainer.state = animation["old"];
+        if (tools) {
+            container.state = animation["new"];
+            container.state = "";
+        }
+
+        __currentContainer = container;
     }
 
     // Component for toolbar containers.
@@ -96,7 +215,7 @@ Item {
             width: parent ? parent.width : 0
             height: parent ? parent.height : 0
 
-            // The states correspond to the different possible positions of the item.
+            // The states correspond to the different possible positions of the container.
             state: "hidden"
 
             // The tools held by this container.
@@ -179,95 +298,8 @@ Item {
                     }
                 }
             ]
+
         }
     }
 
-    QtObject {
-        id: priv
-
-        property Item currentComponent: null
-
-        // Alternating components used for transitions.
-        property Item containerA: null
-        property Item containerB: null
-
-        // The transition to perform next.
-        property variant transition
-
-        // Performs a transition between tools in the toolbar.
-        function performTransition(transition) {
-            // lazily create components if they have not been created
-            if (!priv.currentComponent) {
-                priv.containerA = containerComponent.createObject(background)
-                priv.containerB = containerComponent.createObject(background)
-                priv.currentComponent = priv.containerB
-            }
-
-            // no transition if the tools are unchanged
-            if (priv.currentComponent.tools == tools)
-                return
-
-            // select container states based on the transition animation
-            var transitions = {
-                "set":      { "new": "",        "old": "hidden" },
-                "push":     { "new": "right",   "old": "left" },
-                "pop":      { "new": "left",    "old": "right" },
-                "replace":  { "new": "front",   "old": "back" }
-        };
-            var animation = transitions[transition];
-
-
-            // initialize the free component
-            var component = priv.currentComponent == priv.containerA ? priv.containerB : priv.containerA
-            component.state = "hidden"
-            if (tools) {
-                component.tools = tools
-                component.owner = tools.parent
-                tools.parent = component
-                tools.visible = true
-                if (tools.layoutChildren !== undefined && typeof tools.layoutChildren == 'function' )
-                    tools.layoutChildren()
-            }
-
-            // perform transition
-            priv.currentComponent.state = animation["old"]
-            if (tools) {
-                component.state = animation["new"]
-                component.state = ""
-            }
-            priv.currentComponent = component
-        }
-    }
-
-    StateGroup {
-        id: stateGroup
-        states: [
-            // Inactive state.
-            State {
-                name: "hidden"
-                when: privateVisibility == ToolBarVisibility.Hidden || tools === null
-                PropertyChanges { target: root; height: 0; }
-            },
-            State {
-                name: "HiddenImmediately"
-                when: privateVisibility == ToolBarVisibility.HiddenImmediately
-                PropertyChanges { target: root; height: 0; }
-            },
-            State {
-                name: ""
-                when: !(privateVisibility == ToolBarVisibility.Visible || tools === null)
-                PropertyChanges { target: root; height: background.height }
-            }
-        ]
-
-        transitions: [
-            // Transition between active and inactive states.
-            Transition {
-                from: ""; to: "hidden"; reversible: true
-                ParallelAnimation {
-                    PropertyAnimation { properties: "height"; easing.type: Easing.InOutExpo; duration: platformStyle.visibilityTransitionDuration }
-                }
-            }
-        ]
-    }
 }

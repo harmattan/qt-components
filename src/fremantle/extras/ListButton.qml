@@ -41,7 +41,6 @@
 import QtQuick 1.0
 import Qt.labs.components 1.0
 import "." 1.0
-import "../fremantle/UIConstants.js" as UI
 import org.maemo.fremantle 1.0
 
 ImplicitSizeItem {
@@ -67,6 +66,10 @@ ImplicitSizeItem {
 
     property alias font: label.font
 
+    property int padding_xlarge: 16
+    property int button_label_marging: 10
+    property int size_icon_default: 32
+    
     BorderImage {
         id: background
         anchors.fill: parent
@@ -84,7 +87,7 @@ ImplicitSizeItem {
 
     Item {
         id: iconAndLabel
-        property real xMargins: icon.visible ? (UI.PADDING_XLARGE * (label.visible ? 3 : 2)) : (UI.BUTTON_LABEL_MARGIN * 2)
+        property real xMargins: icon.visible ? (padding_xlarge * (label.visible ? 3 : 2)) : (button_label_marging * 2)
         property real prefferedWidth: xMargins + (icon.visible ? icon.width : 0) + (label.visible ? label.prefferedSize.width : 0)
 
         width: xMargins + (icon.visible ? icon.width : 0) + (label.visible? label.width : 0)
@@ -97,16 +100,16 @@ ImplicitSizeItem {
         Image {
             id: icon
             source: button.iconSource
-            x: UI.PADDING_XLARGE
+            x: padding_xlarge
             anchors.verticalCenter: iconAndLabel.verticalCenter
-            width: UI.SIZE_ICON_DEFAULT
-            height: UI.SIZE_ICON_DEFAULT
+            width: size_icon_default
+            height: size_icon_default
             visible: source != ""
         }
 
         Label {
             id: label  
-            x: icon.visible ? (icon.x + icon.width + UI.PADDING_XLARGE) : UI.BUTTON_LABEL_MARGIN
+            x: icon.visible ? (icon.x + icon.width + padding_xlarge) : button_label_marging
             anchors.verticalCenter: iconAndLabel.verticalCenter
             anchors.verticalCenterOffset: 1
 
