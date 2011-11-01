@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/extras/ListButton.qml b/src/fremantle/extras/ListButton.qml
+index 8831f07..d158b33 100644
+--- b/src/fremantle/extras/ListButton.qml
++++ a/src/fremantle/extras/ListButton.qml
+@@ -43,7 +43,7 @@
+ import "." 1.0
+ import org.maemo.fremantle 1.0
+ 
+-Item {
++ImplicitSizeItem {
+     id: button
+ 
+     // Common public API
