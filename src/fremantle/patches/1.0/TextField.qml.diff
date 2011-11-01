@@ -1,0 +1,15 @@
+diff --git a/src/fremantle/TextField.qml b/src/fremantle/TextField.qml
+index e62b327..02fe8bf 100644
+--- b/src/fremantle/TextField.qml
++++ a/src/fremantle/TextField.qml
+@@ -344,7 +344,9 @@
+         selectByMouse: false
+         selectedTextColor: root.platformStyle.selectedTextColor
+         selectionColor: root.platformStyle.selectionColor
+-        mouseSelectionMode: TextInput.SelectWords
++	 //{QTQUICK11
++        //mouseSelectionMode: TextInput.SelectWords
++	 //}
+         focus: true
+ 
+         onAccepted: { root.accepted() } 

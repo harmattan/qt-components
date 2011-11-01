@@ -1,0 +1,15 @@
+diff --git a/src/fremantle/TextArea.qml b/src/fremantle/TextArea.qml
+index b9ae92a..2fe2f9e 100644
+--- b/src/fremantle/TextArea.qml
++++ a/src/fremantle/TextArea.qml
+@@ -309,7 +309,9 @@
+         selectByMouse: false
+         selectedTextColor: root.platformStyle.selectedTextColor
+         selectionColor: root.platformStyle.selectionColor
+-        mouseSelectionMode: TextInput.SelectWords
++	 //{QTQUICK11
++        //mouseSelectionMode: TextInput.SelectWords
++	 //}
+         wrapMode: TextEdit.Wrap
+         persistentSelection: false
+         focus: true
