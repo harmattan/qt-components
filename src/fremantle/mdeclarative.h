@@ -44,42 +44,10 @@
 #include <QtCore/qobject.h>
 #include <QtDeclarative/qdeclarative.h>
 
-class MPageOrientation : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(PageOrientation)
-
-public:
-    enum PageOrientation { Automatic, LockPortrait, LockLandscape, LockPrevious, Manual };
-};
-
-class MPageStatus : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(Status)
-
-public:
-    enum Status { Inactive, Activating, Active, Deactivating };
-};
-
-class MToolBarVisibility : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(Visibility)
-
-public:
-    enum Visibility { Visible, Hidden, HiddenImmediately };
-};
-
-class MDialogStatus : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(Status)
-
-public:
-    enum Status {Opening, Open, Closing, Closed};
-
-};
+#include "mdialogstatus.h"
+#include "mpagestatus.h"
+#include "mpageorientation.h"
+#include "mtoolbarvisibility.h"
 
 class MBatteryInfo;
 class MDeclarativePrivate;
