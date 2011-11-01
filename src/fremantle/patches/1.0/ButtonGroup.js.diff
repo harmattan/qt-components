@@ -1,0 +1,36 @@
+diff --git a/src/fremantle/ButtonGroup.js b/src/fremantle/ButtonGroup.js
+index 02ed3ac..623190a 100644
+--- b/src/fremantle/ButtonGroup.js
++++ a/src/fremantle/ButtonGroup.js
+@@ -51,11 +51,11 @@
+ var params = undefined;
+ 
+ function isButton(item) {
+-    return (item && item.hasOwnProperty("__buttonType"));
++    return (item && (item.__buttonType !== undefined));
+ }
+ 
+ function hasChecked(item) {
+-    return (item && item.hasOwnProperty("checked"));
++    return (item && (item.checked !== undefined));
+ }
+ 
+ function cleanup() {
+@@ -102,7 +102,7 @@
+                 item.platformStyle = styleComponent.createObject(item)
+ 
+             // Only ButtonRow supports tab buttons and care about screen orientation
+-            if (params.orientation == Qt.Horizontal &&  item.platformStyle.hasOwnProperty("screenOrientation"))
++            if (params.orientation == Qt.Horizontal && (item.platformStyle.screenOrientation !== undefined))
+                 switch (screen.currentOrientation) {
+                 case Screen.Portrait:
+                 case Screen.PortraitInverted:
+@@ -225,7 +225,7 @@
+         console.log("Error creating ButtonGroup: invalid owner.");
+         return;
+     }
+-    if (!s.hasOwnProperty("checkedButton")) {
++    if (!(s.checkedButton !== undefined)) {
+         console.log("Error creating ButtonGroup: owner has no 'checkedButton' property.");
+         return;
+     }
