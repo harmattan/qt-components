@@ -1,0 +1,26 @@
+diff --git a/src/fremantle/mdeclarativeimplicitsizeitem.cpp b/src/fremantle/mdeclarativeimplicitsizeitem.cpp
+index 77c9ba9..837fc46 100644
+--- b/src/fremantle/mdeclarativeimplicitsizeitem.cpp
++++ a/src/fremantle/mdeclarativeimplicitsizeitem.cpp
+@@ -67,15 +67,14 @@
+     emit implicitHeightChanged();
+ }
+ 
+-bool MDeclarativeImplicitSizeItem::platformFocusable() const
++MDeclarativeFocusScope::MDeclarativeFocusScope(MDeclarativeImplicitSizeItem *parent) :
++    MDeclarativeImplicitSizeItem(parent)
+ {
+-    return flags() & QGraphicsItem::ItemIsFocusable;
++        setFlag(ItemIsFocusable, true);
+ }
+ 
+-void MDeclarativeImplicitSizeItem::setPlatformFocusable(bool shouldFocus)
++MDeclarativeFocusScope::~MDeclarativeFocusScope()
+ {
+-    if (shouldFocus != platformFocusable()) {
+-        setFlag(ItemIsFocusable, shouldFocus);
+-        emit platformFocusableChanged();
+-    }
+ }
++
++#include "moc_mdeclarativeimplicitsizeitem.cpp"
