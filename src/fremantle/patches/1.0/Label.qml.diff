@@ -1,0 +1,27 @@
+diff --git a/src/fremantle/Label.qml b/src/fremantle/Label.qml
+index 53bb0c4..e714876 100644
+--- b/src/fremantle/Label.qml
++++ a/src/fremantle/Label.qml
+@@ -47,16 +47,12 @@
+     // Styling for the Button
+     property Style platformStyle: LabelStyle{}
+ 
++    //Deprecated, TODO Remove this on w13
++    property alias style: root.platformStyle
++
++    font.family: platformStyle.fontFamily
++    font.pixelSize: platformStyle.fontPixelSize
+     color: platformStyle.textColor
++
+     wrapMode: Text.Wrap
+-
+-    font {family:""; pixelSize: 0 }
+-    Component.onCompleted: {
+-        if (font.family === "") {
+-            font.family = platformStyle.fontFamily
+-        }
+-        if (font.pixelSize === 0) {
+-            font.pixelSize = platformStyle.fontPixelSize
+-        }
+-    }
+ }
