@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/ProgressBar.qml b/src/fremantle/ProgressBar.qml
+index 4575fea..4b04aa4 100644
+--- b/src/fremantle/ProgressBar.qml
++++ a/src/fremantle/ProgressBar.qml
+@@ -118,7 +118,7 @@
+             }
+ 
+             NumberAnimation on xTemp {
+-                running: indeterminate && container.visible && Qt.application.active && !internal.offScreen
++                running: indeterminate && container.visible && platformWindow.active && !internal.offScreen
+                 loops: Animation.Infinite
+                 from: -texture.sourceSize.width
+                 to: 0
