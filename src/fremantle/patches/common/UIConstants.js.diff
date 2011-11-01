@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/UIConstants.js b/src/fremantle/UIConstants.js
+index e0027af..14f5a80 100644
+--- a/src/fremantle/UIConstants.js
++++ b/src/fremantle/UIConstants.js
+@@ -117,4 +117,7 @@ var HEADER_DEFAULT_BOTTOM_SPACING_LANDSCAPE = 14;
+ var LIST_ITEM_HEIGHT_SMALL = 64;
+ var LIST_ITEM_HEIGHT_DEFAULT = 80;
+ 
+-
++// Fremantle values
++var COLOR_STATUSBAR_FOREGROUND           = "#ffffff" // text color
++var COLOR_STATUSBAR_INVERTED_FOREGROUND  = "#ffffff" // inverted text color
++var STATUS_BAR_Z_INDEX = 1;
