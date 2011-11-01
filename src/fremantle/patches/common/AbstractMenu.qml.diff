@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/AbstractMenu.qml b/src/fremantle/AbstractMenu.qml
+index 195d609..d58bcd0 100644
+--- b/src/fremantle/AbstractMenu.qml
++++ a/src/fremantle/AbstractMenu.qml
+@@ -187,7 +187,7 @@
+         width:  parent.width  - platformStyle.leftMargin - platformStyle.rightMargin  // ToDo: better width heuristic
+         height: (screen.currentOrientation == 1) || (screen.currentOrientation == 4) ?
+                 /* Portrait  */ titleBar.height + flickableContent.height + footerBar.height :
+-                /* Landscape */ parent.height - platformStyle.topMargin - platformStyle.bottomMargin - __statusBarDelta
++                /* Landscape */ parent.height - platformStyle.topMargin - platformStyle.bottomMargin - __statusBarDelta - 1
+         anchors.bottom: parent.bottom
+         anchors.right: parent.right
+ 
