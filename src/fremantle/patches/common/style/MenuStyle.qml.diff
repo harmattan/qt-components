@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/style/MenuStyle.qml b/src/fremantle/style/MenuStyle.qml
+index a14aa7f..51b4d2f 100644
+--- b/src/fremantle/style/MenuStyle.qml
++++ a/src/fremantle/style/MenuStyle.qml
+@@ -43,7 +43,7 @@
+     id: root
+ 
+     property real leftMargin: ( (screen.currentOrientation == 1) ||
+-                                 (screen.currentOrientation == 4) ) ? 0 : 427
++                                 (screen.currentOrientation == 4) ) ? 0 : 400
+     property real rightMargin: ( (screen.currentOrientation == 1) ||
+                                  (screen.currentOrientation == 4) ) ? 0 : 0
+     property real topMargin: ( (screen.currentOrientation == 1) ||
