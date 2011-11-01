@@ -1,0 +1,25 @@
+diff --git a/src/fremantle/PageStack.js b/src/fremantle/PageStack.js
+index 3b560dc..2cecee5 100644
+--- a/src/fremantle/PageStack.js
++++ b/src/fremantle/PageStack.js
+@@ -135,14 +135,13 @@ function initPage(page, properties) {
+             throw new Error("Error while loading page: " + pageComp.errorString());
+         } else {
+             // instantiate page from component
+-            page = pageComp.createObject(container, properties || {});
++            page = pageComp.createObject(container);
+         }
+-    } else {
+-        // copy properties to the page
+-        for (var prop in properties) {
+-            if (properties.hasOwnProperty(prop)) {
+-                page[prop] = properties[prop];
+-            }
++    }
++    // copy properties to the page
++    for (var prop in properties) {
++        if (properties.hasOwnProperty(prop)) {
++            page[prop] = properties[prop];
+         }
+     }
+ 
