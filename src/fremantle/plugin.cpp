@@ -145,7 +145,6 @@ void FremantlePlugin::registerTypes(const char *uri) {
         // Custom primitives
         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
         qmlRegisterType<MDeclarativeMaskedItem>(uri, 1, 0, "MaskedItem");
-        qmlRegisterType<MDeclarativeFocusScope>(uri, 1, 0, "FocusScope");
         qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
         qmlRegisterType<MDeclarativeMouseEvent>(uri, 1, 0, "MMouseEvent");

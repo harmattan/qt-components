@@ -1,0 +1,12 @@
+diff --git a/src/fremantle/plugin.cpp b/src/fremantle/plugin.cpp
+index c77000d..b4625cc 100644
+--- b/src/fremantle/plugin.cpp
++++ a/src/fremantle/plugin.cpp
+@@ -145,6 +145,7 @@
+         // Custom primitives
+         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
+         qmlRegisterType<MDeclarativeMaskedItem>(uri, 1, 0, "MaskedItem");
++        qmlRegisterType<MDeclarativeFocusScope>(uri, 1, 0, "FocusScope");
+         qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
+         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
+         qmlRegisterType<MDeclarativeMouseEvent>(uri, 1, 0, "MMouseEvent");
