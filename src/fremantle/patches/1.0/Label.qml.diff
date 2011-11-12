@@ -1,27 +1,26 @@
-diff --git a/src/fremantle/Label.qml b/src/fremantle/Label.qml
-index 53bb0c4..e714876 100644
---- b/src/fremantle/Label.qml
-+++ a/src/fremantle/Label.qml
-@@ -47,16 +47,12 @@
-     // Styling for the Button
-     property Style platformStyle: LabelStyle{}
+diff --git a/src/meego/Label.qml b/src/meego/Label.qml
+index f83312a..063f2be 100644
+--- a/src/meego/Label.qml
++++ b/src/meego/Label.qml
+@@ -50,9 +50,19 @@ Text {
+     //Deprecated, TODO Remove this on w13
+     property alias style: root.platformStyle
  
-+    //Deprecated, TODO Remove this on w13
-+    property alias style: root.platformStyle
-+
-+    font.family: platformStyle.fontFamily
-+    font.pixelSize: platformStyle.fontPixelSize
+-    font.family: platformStyle.fontFamily
+-    font.pixelSize: platformStyle.fontPixelSize
++    font.family: ""
++    font.pixelSize: 0
++    
      color: platformStyle.textColor
-+
+ 
      wrapMode: Text.Wrap
--
--    font {family:""; pixelSize: 0 }
--    Component.onCompleted: {
--        if (font.family === "") {
--            font.family = platformStyle.fontFamily
--        }
--        if (font.pixelSize === 0) {
--            font.pixelSize = platformStyle.fontPixelSize
--        }
--    }
++
++    Component.onCompleted: {
++        if (font.family === "") {
++            font.family = platformStyle.fontFamily
++        }
++        if (font.pixelSize === 0) {
++            font.pixelSize = platformStyle.fontPixelSize
++        }
++    }
  }
