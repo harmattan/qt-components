@@ -21,7 +21,7 @@ def traversedir(where):
 def parse_tree(where, files=None):
     files = files or {}
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
-        if abspath.endswith(('.h', '.cpp','.qml',)):
+        if abspath.endswith(('.h', '.cpp','.qml', '.js')):
             files.setdefault(path.basename(abspath), (abspath, abspath[len(where):],))
     return files
 

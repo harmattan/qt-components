@@ -7,8 +7,8 @@ meego {
 }
 
 fremantle {
-    SUBDIRS += fremantle
-    extras:SUBDIRS += fremantle/extras
+    SUBDIRS += fremantle/PR1.3 fremantle/PR1.4
+    extras:SUBDIRS += fremantle/PR1.3/extras fremantle/PR1.4/extras
 }
 
 symbian3 {

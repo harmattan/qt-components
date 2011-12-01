@@ -1,8 +1,4 @@
-include (../../qt-components.pri)
-
-TARGETPATH = org/maemo/fremantle
 TEMPLATE = lib
-TARGET = $$qtLibraryTarget(fremantleplugin)
 INCLUDEPATH += $$PWD $$PWD/indicators
 
 DEFINES += THEME_DIR=\\\"\"$$THEME_DIR\"\\\"
@@ -267,5 +263,3 @@ QML_FILES = \
     style/PageStackWindowStyle.qml \
     Switch.qml \
     style/SwitchStyle.qml \
-
-include(../../qml.pri)

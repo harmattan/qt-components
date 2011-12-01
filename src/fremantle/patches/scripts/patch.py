@@ -21,7 +21,7 @@ def traversedir(where):
 def parse_tree(where, files=None):
     files = files or {}
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
-        if abspath.endswith(('.h', '.cpp','.qml',)):
+        if abspath.endswith(('.h', '.cpp','.qml','.js',)) and 'PR1.' not in abspath:
             files.setdefault(path.basename(abspath), (abspath, abspath[len(where):],))
     return files
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     candidates = parse_tree(sys.argv[2])
     for key, values in candidates.iteritems():
         # link files
-        dest = destination(path.join(sys.argv[2], sys.argv[4], sys.argv[1]), values[1])
+        dest = destination(path.join(sys.argv[2], sys.argv[4]), values[1])
         link(values[0], dest)
         for version in ('common', sys.argv[1],):
             diff = key + '.diff'
