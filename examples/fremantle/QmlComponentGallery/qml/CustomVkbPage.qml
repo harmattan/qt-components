@@ -38,13 +38,27 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
+import Qt 4.7
 import org.maemo.fremantle 1.0
 
 Page {
     id: root
-    tools: commonTools
     anchors.margins: UiConstants.DefaultMargin
+    tools:
+        ToolBarLayout {
+        ToolIcon {
+            iconId: "toolbar-back"
+            anchors.left: parent.left
+            anchors.top: parent.top
+
+            onClicked: { myMenu.close(); pageStack.pop(); } 
+        }
+
+        ToolIcon {
+            iconId: "toolbar-view-menu"; onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
+            anchors.right: parent==undefined ? undefined : parent.right
+        }
+    }
 
     Component {
         id: redVkb

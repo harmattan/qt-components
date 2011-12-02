@@ -106,37 +106,44 @@ Page {
         }
     }
     
-    Row {
-        id: row
-        spacing: 10
+    Flickable {
+        id: flickable
         anchors.fill: parent
-        anchors.leftMargin: (parent.width - childrenRect.width) / 2
+        contentWidth: col.width
+        contentHeight: col.height
+        flickableDirection: Flickable.VerticalFlick    
 
-        Loader {
-            id: l1
-            sourceComponent: textBox
-        }
-        Loader {
-            id: l2
-            sourceComponent: textBox
-        }
-
-        Loader {
-            id: l3
-            sourceComponent: textBox
-        }
-
-        Component.onCompleted: {
-            updateViewMode();
-            updateVisible();
-            updateActive();
-
-            var count = children.length;
-            for (var i = 0; i < count; i++) {
-                var item = children[i];
-                item.anchors.verticalCenter = item.parent.verticalCenter;
-            }
+        Column {
+            id: col
+            spacing: 10
+            width: flickable.width
             
+            Loader {
+                id: l1
+                sourceComponent: textBox
+            }
+    
+            Loader {
+                id: l2
+                sourceComponent: textBox
+            }
+    
+            Loader {
+                id: l3
+                sourceComponent: textBox
+            }
+    
+            Component.onCompleted: {
+                updateViewMode();
+                updateVisible();
+                updateActive();
+                
+                var count = children.length;
+                for (var i = 0; i < count; i++) {
+                    var item = children[i];
+                    item.anchors.horizontalCenter = item.parent.horizontalCenter;
+                }                
+            }
         }
     }
 }

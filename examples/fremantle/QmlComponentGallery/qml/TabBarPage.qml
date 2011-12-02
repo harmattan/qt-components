@@ -114,7 +114,7 @@ Page {
                                  for (var j = 0, l2 = row.children.length; j < l2; j++) {
                                      var child = row.children[j];
                                      child.text = child.text ? "" : "Tab" + (j+1);
-				     child.iconSource = child.iconSource != "" ? "" : "image://theme/icon-m-toolbar-search";
+                                     child.iconSource = child.iconSource != "" ? "" : "image://theme/icon-m-toolbar-search";
                                  }
                              }
                          }

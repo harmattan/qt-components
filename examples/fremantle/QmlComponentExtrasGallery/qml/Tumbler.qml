@@ -48,7 +48,6 @@ Page {
     tools: commonTools
 
     Row {
-        spacing: 30
         Item {
             width: 420
             height: 360
@@ -69,16 +68,16 @@ Page {
             Column {
                 id: col
 
-                ButtonColumn {
+                ButtonRow {
                     exclusive: false
                     Button {
-                        text: "4 cols"
+                        text: "Show 4 columns"
                         onClicked: {
                             tumblerWidget.columns = [ dayColumn, monthColumn, yearColumn, extraColumn ]
                         }
                     }
                     Button {
-                        text: "2 cols"
+                        text: "Show 2 columns"
                         onClicked: {
                             tumblerWidget.columns = [ monthColumn, yearColumn ]
                         }

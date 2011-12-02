@@ -3,8 +3,8 @@
 ######################################################################
 
 TEMPLATE=subdirs
-SUBDIRS += HelloWorld \
-	   TutorialApplication \
-           QmlComponentGallery \
+SUBDIRS += QmlComponentGallery \
+		   HelloWorld \
            QmlComponentExtrasGallery \
+	   TutorialApplication
 

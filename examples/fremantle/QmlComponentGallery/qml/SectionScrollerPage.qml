@@ -118,7 +118,7 @@ Page {
             section.criteria: ViewSection.FullString
             section.delegate: Item {
                 // "GroupHeader" component?
-                width: parent ? parent.width : 0
+                width: parent.width
                 height: 40
                 Text {
                     id: headerLabel
