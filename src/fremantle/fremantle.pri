@@ -132,6 +132,7 @@ SOURCES += \
 
 HEADERS += \
     mbatteryinfo.h \
+    mdeclarative.h \
     mdeclarativeimageprovider.h \
     mdeclarativeimattributeextension.h \
     mdeclarativeimobserver.h \
@@ -140,17 +141,20 @@ HEADERS += \
     mdeclarativemaskeditem.h \
     mdeclarativemousefilter.h \
     mdeclarativescreen.h \
+    mdialogstatus.h \
     minversemousearea.h \
+    mpageorientation.h \
+    mpagestatus.h \
     mscrolldecoratorsizer.h \
     msnapshot.h \
     mtexttranslator.h \
     mthemedaemon.h \
     mthemeplugin.h \
+    mtoolbarvisibility.h \
     mwindowstate.h \
     mwindowstate_p.h \
     mx11wrapper.h \
     plugin.h \
-    mdeclarative.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient_p.h \
