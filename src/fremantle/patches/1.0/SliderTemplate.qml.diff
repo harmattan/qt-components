@@ -3,9 +3,9 @@ index 1e4bc3d..25f648b 100644
 --- b/src/fremantle/SliderTemplate.qml
 +++ a/src/fremantle/SliderTemplate.qml
 @@ -41,7 +41,7 @@
- import QtQuick 1.0
- import Qt.labs.components 1.0
- 
+ import QtQuick 1.1
+ import Qt.labs.components 1.1
+
 -Item {
 +ImplicitSizeItem {
      id: slider
