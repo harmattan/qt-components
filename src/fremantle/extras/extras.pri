@@ -1,8 +1,4 @@
-include (../../../qt-components.pri)
-
-TARGETPATH = org/maemo/extras
 TEMPLATE = lib
-TARGET = $$qtLibraryTarget(fremantleextrasplugin)
 INCLUDEPATH += $$PWD
 
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release
@@ -41,5 +37,3 @@ QML_FILES += \
     style/NegativeButtonStyle.qml \
     style/PositiveButtonStyle.qml \
     style/TumblerButtonStyle.qml
-
-include(../../../qml.pri)

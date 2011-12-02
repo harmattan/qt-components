@@ -22,14 +22,16 @@ def parse_tree(where, files=None):
     files = files or {}
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
         if abspath.endswith(('.h', '.cpp','.qml','.js',)) and 'PR1.' not in abspath:
-            files.setdefault(path.basename(abspath), (abspath, abspath[len(where):],))
+            files.setdefault(path.basename(abspath), []).append((abspath, abspath[len(where):],))
     return files
 
 def parse_patch_tree(where, theme=None):
     theme = type(theme) in (dict,) or {}
+    print where
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
         if abspath.endswith(('.diff',)):
-            theme[path.basename(abspath)] = (abspath, str(abspath[len(where):]).count(sep) + 2)
+            dirname = path.basename(path.dirname(abspath[len(where):]))
+            theme.setdefault(path.basename(abspath), {})[dirname] = (abspath, str(abspath[len(where):]).count(sep) + 2)
     return theme
 
 def destination(dest ,partial=None):
@@ -65,15 +67,16 @@ if __name__ == '__main__':
     candidates = parse_tree(sys.argv[2])
     for key, values in candidates.iteritems():
         # link files
-        dest = destination(path.join(sys.argv[2], sys.argv[4]), values[1])
-        link(values[0], dest)
-        for version in ('common', sys.argv[1],):
-            diff = key + '.diff'
-            if diff in patches[version]:
-                ppath, dept = patches[version][diff]
-                #print PATCH.format(directory=dest, patch=path.abspath(ppath), level=dept)
-                system(PATCH.format(directory=dest, patch=path.abspath(ppath), level=dept))
-                patched[key] = True
+        for value in values:
+            dest = destination(path.join(sys.argv[2], sys.argv[4]), value[1])
+            link(value[0], dest)
+            for version in ('common', sys.argv[1],):
+                base, diff = path.basename(dest), key + '.diff'
+                if diff in patches[version] and base in patches[version][diff]:
+                    ppath, dept = patches[version][diff][base]
+                    #print PATCH.format(directory=dest, patch=path.abspath(ppath), level=dept)
+                    system(PATCH.format(directory=dest, patch=path.abspath(ppath), level=dept))
+                    patched[key + value[1]] = True
 
             
     print "patched: " + str(int((len(patched) * 100) / len(candidates))) + "% (" + str(len(patched)) + " of " + str(len(candidates)) + ")"
