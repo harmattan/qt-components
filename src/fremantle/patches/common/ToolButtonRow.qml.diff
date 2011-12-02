@@ -1,0 +1,26 @@
+diff --git a/src/fremantle/ToolButtonRow.qml b/src/fremantle/ToolButtonRow.qml
+index 01a845b..5d600dc 100644
+--- a/src/fremantle/ToolButtonRow.qml
++++ b/src/fremantle/ToolButtonRow.qml
+@@ -39,15 +39,19 @@
+ ****************************************************************************/
+ 
+ import QtQuick 1.1
+-import "UIConstants.js" as UI
++import "." 1.0
+ 
+ Item {
+     default property alias children: row.children
+     property bool __expanding: true // Layout hint used but ToolBarLayout
++
++    // Styling for the ToolButtonRow
++    property Style platformStyle: ToolButtonRowStyle {}
++
+     Row{
+         id: row
+         width: Math.min(parent.width, childrenRect.width)
+-        spacing: UI.PADDING_LARGE
++        spacing: platformStyle.spacing
+         anchors.centerIn: parent
+     }
+ }
