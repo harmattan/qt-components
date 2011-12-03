@@ -11,7 +11,7 @@ index 77c9ba9..837fc46 100644
 +    MDeclarativeImplicitSizeItem(parent)
  {
 -    return flags() & QGraphicsItem::ItemIsFocusable;
-+        setFlag(ItemIsFocusable, true);
++        setFlag(ItemIsFocusScope, true);
  }
  
 -void MDeclarativeImplicitSizeItem::setPlatformFocusable(bool shouldFocus)
