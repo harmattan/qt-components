@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>MainPage.qml</file>
+        <file>ssu/main.qml</file>
+        <file>ssu/MainPage.qml</file>
+        <file>cssu/main.qml</file>
+        <file>cssu/MainPage.qml</file>
     </qresource>
 </RCC>

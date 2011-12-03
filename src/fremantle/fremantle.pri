@@ -139,7 +139,7 @@ HEADERS += \
     msnapshot.h \
     mpagestatus.h \
     minversemousearea.h \
-    mdeclarative.cpp \
+    mdeclarative.h \
     mdeclarativeinputcontext.h \
     mdeclarativeimageprovider.h \
     mdeclarativeimplicitsizeitem.h \

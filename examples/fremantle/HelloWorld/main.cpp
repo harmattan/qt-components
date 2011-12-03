@@ -40,24 +40,27 @@
 
 #include <QtDeclarative>
 
+#define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < V
+#define MAX(a, b) ((a > b) ? a : b)
+
+
 int main(int argc, char **argv)
 {
+    const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
+    const QString   qrc = CHECK_VER(v, 0x040704) ? "qrc:/ssu/main.qml" : "qrc:/cssu/main.qml";
+
     QApplication app(argc, argv);
+    QDeclarativeView window;
 
     QDir::setCurrent(app.applicationDirPath());
-
-    QDeclarativeView window;
-    window.setSource(QUrl("qrc:/main.qml"));
+    window.setSource(QUrl(qrc));
     QObject::connect((QObject*)window.engine(), SIGNAL(quit()), &app, SLOT(quit()));
 
 #ifdef __arm__
     window.showFullScreen();
 #else
-# define MAX(a, b) ((a > b) ? a : b)
-    QRect geometry;
-    geometry = app.desktop()->screenGeometry();
-    (MAX(geometry.width(), geometry.height()) < 1024) ? window.showFullScreen() : window.show();
-# undef MAX
+    (MAX(window.initialSize().width(), window.initialSize().height()) < 1024) ? window.showFullScreen() : window.show();
 #endif
+
     return app.exec();
 }
