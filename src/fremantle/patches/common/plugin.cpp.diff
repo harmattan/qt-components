@@ -1,0 +1,61 @@
+diff --git a/src/meego/plugin.cpp b/src/meego/plugin.cpp
+index 9c3d52d..9a3a789 100644
+--- a/src/meego/plugin.cpp
++++ b/src/meego/plugin.cpp
+@@ -41,7 +41,6 @@
+ #include <QtDeclarative>
+ #include <QApplication>
+ 
+-#include "mdeclarativestatusbar.h"
+ #include "mdeclarativescreen.h"
+ #include "mdeclarativeinputcontext.h"
+ #include "msnapshot.h"
+@@ -55,6 +54,8 @@
+ #include "mthemeplugin.h"
+ #include "mtexttranslator.h"
+ #include "mwindowstate.h"
++#include "mdeclarative.h"
++#include "mbatteryinfo.h"
+ #include "mdeclarativemousefilter.h"
+ #include "mscrolldecoratorsizer.h"
+ #include "mdeclarativeimattributeextension.h"
+@@ -73,6 +74,9 @@
+ 
+ #include "i18n/mlocalewrapper.h"
+ 
++static const int   VERSION_MAJOR  = 1;
++static const int   VERSION_MINOR  = 0;
++
+ class MeeGoPlugin : public QDeclarativeExtensionPlugin
+ {
+     Q_OBJECT
+@@ -95,6 +99,12 @@ public:
+             engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
+             qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
+ 
++            engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
++            engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
++
++            MDeclarative *declarative = new MDeclarative(engine->rootContext());
++            engine->rootContext()->setContextProperty("maemo", declarative);
++
+             engine->rootContext()->setContextProperty("platformWindow", MWindowState::instance());
+             qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
+ 
+@@ -122,7 +132,6 @@ public:
+ 
+     void registerTypes(const char *uri) {
+         Q_ASSERT(uri == QLatin1String("com.meego") || uri == QLatin1String("com.nokia.meego") || uri == QLatin1String("Qt.labs.components.native"));
+-        qmlRegisterType<MDeclarativeStatusBar>(uri, 1, 0, "StatusBarInternal");
+         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
+ 
+         qmlRegisterUncreatableType<MPageStatus>(uri, 1, 0, "PageStatus", "");
+@@ -131,6 +140,8 @@ public:
+         qmlRegisterUncreatableType<MPageOrientation>(uri, 1, 0, "PageOrientation", "");
+         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
+         qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
++        // Fremantle statusbar
++        qmlRegisterUncreatableType<MBatteryInfo>(uri, 1, 0, "BatteryInfo", "");
+ 
+         // Custom primitives
+         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");

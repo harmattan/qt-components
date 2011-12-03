@@ -49,6 +49,7 @@ Slider 1.0 Slider.qml
 SliderStyle 1.0 SliderStyle.qml
 SliderTemplate 1.0 SliderTemplate.qml
 StatusBar 1.0 StatusBar.qml
+StatusbarStyle 1.0 StatusBarStyle.qml
 Style 1.0 Style.qml
 Switch 1.0 Switch.qml
 SwitchStyle 1.0 SwitchStyle.qml
@@ -70,3 +71,4 @@ ToolItem 1.0 ToolItem.qml
 ToolIcon 1.0 ToolIcon.qml
 ToolItemStyle 1.0 ToolItemStyle.qml
 Window 1.0 Window.qml
+WindowStyle 1.0 WindowStyle.qml

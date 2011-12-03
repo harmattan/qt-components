@@ -93,177 +93,190 @@ xrandr:!mac {
 
 # Input
 SOURCES += \
-    mdeclarativeimageprovider.cpp \
-    mdeclarativeimattributeextension.cpp \
-    mdeclarativeimobserver.cpp \
-    mdeclarativeimplicitsizeitem.cpp \
-    mdeclarativeinputcontext.cpp \
-    mdeclarativemaskeditem.cpp \
-    mdeclarativemousefilter.cpp \
+    plugin.cpp \
     mdeclarativescreen.cpp \
-    minversemousearea.cpp \
-    mscrolldecoratorsizer.cpp \
     msnapshot.cpp \
+    minversemousearea.cpp \
+    mdeclarative.cpp \
+    mdeclarativeinputcontext.cpp \
+    mdeclarativeimageprovider.cpp \
+    mdeclarativeimplicitsizeitem.cpp \
+    mdeclarativemaskeditem.cpp \
+    mscrolldecoratorsizer.cpp \
     mtexttranslator.cpp \
     mthemedaemon.cpp \
     mthemeplugin.cpp \
     mwindowstate.cpp \
     mx11wrapper.cpp \
-    plugin.cpp \
-    mdeclarative.cpp \
     themedaemon/mabstractthemedaemonclient.cpp \
     themedaemon/mlocalthemedaemonclient.cpp \
     themedaemon/mlogicalvalues.cpp \
     themedaemon/msystemdirectories.cpp \
-    shadereffectitem/3d/qarray.cpp \
-    shadereffectitem/3d/qcolor4ub.cpp \
-    shadereffectitem/3d/qcustomdataarray.cpp \
-    shadereffectitem/3d/qglattributedescription.cpp \
-    shadereffectitem/3d/qglattributevalue.cpp \
-    shadereffectitem/3d/qglnamespace.cpp \
-    shadereffectitem/3d/qmatrix4x4stack.cpp \
-    shadereffectitem/geometry.cpp \
-    shadereffectitem/shadereffect.cpp \
+    themedaemon/mremotethemedaemonclient.cpp \
+    themedaemon/mthemedaemonprotocol.cpp \
+    mdeclarativemousefilter.cpp \
+    mdeclarativeimattributeextension.cpp \
+    mdeclarativeimobserver.cpp \
     shadereffectitem/shadereffectitem.cpp \
     shadereffectitem/shadereffectitemnull.cpp \
+    shadereffectitem/3d/qmatrix4x4stack.cpp \
+    shadereffectitem/3d/qglnamespace.cpp \
+    shadereffectitem/3d/qglattributevalue.cpp \
+    shadereffectitem/3d/qglattributedescription.cpp \
+    shadereffectitem/3d/qcustomdataarray.cpp \
+    shadereffectitem/3d/qcolor4ub.cpp \
+    shadereffectitem/3d/qarray.cpp \
+    shadereffectitem/utilities.cpp \
     shadereffectitem/shadereffectsource.cpp \
     shadereffectitem/shadereffectsourcenull.cpp \
-    shadereffectitem/utilities.cpp \
+    shadereffectitem/shadereffect.cpp \
+    shadereffectitem/geometry.cpp
 
 HEADERS += \
     mbatteryinfo.h \
-    mdeclarative.h \
-    mdeclarativeimageprovider.h \
-    mdeclarativeimattributeextension.h \
-    mdeclarativeimobserver.h \
-    mdeclarativeimplicitsizeitem.h \
-    mdeclarativeinputcontext.h \
-    mdeclarativemaskeditem.h \
-    mdeclarativemousefilter.h \
     mdeclarativescreen.h \
     mdialogstatus.h \
-    minversemousearea.h \
-    mpageorientation.h \
-    mpagestatus.h \
-    mscrolldecoratorsizer.h \
     msnapshot.h \
+    mpagestatus.h \
+    minversemousearea.h \
+    mdeclarative.cpp \
+    mdeclarativeinputcontext.h \
+    mdeclarativeimageprovider.h \
+    mdeclarativeimplicitsizeitem.h \
+    mdeclarativemaskeditem.h \
+    mscrolldecoratorsizer.h \
     mtexttranslator.h \
     mthemedaemon.h \
     mthemeplugin.h \
-    mtoolbarvisibility.h \
     mwindowstate.h \
     mwindowstate_p.h \
     mx11wrapper.h \
-    plugin.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
-    themedaemon/mlocalthemedaemonclient_p.h \
-    themedaemon/msystemdirectories.h \
-    themedaemon/mlogicalvalues.h \
-    themedaemon/mlogicalvalues_p.h \
-    shadereffectitem/3d/qarray.h \
-    shadereffectitem/3d/qcolor4ub.h \
-    shadereffectitem/3d/qcustomdataarray.h \
-    shadereffectitem/3d/qglattributedescription.h \
-    shadereffectitem/3d/qglattributevalue.h \
-    shadereffectitem/3d/qglnamespace.h \
-    shadereffectitem/3d/qmatrix4x4stack.h \
-    shadereffectitem/3d/qmatrix4x4stack_p.h \
-    shadereffectitem/3d/qt3dglobal.h \
-    shadereffectitem/geometry.h \
-    shadereffectitem/glfunctions.h \
-    shadereffectitem/shadereffect.h \
+    themedaemon/mremotethemedaemonclient.h \
+    themedaemon/mthemedaemonprotocol.h \
+    mdeclarativemousefilter.h \
+    mdeclarativeimattributeextension.h \
+    mdeclarativeimobserver.h \
     shadereffectitem/shadereffectitem.h \
     shadereffectitem/shadereffectitemnull.h \
+    shadereffectitem/3d/qt3dglobal.h \
+    shadereffectitem/3d/qmatrix4x4stack_p.h \
+    shadereffectitem/3d/qmatrix4x4stack.h \
+    shadereffectitem/3d/qglnamespace.h \
+    shadereffectitem/3d/qglattributevalue.h \
+    shadereffectitem/3d/qglattributedescription.h \
+    shadereffectitem/3d/qcustomdataarray.h \
+    shadereffectitem/3d/qcolor4ub.h \
+    shadereffectitem/3d/qarray.h \
+    shadereffectitem/utilities.h \
     shadereffectitem/shadereffectsource.h \
     shadereffectitem/shadereffectsourcenull.h \
-    shadereffectitem/utilities.h \
+    shadereffectitem/shadereffect.h \
+    shadereffectitem/geometry.h \
+    shadereffectitem/glfunctions.h \
+    i18n/mlocalewrapper.h \
+    mpageorientation.h \
+    mtoolbarvisibility.h
 
 QML_FILES = \
-    qmldir \
-    EditBubble.js \
-    EditBubble.qml \
-    style/EditBubbleStyle.qml \
-    Magnifier.js \
-    Magnifier.qml \
-    Utils.js \
-    Fader.qml \
-    Popup.qml \
-    Dialog.qml \
-    style/DialogStyle.qml \
-    CommonDialog.qml \
-    SelectionDialog.qml \
-    style/SelectionDialogStyle.qml \
-    QueryDialog.qml \
-    style/QueryDialogStyle.qml \
-    MultiSelectionDialog.js \
-    MultiSelectionDialog.qml \
-    ScrollDecorator.qml \
-    style/ScrollDecoratorStyle.qml \
-    AbstractMenu.qml \
-    Menu.qml \
-    style/MenuStyle.qml \
-    MenuItem.qml \
-    style/MenuItemStyle.qml \
-    MenuLayout.qml \
-    ContextMenu.qml \
-    style/ContextMenuStyle.qml \
-    Label.qml \
-    style/LabelStyle.qml \
-    Button.qml \
-    ButtonRow.qml \
-    ButtonColumn.qml \
-    ButtonGroup.js \
-    style/ButtonStyle.qml \
-    CheckBox.qml \
-    style/CheckBoxStyle.qml \
-    RadioButton.qml \
-    style/RadioButtonStyle.qml \
-    ToolBarLayout.qml \
-    ToolBarLayout.js\
-    style/ToolButtonStyle.qml \
-    ToolButton.qml \
-    TextArea.qml \
-    style/TextAreaStyle.qml \
-    BusyIndicator.qml \
-    style/BusyIndicatorStyle.qml \
-    TextAreaHelper.js \
-    TextField.qml \
-    style/TextFieldStyle.qml \
-    ToolButtonRow.qml \
-    style/ToolButtonRowStyle.qml \
-    style/ToolItemStyle.qml \
-    ToolIcon.qml \
-    ToolBar.qml \
-    TabGroup.qml \
-    style/ToolBarStyle.qml \
-    StatusBar.qml \
-    style/StatusBarStyle.qml \
-    ProgressBar.qml \
-    style/ProgressBarStyle.qml \
-    SliderTemplate.qml \
-    Slider.qml \
-    style/SliderStyle.qml \
-    TabButton.qml \
-    style/TabButtonStyle.qml \
-    SectionScroller.js \
-    SectionScrollerLabel.qml \
-    SectionScroller.qml \
-    style/SectionScrollerStyle.qml \
-    Sheet.qml \
-    style/SheetStyle.qml \
-    SheetButton.qml \
-    style/SheetButtonAccentStyle.qml \
-    style/SheetButtonStyle.qml \
-    Page.qml \
-    PageStack.js \
-    PageStack.qml \
-    UIConstants.js \
-    Window.qml \
-    style/WindowStyle.qml \
-    SoftwareInputPanel.qml \
-    style/Style.qml \
-    PageStackWindow.qml \
-    style/PageStackWindowStyle.qml \
-    Switch.qml \
-    style/SwitchStyle.qml \
+        qmldir \
+        ApplicationWindow.qml \
+        style/ApplicationWindowStyle.qml \
+        BusyIndicator.qml \
+        style/BusyIndicatorStyle.qml \
+        Button.qml \
+        style/ButtonStyle.qml \
+        style/GroupButtonStyle.qml \
+        ButtonColumn.qml \
+        ButtonRow.qml \
+        ButtonGroup.js \
+        BasicRow.qml \
+        BasicRow.js \
+        CheckBox.qml \
+        CommonDialog.qml \
+        style/CheckBoxStyle.qml \
+        ContextMenu.qml \
+        style/ContextMenuStyle.qml \
+        Dialog.qml \
+        Utils.js \
+        EditBubble.js \
+        EditBubble.qml \
+        EditBubbleButton.qml \
+        style/EditBubbleStyle.qml \
+        style/EditBubbleButtonStyle.qml \
+        style/DialogStyle.qml \
+        style/QueryDialogStyle.qml \
+        style/SelectionDialogStyle.qml \
+        style/MenuStyle.qml \
+	    style/WindowStyle.qml \
+	    style/StatusBarStyle.qml \
+        Fader.qml \
+        Label.qml \
+        style/LabelStyle.qml \
+        AbstractMenu.qml \
+        Menu.qml \
+        MenuItem.qml \
+        MenuLayout.qml \
+        style/MenuItemStyle.qml \
+        MouseAreaDebug.qml \
+        NotificationBanner.qml \
+        Page.qml \
+        PageStack.qml \
+        PageStack.js \
+        PageStackWindow.qml \
+	style/PageStackWindowStyle.qml \
+        Popup.qml \
+        QueryDialog.qml \
+        SelectionDialog.qml \
+        MultiSelectionDialog.qml \
+        ProgressBar.qml \
+        style/ProgressBarStyle.qml \
+        RadioButton.qml \
+        style/RadioButtonStyle.qml \
+        ScrollDecorator.qml \
+        style/ScrollDecoratorStyle.qml \
+        ScrollDecoratorSizer.qml \
+        SectionScroller.qml \
+        style/SectionScrollerStyle.qml \
+        SectionScroller.js \
+        SectionScrollerLabel.qml \
+        StatusBar.qml \
+        TextArea.qml \
+        style/TextAreaStyle.qml \
+        TextField.qml \
+        style/TextFieldStyle.qml \
+        TabButton.qml \
+        TabBarLayout.qml \
+        style/TabButtonStyle.qml \
+        style/Style.qml \
+        TabGroup.qml \
+        ToolBar.qml \
+        ToolBarLayout.js \
+        ToolBarLayout.qml \
+        style/ToolBarStyle.qml \
+        ToolButton.qml \
+        style/ToolButtonStyle.qml \
+        ToolItem.qml \
+        ToolIcon.qml \
+        ToolButtonRow.qml \
+        style/ToolItemStyle.qml \
+        Sheet.qml \
+        style/SheetStyle.qml \
+        SheetButton.qml \
+        style/SheetButtonStyle.qml \
+        style/SheetButtonAccentStyle.qml \
+        Slider.qml \
+        style/SliderStyle.qml \
+        SliderTemplate.qml \
+        Switch.qml \
+        style/SwitchStyle.qml \
+        UIConstants.js \
+        Window.qml \
+        SipSimulator.qml \
+        SoftwareInputPanel.qml \
+        TextAreaHelper.js \ 
+        MultiSelectionDialog.js \
+        Magnifier.qml \
+        Magnifier.js
+

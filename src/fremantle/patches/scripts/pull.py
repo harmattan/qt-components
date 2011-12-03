@@ -21,8 +21,8 @@ def traversedir(where):
 def parse_tree(where, files=None):
     files = files or {}
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
-        if abspath.endswith(('.h', '.cpp','.qml', '.js')):
-            files.setdefault(path.basename(abspath), (abspath, abspath[len(where):],))
+        if abspath.endswith(('.h', '.cpp','.qml', '.js',)):
+            files.setdefault(abspath[len(where):], abspath)
     return files
 
 def destination(dest ,partial=None):
@@ -57,7 +57,7 @@ if __name__ == '__main__':
             ignored[key] = values
             continue
         # copy file
-        link(values[0], sys.argv[2], values[1])
+        link(values, sys.argv[2], key)
 
     print "ignored: " + str(int((len(ignored) * 100) / len(candidates))) + "% (" + str(len(ignored)) + " of " + str(len(candidates)) + ")"
     

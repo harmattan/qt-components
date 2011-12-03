@@ -1,0 +1,20 @@
+diff --git a/src/meego/plugin.cpp b/src/meego/plugin.cpp
+index 9a3a789..ff59dfc 100644
+--- a/src/meego/plugin.cpp
++++ b/src/meego/plugin.cpp
+@@ -74,6 +74,7 @@
+ 
+ #include "i18n/mlocalewrapper.h"
+ 
++static const char *VERSION_FLAVOR = "fremantle-cssu";
+ static const int   VERSION_MAJOR  = 1;
+ static const int   VERSION_MINOR  = 0;
+ 
+@@ -99,6 +100,7 @@ public:
+             engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
+             qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
+ 
++            engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
+             engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
+             engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
+ 

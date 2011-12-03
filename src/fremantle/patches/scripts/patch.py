@@ -9,7 +9,7 @@ more important files are fetched in order of preference from left ro right
 from itertools import ifilter
 from shutil import copy
 from md5 import new as md5
-from os import walk, path, popen, makedirs, listdir, system, sep
+from os import walk, path, popen, makedirs, sep, system
 
 PATCH="patch -d {directory} -p{level} < {patch} "
 
@@ -21,7 +21,7 @@ def traversedir(where):
 def parse_tree(where, files=None):
     files = files or {}
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
-        if abspath.endswith(('.h', '.cpp','.qml','.js',)) and 'PR1.' not in abspath:
+        if abspath.endswith(('.h', '.cpp','.qml','.js',)) and 'ssu' not in abspath:
             files.setdefault(path.basename(abspath), []).append((abspath, abspath[len(where):],))
     return files
 
@@ -51,6 +51,7 @@ def link(source, dest, partial=None):
             system(COPY.format(source=path.abspath(source), destination=dest))
     except Exception, ex:
         pass
+
 
 if __name__ == '__main__':
     import sys

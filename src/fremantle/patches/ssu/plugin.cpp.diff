@@ -1,0 +1,51 @@
+diff --git a/src/meego/plugin.cpp b/src/meego/plugin.cpp
+index 9a3a789..5d9737c 100644
+--- a/src/meego/plugin.cpp
++++ b/src/meego/plugin.cpp
+@@ -74,6 +74,7 @@
+ 
+ #include "i18n/mlocalewrapper.h"
+ 
++static const char *VERSION_FLAVOR = "fremantle-ssu";
+ static const int   VERSION_MAJOR  = 1;
+ static const int   VERSION_MINOR  = 0;
+ 
+@@ -83,12 +84,7 @@ class MeeGoPlugin : public QDeclarativeExtensionPlugin
+ 
+ public:
+     void initializeEngine(QDeclarativeEngine *engine, const char *uri) {
+-        Q_ASSERT(uri == QLatin1String("com.meego") || uri == QLatin1String("com.nokia.meego") || uri == QLatin1String("Qt.labs.components.native"));
+-
+-        if(uri == QLatin1String("com.meego")) {
+-            qWarning() << "'import com.meego' is DEPRECATED and may cause 'Error: Cannot assign QObject* to PageStack_QMLTYPE_42*', missing icons, widgets and other problems;"
+-                          "use 'import com.nokia.meego' instead";
+-        }
++        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle") || uri == QLatin1String("Qt.labs.components.native"));
+ 
+         QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
+ 
+@@ -99,6 +95,7 @@ public:
+             engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
+             qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
+ 
++            engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
+             engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
+             engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
+ 
+@@ -131,7 +128,7 @@ public:
+     }
+ 
+     void registerTypes(const char *uri) {
+-        Q_ASSERT(uri == QLatin1String("com.meego") || uri == QLatin1String("com.nokia.meego") || uri == QLatin1String("Qt.labs.components.native"));
++        Q_ASSERT(uri == QLatin1String("org.maemo.fremantle") || uri == QLatin1String("Qt.labs.components.native"));
+         qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
+ 
+         qmlRegisterUncreatableType<MPageStatus>(uri, 1, 0, "PageStatus", "");
+@@ -146,6 +143,7 @@ public:
+         // Custom primitives
+         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
+         qmlRegisterType<MDeclarativeMaskedItem>(uri, 1, 0, "MaskedItem");
++        qmlRegisterType<MDeclarativeFocusScope>(uri, 1, 0, "FocusScope");
+         qmlRegisterType<MInverseMouseArea>(uri, 1, 0, "InverseMouseArea");
+         qmlRegisterType<MDeclarativeMouseFilter>(uri, 1, 0, "MouseFilter");
+         qmlRegisterType<MDeclarativeMouseEvent>(uri, 1, 0, "MMouseEvent");
