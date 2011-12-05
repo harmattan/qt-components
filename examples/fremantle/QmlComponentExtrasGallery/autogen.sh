@@ -1,0 +1,1 @@
+../QmlComponentGallery/autogen.sh

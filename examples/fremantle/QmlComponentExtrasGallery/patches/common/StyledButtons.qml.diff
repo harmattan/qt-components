@@ -1,0 +1,22 @@
+diff --git a/examples/meego/QmlComponentExtrasGallery/qml/StyledButtons.qml b/examples/meego/QmlComponentExtrasGallery/qml/StyledButtons.qml
+index 4122ac0..2547858 100644
+--- a/examples/meego/QmlComponentExtrasGallery/qml/StyledButtons.qml
++++ b/examples/meego/QmlComponentExtrasGallery/qml/StyledButtons.qml
+@@ -60,7 +60,7 @@ Page {
+             spacing: 30
+ 
+             Label {
+-                width: 400
++                width: 370
+                 text: "Enabled buttons of different styles"
+                 font.bold: true
+                 wrapMode: Text.Wrap
+@@ -101,7 +101,7 @@ Page {
+             anchors {left: col1.right}
+ 
+             Label {
+-                width: 400
++                width: 370
+                 text: "Disabled buttons of different styles"
+                 font.bold: true
+                 wrapMode: Text.Wrap
