@@ -25,13 +25,12 @@ def parse_tree(where, files=None):
             files.setdefault(path.basename(abspath), []).append((abspath, abspath[len(where):],))
     return files
 
-def parse_patch_tree(where, theme=None):
+def parse_patch_tree(where, theme=None, offset=2):
     theme = type(theme) in (dict,) or {}
-    print where
     for abspath in ifilter(lambda x: '.' in x, traversedir(where)):
         if abspath.endswith(('.diff',)):
             dirname = path.basename(path.dirname(abspath[len(where):]))
-            theme.setdefault(path.basename(abspath), {})[dirname] = (abspath, str(abspath[len(where):]).count(sep) + 2)
+            theme.setdefault(path.basename(abspath), {})[dirname] = (abspath, str(abspath[len(where):]).count(sep) + offset)
     return theme
 
 def destination(dest ,partial=None):
@@ -56,13 +55,16 @@ def link(source, dest, partial=None):
 if __name__ == '__main__':
     import sys
     if len(sys.argv) < 5:
-        sys.stderr.write("Usage: patch.py <version> <source_dir> <patch_dir> <dest_dir>\n")
+        sys.stderr.write("Usage: patch.py <version> <source_dir> <patch_dir> <dest_dir> <extra_level>\n")
         exit(255)
 
+    #patch offset
+    offset = int(sys.argv[5]) if len(sys.argv) == 6 else 2
+        
     patched = {}
     patches = {
-        'common'    : parse_patch_tree(path.join(sys.argv[3], 'common')),
-        sys.argv[1] : parse_patch_tree(path.join(sys.argv[3], sys.argv[1])),
+        'common'    : parse_patch_tree(path.join(sys.argv[3], 'common'), None, offset),
+        sys.argv[1] : parse_patch_tree(path.join(sys.argv[3], sys.argv[1]), None, offset),
         }
 
     candidates = parse_tree(sys.argv[2])

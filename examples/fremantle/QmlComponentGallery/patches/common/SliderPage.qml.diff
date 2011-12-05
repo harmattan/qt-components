@@ -1,0 +1,13 @@
+diff --git a/examples/fremantle/QmlComponentGallery/qml/SliderPage.qml b/examples/fremantle/QmlComponentGallery/qml/SliderPage.qml
+index be582f6..2f7e102 100644
+--- b/examples/fremantle/QmlComponentGallery/qml/SliderPage.qml
++++ a/examples/fremantle/QmlComponentGallery/qml/SliderPage.qml
+@@ -47,7 +47,7 @@
+     anchors.margins: UiConstants.DefaultMargin
+ 
+     property int textColumnWidth: 350
+-    property int sliderWidth: 384
++    property int sliderWidth: 330
+ 
+     Flickable {
+         id: flickable

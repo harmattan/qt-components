@@ -1,0 +1,13 @@
+diff --git a/examples/fremantle/QmlComponentGallery/qml/TabBarPage.qml b/examples/fremantle/QmlComponentGallery/qml/TabBarPage.qml
+index 20d8e66..1a53c9d 100644
+--- b/examples/fremantle/QmlComponentGallery/qml/TabBarPage.qml
++++ a/examples/fremantle/QmlComponentGallery/qml/TabBarPage.qml
+@@ -110,7 +110,7 @@
+                      onClicked: {
+                          for (var i = 0, l = tabbarPage.tools.children.length; i < l; i++) {
+                              var row = tabbarPage.tools.children[i];
+-                             if (row.hasOwnProperty("checkedButton")) {
++                             if (row.checkedButton !== undefined) {
+                                  for (var j = 0, l2 = row.children.length; j < l2; j++) {
+                                      var child = row.children[j];
+                                      child.text = child.text ? "" : "Tab" + (j+1);
