@@ -59,13 +59,13 @@ const unsigned int CACHE_VERSION = 1;
     MSystemDirectories::systemThemeCacheDirectory() + QDir::separator() + "QtComponents" + QDir::separator() + _X + QDir::separator()
 
 #define THEME_INDEX_DIR(_X)			\
-    MSystemDirectories::systemThemeDirectory() + QDir::separator() + _X + QDir::separator() + QLatin1String("meegotouch") + QDir::separator()
+    MSystemDirectories::systemThemeDirectory() + QDir::separator() + _X + QDir::separator()
 
 const QSettings *themeFile(const QString &theme)
 {
     // Determine whether this is a m theme:
     // step 1: we need to have index.theme file
-    const QString themeIndexFileName = MSystemDirectories::systemThemeDirectory() + QDir::separator() + theme + QDir::separator() + "index.theme";
+    const QString themeIndexFileName = THEME_INDEX_DIR(theme) + "index.theme";
     if (!QFile::exists(themeIndexFileName)) {
         return NULL;
     }
@@ -197,6 +197,7 @@ bool MLocalThemeDaemonClientPrivate::activateThemeFromCache(const QString &theme
             uint timestamp;
             stream >> timestamp;
             if (timestamp != QFileInfo(indexFileName).lastModified().toTime_t()) {
+	        qDebug() << "Cache is obsolete, try to rebuild a new one...";
                 // will be replaced with up to date version
                 file.close();
                 return false;
