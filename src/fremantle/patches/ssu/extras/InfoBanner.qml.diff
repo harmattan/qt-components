@@ -1,0 +1,12 @@
+diff --git a/src/meego/extras/InfoBanner.qml b/src/meego/extras/InfoBanner.qml
+index 1c5dd42..ed1b1f9 100644
+--- a/src/meego/extras/InfoBanner.qml
++++ b/src/meego/extras/InfoBanner.qml
+@@ -137,7 +137,6 @@ ImplicitSizeItem {
+         font.pixelSize: UI.FONT_DEFAULT_SIZE
+         font.family: UI.FONT_FAMILY
+         font.letterSpacing: UI.INFO_BANNER_LETTER_SPACING
+-        maximumLineCount: 3
+         elide: Text.ElideRight
+     }
+ 
