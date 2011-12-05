@@ -13,3 +13,6 @@
 ;; Set extras namespace from meego to fremantle
 ^(import[ \t]+).*meego.extras[ \t].*$
 \1org.maemo.extras 1.0
+
+^(import[ \t]+).*nokia.extras[ \t].*$
+\1org.maemo.extras 1.0
