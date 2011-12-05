@@ -39,7 +39,7 @@
 ****************************************************************************/
 
 import Qt 4.7
-import org.maemo.fremantle 1.0
+import com.nokia.meego 1.0
 
 Page {
     id: root
