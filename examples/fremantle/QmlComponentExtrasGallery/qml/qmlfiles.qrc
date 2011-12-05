@@ -1,7 +1,9 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-<qresource prefix="/">
+<qresource prefix="/ssu">
     <file>assets/system_banner_thumbnail.png</file>
+</qresource>
+<qresource prefix="/">
     <file>ssu/CountBubble.qml</file>
     <file>ssu/DatePickerDialog.qml</file>
     <file>ssu/ListPage.qml</file>
