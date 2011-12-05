@@ -1,0 +1,21 @@
+diff --git a/src/fremantle/NotificationBanner.qml b/src/fremantle/NotificationBanner.qml
+index 1801fbb..ab2e09e 100644
+--- a/src/fremantle/NotificationBanner.qml
++++ b/src/fremantle/NotificationBanner.qml
+@@ -48,7 +48,7 @@ import "." 1.0
+    shouldn't exceed 3.
+ */
+ 
+-Item {
++ImplicitSizeItem {
+     id: root
+ 
+     /*
+@@ -146,7 +146,6 @@ Item {
+         font.pixelSize: 24
+         font.family: "Nokia Pure"
+         font.letterSpacing: -1.2
+-        maximumLineCount: 3
+         elide: Text.ElideRight
+     }
+ 
