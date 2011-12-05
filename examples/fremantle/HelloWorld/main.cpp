@@ -39,10 +39,10 @@
 ****************************************************************************/
 
 #include <QtDeclarative>
+#include "fpsdeclarativeview.h"
 
 #define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < V
 #define MAX(a, b) ((a > b) ? a : b)
-
 
 int main(int argc, char **argv)
 {
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     const QString   qrc = CHECK_VER(v, 0x040704) ? "qrc:/ssu/main.qml" : "qrc:/cssu/main.qml";
 
     QApplication app(argc, argv);
-    QDeclarativeView window;
+    FPSDeclarativeView window;
 
     QDir::setCurrent(app.applicationDirPath());
     window.setSource(QUrl(qrc));
