@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPTS_DIR=fremantle/patches/scripts
+SCRIPTS_DIR=$PWD/fremantle/patches/scripts
 REGEX_DIR=$SCRIPTS_DIR/re
 
 # link meego sources
