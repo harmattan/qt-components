@@ -1,0 +1,14 @@
+diff --git a/src/fremantle/Popup.qml b/src/fremantle/Popup.qml
+index 0996a84..522ca1b 100644
+--- a/src/fremantle/Popup.qml
++++ b/src/fremantle/Popup.qml
+@@ -73,9 +73,6 @@ Item {
+ 
+     signal privateClicked
+ 
+-    //Deprecated, TODO Remove the following two lines on w13
+-   signal clicked
+-   onClicked: privateClicked()
+ 
+     QtObject {
+         id: parentCache
