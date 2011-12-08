@@ -9,6 +9,7 @@ meego {
 fremantle {
     SUBDIRS += fremantle/ssu fremantle/cssu
     extras:SUBDIRS += fremantle/ssu/extras fremantle/cssu/extras
+    i18n:SUBDIRS += fremantle/ssu/i18n fremantle/cssu/i18n
 }
 
 symbian3 {

@@ -1,0 +1,42 @@
+Diff --git a/src/meego/mtexttranslator.cpp b/src/meego/mtexttranslator.cpp
+index f421db9..6d40902 100644
+--- a/src/fremantle/mtexttranslator.cpp
++++ b/src/fremantle/mtexttranslator.cpp
+@@ -46,7 +46,7 @@
+ #include <QFileInfo>
+ 
+ namespace {
+-  const QString i10nDir("/usr/share/l10n/meegotouch/");
++  const QString i10nDir(I18N_DIR);
+ }
+ 
+ // We will later use the separated mlocale implementation to get rid of the lmt dependency
+@@ -74,7 +74,7 @@ MTextTranslator::MTextTranslator()
+     //now check if we need the last part (this is true, when the appropriate file exists)
+     qmInfo.setFile(QString("%1%2%3%4")
+                      .arg(i10nDir)
+-                     .arg("common_")
++                     .arg("qt-components_")
+                      .arg(locale)
+                      .arg(".qm"));
+ 
+@@ -92,18 +92,7 @@ MTextTranslator::MTextTranslator()
+ #endif
+ 
+     m_translator = new QTranslator(this);
+-
+-    //fallback to default qm, when file not found
+-    qmInfo.setFile(QString("%1%2%3%4")
+-                   .arg(i10nDir)
+-                   .arg("common_")
+-                   .arg(locale)
+-                   .arg(".qm"));
+-    if (locale == "C" || !qmInfo.exists()) {
+-        m_translator->load(i10nDir + QString("libmeegotouch.qm"));
+-    } else {
+-        m_translator->load(i10nDir + QString("common_")+locale);
+-    }
++    m_translator->load(i10nDir + QString("qt-components_")+locale);
+     app->installTranslator(m_translator);
+ }
+ 

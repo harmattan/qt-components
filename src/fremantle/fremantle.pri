@@ -3,6 +3,7 @@ INCLUDEPATH += $$PWD $$PWD/indicators
 
 DEFINES += THEME_DIR=\\\"\"$$THEME_DIR\"\\\"
 DEFINES += CACHE_DIR=\\\"\"$$CACHE_DIR\"\\\"
+DEFINES += I18N_DIR=\\\"\"$$I18N_DIR\"\\\"
 DEFINES += DEFAULT_THEME=\\\"\"$$DEFAULT_THEME\"\\\"
 
 force-local-theme: DEFINES+=FORCE_LOCAL_THEME
@@ -281,3 +282,6 @@ QML_FILES = \
         Magnifier.qml \
         Magnifier.js
 
+TRANSLATIONS += \
+	i18n/qt-components_en.ts \
+	i18n/qt-components_es.ts

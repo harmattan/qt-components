@@ -154,7 +154,8 @@ Item {
             Label {
                 color: UI.COLOR_INVERTED_FOREGROUND
                 anchors.centerIn: parent
-                text: qsTr("'Tap' to switch or close")
+                //% "'Tap' to switch or close"
+                text: textTranslator.translate("qtn_statusbar_help")
             }
         }
     }

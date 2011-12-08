@@ -31,8 +31,9 @@ fremantle {
     exists( $$[QMAKE_MKSPECS]/features/maliit_defines.prf ) {
         load(maliit_defines)
     }
-    THEME_DIR = /usr/share/themes
-    CACHE_DIR = /opt/var/cache
+    THEME_DIR = $$INSTALL_PREFIX/share/themes
+    CACHE_DIR = $$INSTALL_PREFIX/var/cache
+    I18N_DIR  = $$INSTALL_PREFIX/share/l10n/qt-components10/
 }
 
 unix:!symbian {
