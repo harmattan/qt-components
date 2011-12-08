@@ -1,8 +1,6 @@
-diff --git a/src/meego/plugin.cpp b/src/meego/plugin.cpp
-index 9a3a789..5d9737c 100644
---- a/src/meego/plugin.cpp
-+++ b/src/meego/plugin.cpp
-@@ -74,6 +74,7 @@
+--- a/src/fremantle/plugin.cpp	2011-12-08 13:45:18.499635102 +0100
++++ b/src/fremantle/plugin.cpp	2011-12-08 13:45:18.499635102 +0100
+@@ -75,6 +75,7 @@
  
  #include "i18n/mlocalewrapper.h"
  
@@ -10,7 +8,7 @@ index 9a3a789..5d9737c 100644
  static const int   VERSION_MAJOR  = 1;
  static const int   VERSION_MINOR  = 0;
  
-@@ -83,12 +84,7 @@ class MeeGoPlugin : public QDeclarativeExtensionPlugin
+@@ -84,12 +85,7 @@
  
  public:
      void initializeEngine(QDeclarativeEngine *engine, const char *uri) {
@@ -24,15 +22,17 @@ index 9a3a789..5d9737c 100644
  
          QDeclarativeExtensionPlugin::initializeEngine(engine, uri);
  
-@@ -99,6 +95,7 @@ public:
+@@ -99,7 +95,8 @@
+ 
              engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
              qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
- 
-+            engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
-             engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
+-
++ 
++	    engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
+ 	    engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
              engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
  
-@@ -131,7 +128,7 @@ public:
+@@ -139,7 +136,7 @@
      }
  
      void registerTypes(const char *uri) {
@@ -41,7 +41,7 @@ index 9a3a789..5d9737c 100644
          qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
  
          qmlRegisterUncreatableType<MPageStatus>(uri, 1, 0, "PageStatus", "");
-@@ -146,6 +143,7 @@ public:
+@@ -152,6 +149,7 @@
          // Custom primitives
          qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");
          qmlRegisterType<MDeclarativeMaskedItem>(uri, 1, 0, "MaskedItem");

@@ -1,5 +1,5 @@
 diff --git a/src/meego/plugin.cpp b/src/meego/plugin.cpp
-index 9c3d52d..9a3a789 100644
+index 9c3d52d..a114a4f 100644
 --- a/src/meego/plugin.cpp
 +++ b/src/meego/plugin.cpp
 @@ -41,7 +41,6 @@
@@ -10,16 +10,17 @@ index 9c3d52d..9a3a789 100644
  #include "mdeclarativescreen.h"
  #include "mdeclarativeinputcontext.h"
  #include "msnapshot.h"
-@@ -55,6 +54,8 @@
+@@ -52,6 +51,9 @@
+ #include "mdeclarativeimageprovider.h"
+ #include "mdeclarativeimplicitsizeitem.h"
+ #include "mdeclarativemaskeditem.h"
++#include "mdeclarative.h"
++#include "mbatteryinfo.h"
++#include "mdeclarativeclipboard.h"
  #include "mthemeplugin.h"
  #include "mtexttranslator.h"
  #include "mwindowstate.h"
-+#include "mdeclarative.h"
-+#include "mbatteryinfo.h"
- #include "mdeclarativemousefilter.h"
- #include "mscrolldecoratorsizer.h"
- #include "mdeclarativeimattributeextension.h"
-@@ -73,6 +74,9 @@
+@@ -73,6 +75,9 @@
  
  #include "i18n/mlocalewrapper.h"
  
@@ -29,20 +30,34 @@ index 9c3d52d..9a3a789 100644
  class MeeGoPlugin : public QDeclarativeExtensionPlugin
  {
      Q_OBJECT
-@@ -95,6 +99,12 @@ public:
+@@ -95,6 +100,16 @@ public:
              engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
              qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
  
-+            engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
++	    engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
 +            engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
 +
 +            MDeclarative *declarative = new MDeclarative(engine->rootContext());
 +            engine->rootContext()->setContextProperty("maemo", declarative);
 +
++	     // Add a clipboard instance to handle EditBubble canPaste
++            engine->rootContext()->setContextProperty("clipboard", new MDeclarativeClipboard);
++            qmlRegisterUncreatableType<MDeclarativeClipboard>(uri, 1, 0, "Clipboard", "");
++
              engine->rootContext()->setContextProperty("platformWindow", MWindowState::instance());
              qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
  
-@@ -122,7 +132,6 @@ public:
+@@ -107,6 +122,9 @@ public:
+             engine->rootContext()->setContextProperty("textTranslator", new MTextTranslator);
+             qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
+ 
++	    // Fremantle statusbar
++	    qmlRegisterUncreatableType<MBatteryInfo>(uri, 1, 0, "BatteryInfo", "");
++
+             // Disable cursor blinking + make double tapping work the way it is done in lmt.
+             QApplication *app = qobject_cast<QApplication*>(QApplication::instance());
+             if (app) {
+@@ -122,7 +140,6 @@ public:
  
      void registerTypes(const char *uri) {
          Q_ASSERT(uri == QLatin1String("com.meego") || uri == QLatin1String("com.nokia.meego") || uri == QLatin1String("Qt.labs.components.native"));
@@ -50,12 +65,3 @@ index 9c3d52d..9a3a789 100644
          qmlRegisterType<MSnapshot>(uri, 1, 0, "Snapshot");
  
          qmlRegisterUncreatableType<MPageStatus>(uri, 1, 0, "PageStatus", "");
-@@ -131,6 +140,8 @@ public:
-         qmlRegisterUncreatableType<MPageOrientation>(uri, 1, 0, "PageOrientation", "");
-         qmlRegisterUncreatableType<MToolBarVisibility>(uri, 1, 0, "ToolBarVisibility", "");
-         qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
-+        // Fremantle statusbar
-+        qmlRegisterUncreatableType<MBatteryInfo>(uri, 1, 0, "BatteryInfo", "");
- 
-         // Custom primitives
-         qmlRegisterType<MDeclarativeImplicitSizeItem>(uri, 1, 0, "ImplicitSizeItem");

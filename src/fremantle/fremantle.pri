@@ -95,6 +95,7 @@ xrandr:!mac {
 SOURCES += \
     plugin.cpp \
     mdeclarativescreen.cpp \
+    mdeclarativeclipboard.cpp \
     msnapshot.cpp \
     minversemousearea.cpp \
     mdeclarative.cpp \
@@ -134,6 +135,7 @@ SOURCES += \
 HEADERS += \
     mbatteryinfo.h \
     mdeclarativescreen.h \
+    mdeclarativeclipboard.h \
     mdialogstatus.h \
     msnapshot.h \
     mpagestatus.h \

@@ -10,11 +10,13 @@ index 9a3a789..ff59dfc 100644
  static const int   VERSION_MAJOR  = 1;
  static const int   VERSION_MINOR  = 0;
  
-@@ -99,6 +100,7 @@ public:
+@@ -99,7 +95,8 @@
+ 
              engine->rootContext()->setContextProperty("screen", MDeclarativeScreen::instance());
              qmlRegisterUncreatableType<MDeclarativeScreen>(uri, 1, 0, "Screen", "");
- 
-+            engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
-             engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
+-
++ 
++	    engine->rootContext()->setContextProperty("version_flavour", VERSION_FLAVOR);
+ 	    engine->rootContext()->setContextProperty("version_major", VERSION_MAJOR);
              engine->rootContext()->setContextProperty("version_minor", VERSION_MINOR);
  
