@@ -45,22 +45,32 @@
 #include <QtDeclarative/qdeclarative.h>
 
 class MDeclarativeClipboardPrivate;
-
 class MDeclarativeClipboard : public QObject
 {
     Q_OBJECT
+    
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged FINAL)
 
 public:
     explicit MDeclarativeClipboard(QObject *parent = 0);
     virtual ~MDeclarativeClipboard();
 
+    QString text() const;
+    void setText(const QString &newText);
+
+Q_SIGNALS:
+    void textChanged();
+
 protected:
     MDeclarativeClipboardPrivate *d_ptr;
+
+private Q_SLOTS:
+    void onChanged();
 
 private:
     Q_DISABLE_COPY(MDeclarativeClipboard)
     Q_DECLARE_PRIVATE(MDeclarativeClipboard)
-
+    
 };
 
 QML_DECLARE_TYPE(MDeclarativeClipboard)

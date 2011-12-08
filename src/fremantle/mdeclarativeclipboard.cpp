@@ -49,6 +49,7 @@ class MDeclarativeClipboardPrivate
 {
 public:
   QClipboard *clipboard;
+  QString clipboard_text;
   MDeclarativeClipboardPrivate() {}
 };
 
@@ -60,9 +61,34 @@ MDeclarativeClipboard::MDeclarativeClipboard(QObject *parent) :
 
     QApplication *application = qobject_cast<QApplication*>(QApplication::instance());
     d->clipboard = application->clipboard();
+
+    QObject::connect(d->clipboard, SIGNAL(dataChanged()), this, SLOT(onChanged()));
 }
 
 MDeclarativeClipboard::~MDeclarativeClipboard()
 {
     delete d_ptr;
+}
+
+QString MDeclarativeClipboard::text() const
+{
+  return d_ptr->clipboard->text();
+}
+
+void MDeclarativeClipboard::setText(const QString &newTheme)
+{
+  Q_D(MDeclarativeClipboard);
+  d->clipboard->setText(newTheme);
+}
+
+void MDeclarativeClipboard::onChanged()
+{
+  QString current;
+  Q_D(MDeclarativeClipboard);
+  
+  current = this->text();
+  if (d->clipboard_text != current) {
+    d->clipboard_text = current;
+    emit textChanged();
+  }
 }
