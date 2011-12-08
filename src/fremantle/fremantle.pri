@@ -9,7 +9,7 @@ force-local-theme: DEFINES+=FORCE_LOCAL_THEME
 
 win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
-QT += declarative svg opengl
+QT += declarative network opengl
 
 maemo5 {
     SOURCES += \

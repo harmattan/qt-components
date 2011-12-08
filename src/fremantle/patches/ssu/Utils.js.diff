@@ -1,0 +1,26 @@
+diff --git a/src/fremantle/Utils.js b/src/fremantle/Utils.js
+index 1d5f49a..bd96510 100644
+--- a/src/fremantle/Utils.js
++++ b/src/fremantle/Utils.js
+@@ -74,7 +74,7 @@ function findRootItem(item, objectName)
+         while (next.parent) {
+             next = next.parent;
+ 
+-            if (rootItemName == next.objectName) {
++            if (rootItemName == next.objectNameEx) {
+                 break;
+             }
+         }
+@@ -93,10 +93,10 @@ function findRootItemNotificationBanner(item)
+ 
+     if (next) {
+         while (next.parent) {
+-            if (next.objectName == "appWindowContent")
++            if (next.objectNameEx == "appWindowContent")
+                 break;
+ 
+-            if (next.objectName == "windowContent")
++            if (next.objectNameEx == "windowContent")
+                 break;
+ 
+             next = next.parent;

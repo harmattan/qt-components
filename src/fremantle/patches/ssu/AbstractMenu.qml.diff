@@ -1,0 +1,12 @@
+diff --git a/src/fremantle/AbstractMenu.qml b/src/fremantle/AbstractMenu.qml
+index be7572a..c5a2455 100644
+--- a/src/fremantle/AbstractMenu.qml
++++ b/src/fremantle/AbstractMenu.qml
+@@ -77,7 +77,7 @@ Popup {
+ 
+         if (next != null) {
+             while (next) {
+-                if(next.objectName == objectName){
++                if(typeof (next.objectNameEx) != 'undefined' && next.objectNameEx == objectName){
+                     return next;
+                 }

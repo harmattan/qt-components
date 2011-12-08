@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/Window.qml b/src/fremantle/Window.qml
+index b97dea5..166c86b 100644
+--- a/src/fremantle/Window.qml
++++ b/src/fremantle/Window.qml
+@@ -82,7 +82,8 @@ Item {
+             // Used for resizing windowContent when virtual keyboard appears
+             property int heightDelta: 0
+ 
+             objectName: "windowContent"
++            property string objectNameEx: "windowContent"
+             clip: true
+ 
+             Connections {

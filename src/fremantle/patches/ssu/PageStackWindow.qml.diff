@@ -1,0 +1,22 @@
+diff --git a/src/fremantle/PageStackWindow.qml b/src/fremantle/PageStackWindow.qml
+index e573699..64fc9b9 100644
+--- a/src/fremantle/PageStackWindow.qml
++++ b/src/fremantle/PageStackWindow.qml
+@@ -50,7 +50,8 @@ Window {
+     property alias pageStack: stack
+     property Style platformStyle: PageStackWindowStyle{}
+ 
+     objectName: "pageStackWindow"
++    property string objectNameEx: "pageStackWindow"
+ 
+     StatusBar {
+         id: statusBar
+@@ -73,7 +73,8 @@ Window {
+     }
+ 
+     Item {
+         objectName: "appWindowContent"
++        property string objectNameEx: "appWindowContent"
+         width: parent.width
+         anchors.top: statusBar.bottom
+         anchors.bottom: parent.bottom

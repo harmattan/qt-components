@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/SoftwareInputPanel.qml b/src/fremantle/SoftwareInputPanel.qml
+index 75dbbc7..7649e06 100644
+--- a/src/fremantle/SoftwareInputPanel.qml
++++ b/src/fremantle/SoftwareInputPanel.qml
+@@ -45,7 +45,8 @@ Item {
+     width: parent.width
+     height: 0
+ 
+     objectName: "softwareInputPanel"
++    property string objectNameEx: "softwareInputPanel"
+ 
+     property bool active: false
+ 

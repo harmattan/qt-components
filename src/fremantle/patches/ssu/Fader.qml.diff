@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/Fader.qml b/src/fremantle/Fader.qml
+index 210e7da..2df3b94 100644
+--- a/src/fremantle/Fader.qml
++++ b/src/fremantle/Fader.qml
+@@ -114,7 +114,7 @@ Rectangle {
+ 
+         if (next != null) {
+             while (next.parent) {
+-                if(next.objectName == "appWindowContent" || next.objectName == "windowContent"){
++                if(next.objectNameEx == "appWindowContent" || next.objectNameEx == "windowContent"){
+                     break
+                 }
+ 
