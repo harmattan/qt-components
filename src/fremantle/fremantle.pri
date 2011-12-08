@@ -112,7 +112,6 @@ SOURCES += \
     themedaemon/mlocalthemedaemonclient.cpp \
     themedaemon/mlogicalvalues.cpp \
     themedaemon/msystemdirectories.cpp \
-    themedaemon/mremotethemedaemonclient.cpp \
     themedaemon/mthemedaemonprotocol.cpp \
     mdeclarativemousefilter.cpp \
     mdeclarativeimattributeextension.cpp \
@@ -153,7 +152,6 @@ HEADERS += \
     mx11wrapper.h \
     themedaemon/mabstractthemedaemonclient.h \
     themedaemon/mlocalthemedaemonclient.h \
-    themedaemon/mremotethemedaemonclient.h \
     themedaemon/mthemedaemonprotocol.h \
     mdeclarativemousefilter.h \
     mdeclarativeimattributeextension.h \
@@ -260,6 +258,7 @@ QML_FILES = \
         ToolItem.qml \
         ToolIcon.qml \
         ToolButtonRow.qml \
+        style/ToolButtonRowStyle.qml \
         style/ToolItemStyle.qml \
         Sheet.qml \
         style/SheetStyle.qml \
