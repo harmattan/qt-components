@@ -1,0 +1,13 @@
+diff --git a/src/fremantle/EditBubble.qml b/src/fremantle/EditBubble.qml
+index 4a1ffee..d2c1d42 100644
+--- a/src/fremantle/EditBubble.qml
++++ b/src/fremantle/EditBubble.qml
+@@ -72,7 +72,7 @@ Item {
+ 
+         // TextEdit will have echoMode == null
+         property bool canCopy: textSelected && (textInput.echoMode == null || textInput.echoMode == TextInput.Normal)
+-        property bool canPaste: validInput && (textInput.canPaste && !textInput.readOnly)
++        property bool canPaste: validInput && (clipboard.text.length > 0 && !textInput.readOnly)
+         property bool textSelected: validInput && (textInput.selectedText != "")
+ 
+         z: 1020
