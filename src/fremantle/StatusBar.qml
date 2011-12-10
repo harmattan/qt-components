@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.1
-import "." 1.0
+import Qt 4.7
 
 import "UIConstants.js" as UI
 
@@ -65,57 +64,117 @@ Item {
     //Statusbar background
     BorderImage {
         id: background
-        width: root.width
         source: platformStyle.background
 
-        // battery indicator
-        Item {
-            id: batteryIndicator
-	    height: parent.height
-            property int animatedLevel : 0
+        property int contentHeight: Math.round(root.height * 18 / 26)
 
-	    anchors {
-	        left: parent.left
+        Item {
+            id: battery_indicator
+            width: battery_image.width; height: parent.height
+
+            property int animatedLevel: 0
+
+            anchors {
+                left: parent.left
                 leftMargin: platformStyle.paddingSmall
-	    }
+            }
 
             Image {
-                id: indicator
+                id: battery_image
                 source: platformStyle.batteryFrames + (maemo.batteryInfo.charging ?
-                            (parent.animatedLevel > 0 ? parent.animatedLevel : "-low")    :
-                            (maemo.batteryInfo.batteryLevel > 0 ? maemo.batteryInfo.batteryLevel : "-verylow"))
-
+                   (parent.animatedLevel > 0 ? parent.animatedLevel : "-low")    :
+                   (maemo.batteryInfo.batteryLevel > 0 ? maemo.batteryInfo.batteryLevel : "-verylow"))
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             NumberAnimation {
-                id: batteryChargingAnimation
                 running: maemo.batteryInfo.charging && root.visible && platformWindow.active
-                target: batteryIndicator; property: "animatedLevel"
+                target: battery_indicator; property: "animatedLevel"
                 from: 0; to: platformStyle.batteryLevels; duration: platformStyle.batteryPeriod
                 loops: Animation.Infinite
             }
         }
 
-        // clock
-        Text {
-            id: timeItem
-            // Clock properties
-            text: maemo.currentTime
-            color: platformStyle.clockColor
-            horizontalAlignment: Text.AlignRight
-
-            // Clock position
-            width: Math.round(parent.height * 44 / 26)
+        // signal indicator
+        Item {
+            id: signal_indicator
+            width: maemo.cellInfo.offline ? signal_offline_image.width: signal_online_image.width; height: parent.height
 
             anchors {
+                left: battery_indicator.right
+                leftMargin: platformStyle.paddingSmall
+            }
+
+            // Offline indicator
+            Image {
+                id: signal_offline_image
+                visible: maemo.cellInfo.offline
+                source: platformStyle.cellStatus + maemo.cellInfo.status
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Signal indicator
+            Image {
+                id: signal_online_image
+                visible: !maemo.cellInfo.offline
+                source: platformStyle.cellSignalFrames + maemo.cellInfo.strength
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        // Operator name
+        Text {
+            id: provider_indicator
+            visible: !maemo.cellInfo.offline
+            text: maemo.cellInfo.provider
+            color: platformStyle.indicatorColor
+
+            anchors {
+                left:signal_indicator.right
+                leftMargin: platformStyle.paddingSmall
                 verticalCenter: parent.verticalCenter
-                right: parent.right
-                rightMargin: platformStyle.paddingSmall
             }
 
             font {
-                pixelSize: priv.contentHeight
+                family: platformStyle.providerFont
+                pixelSize: background.contentHeight
+            }
+        }
+
+        // Cell range
+        Item {
+            id: cellrange_indicator
+            width: cellrange_image.width; height: parent.height
+
+            anchors {
+                left: parent.left
+                leftMargin: platformStyle.paddingSmall
+            }
+
+            Image {
+                id: cellrange_image
+                visible: !maemo.cellInfo.offline
+                source: platformStyle.cellRangeMode + maemo.cellInfo.mode +
+                        (maemo.cellInfo.active ? "-active" : "")
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+
+        // clock
+        Text {
+            id: time_indicator
+            text: maemo.currentTime
+            color: platformStyle.clockColor
+
+            anchors {
+                right: parent.right
+                rightMargin: platformStyle.paddingSmall
+                verticalCenter: parent.verticalCenter
+            }
+
+            font {
+                family: platformStyle.clockFont
+                pixelSize: background.contentHeight
                 weight: Font.Light
             }
         }
@@ -136,26 +195,32 @@ Item {
             Image {
                 source: platformStyle.homeButton
                 anchors {
-                    verticalCenter: parent.verticalCenter
                     left: parent.left
                     leftMargin: platformStyle.paddingSmall
+                    verticalCenter: parent.verticalCenter
                 }
             }
 
             Image {
                 source: platformStyle.closeButton
                 anchors {
-                    verticalCenter: parent.verticalCenter
                     right: parent.right
                     rightMargin: platformStyle.paddingSmall
+                    verticalCenter: parent.verticalCenter
                 }
             }
 
-            Label {
-                color: UI.COLOR_INVERTED_FOREGROUND
+            Text {
+                color: platformStyle.indicatorColor
                 anchors.centerIn: parent
+
                 //% "'Tap' to switch or close"
                 text: textTranslator.translate("qtn_statusbar_help")
+
+                font {
+                    family: platformStyle.clockFont
+                    pixelSize: background.contentHeight
+                }
             }
         }
     }
@@ -172,29 +237,6 @@ Item {
         onPressed: {
             //FIXME: Implement a StatusApplet. See symbian Belle for details
             console.log("Area clicked")
-        }
-    }
-
-    QtObject {
-        id: priv
-
-        property int contentHeight: Math.round(root.height * 18 / 26)
-        property int paddingSmallOneQuarter: Math.round(platformStyle.paddingSmall / 4)
-        property int paddingSmallThreeQuarters: Math.round(platformStyle.paddingSmall * 3 / 4)
-
-        function signalWidthPercentage(signalStrength) {
-            if (signalStrength < 10)
-                return 0;
-            else if (signalStrength < 20)
-                return 1/5;
-            else if (signalStrength < 30)
-                return 2/5;
-            else if (signalStrength < 60)
-                return 3/5;
-            else if (signalStrength < 100)
-                return 4/5;
-            else
-                return 1;
         }
     }
 

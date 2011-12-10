@@ -38,43 +38,58 @@
 **
 ****************************************************************************/
 
-import Qt 4.7
-import "." 1.0
+#ifndef MCELLINFO_H
+#define MCELLINFO_H
 
-Style {
-    // Background
-    property url background: "image://theme/meegotouch-statusbar-" +
-            ((screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted) ? "portrait" : "landscape") +
-            __invertedString + "-background"
+#include <QtCore/qscopedpointer.h>
+#include <QtDeclarative/qdeclarativeitem.h>
 
-    // Fremantle only buttons to replace Harmattan swipe functionality
-    property url closeButton: "image://theme/icon-f-statusbar-close"
-    property url homeButton:  "image://theme/icon-f-statusbar-home"
+class MCellInfoPrivate;
 
-    // Default separation between elements
-    property int paddingSmall: 6
+class MCellInfo : public QObject
+{
+    Q_OBJECT
 
-    // StatusBar default font and colors
-    property string clockFont: theme.constants.Fonts.FONT_FAMILY
-    property string providerFont: theme.constants.Fonts.FONT_FAMILY
-    property string clockColor: inverted ? theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND : theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
-    property string indicatorColor: inverted ? theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND : theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
+    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
+    Q_PROPERTY(bool offline READ offline NOTIFY offlineChanged)
 
-    // transitions
-    property int visibilityTransitionDuration: 250
+    Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QString provider READ networkOperator NOTIFY operatorChanged)
+    Q_PROPERTY(QString mode READ radioMode NOTIFY radioModeChanged)
 
-    // Fremantle help transitions
-    property int showHelpDuration: 1600
-    property int helpTransitionDuration: 400
+    Q_PROPERTY(int strength READ signalStrength NOTIFY signalStrengthChanged)
 
-    // Fremantle Battery indicators
-    property int batteryLevels: 8
-    property int batteryPeriod: 3500 
-    property url batteryFrames: "image://theme/icon-s-status-battery"
+public:
+    explicit MCellInfo(QObject *parent = 0);
+    ~MCellInfo();
 
-    // Fremantle Cell indicators
-    property url cellStatus: "image://theme/icon-s-status-"
-    property url cellRangeMode: "image://theme/icon-s-status-"
-    property url cellSignalFrames: "image://theme/icon-s-status-network"
-}
+    bool active() const;
+    bool offline() const;
+    QString status() const;
 
+    QString networkOperator() const;
+    QString radioMode() const;
+
+    int signalStrength() const;
+
+Q_SIGNALS:
+    void activeChanged();
+    void offlineChanged();
+
+    void statusChanged();
+    void operatorChanged();
+    void radioModeChanged();
+
+    void signalStrengthChanged();
+
+protected:
+    MCellInfoPrivate* d_ptr;
+
+private:
+    Q_DISABLE_COPY(MCellInfo)
+    Q_DECLARE_PRIVATE(MCellInfo)
+};
+
+QML_DECLARE_TYPE(MCellInfo)
+
+#endif // MCELLINFO_H

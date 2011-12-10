@@ -10,12 +10,13 @@ index 9c3d52d..a114a4f 100644
  #include "mdeclarativescreen.h"
  #include "mdeclarativeinputcontext.h"
  #include "msnapshot.h"
-@@ -52,6 +51,9 @@
+@@ -52,6 +51,10 @@
  #include "mdeclarativeimageprovider.h"
  #include "mdeclarativeimplicitsizeitem.h"
  #include "mdeclarativemaskeditem.h"
 +#include "mdeclarative.h"
 +#include "mbatteryinfo.h"
++#include "mcellinfo.h"
 +#include "mdeclarativeclipboard.h"
  #include "mthemeplugin.h"
  #include "mtexttranslator.h"
@@ -47,12 +48,13 @@ index 9c3d52d..a114a4f 100644
              engine->rootContext()->setContextProperty("platformWindow", MWindowState::instance());
              qmlRegisterUncreatableType<MWindowState>(uri, 1, 0, "WindowState", "");
  
-@@ -107,6 +122,9 @@ public:
+@@ -107,6 +122,10 @@ public:
              engine->rootContext()->setContextProperty("textTranslator", new MTextTranslator);
              qmlRegisterUncreatableType<MTextTranslator>(uri, 1, 0, "TextTranslator", "");
  
 +	    // Fremantle statusbar
 +	    qmlRegisterUncreatableType<MBatteryInfo>(uri, 1, 0, "BatteryInfo", "");
++	    qmlRegisterUncreatableType<MCellInfo>(uri, 1, 0, "CellInfo", "");
 +
              // Disable cursor blinking + make double tapping work the way it is done in lmt.
              QApplication *app = qobject_cast<QApplication*>(QApplication::instance());

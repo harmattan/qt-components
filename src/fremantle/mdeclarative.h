@@ -50,6 +50,7 @@
 #include "mtoolbarvisibility.h"
 
 class MBatteryInfo;
+class MCellInfo;
 class MDeclarativePrivate;
 
 class MDeclarative : public QObject
@@ -57,6 +58,7 @@ class MDeclarative : public QObject
     Q_OBJECT
     Q_PROPERTY(QString currentTime READ currentTime NOTIFY currentTimeChanged)
     Q_PROPERTY(MBatteryInfo * batteryInfo READ batteryInfo CONSTANT FINAL)
+    Q_PROPERTY(MCellInfo * cellInfo READ cellInfo CONSTANT FINAL)
 
 public:
     explicit MDeclarative(QObject *parent = 0);
@@ -64,6 +66,7 @@ public:
 
     static QString currentTime();
     MBatteryInfo * batteryInfo();
+    MCellInfo * cellInfo();
 
     Q_INVOKABLE void privateClearIconCaches();
     Q_INVOKABLE void privateClearComponentCache();

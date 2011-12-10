@@ -38,6 +38,7 @@ maemo5 {
 else {
     SOURCES += \
         mbatteryinfo.cpp \
+	mcellinfo.cpp \
 }
 
 !win32:!embedded:!mac:!symbian {
@@ -135,6 +136,7 @@ SOURCES += \
 
 HEADERS += \
     mbatteryinfo.h \
+    mcellinfo.h \
     mdeclarativescreen.h \
     mdeclarativeclipboard.h \
     mdialogstatus.h \

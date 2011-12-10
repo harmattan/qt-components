@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BMD$
-** You may use this file under the terms of the BMD license as follows:
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,88 +38,61 @@
 **
 ****************************************************************************/
 
-#include "mdeclarative.h"
-#include "mbatteryinfo.h"
 #include "mcellinfo.h"
 
-#include <QCoreApplication>
-#include <QTime>
-#include <QTimer>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QPixmapCache>
-
-#include <QDebug>
-
-static const int MINUTE_MS = 60*1000;
-
-class MDeclarativePrivate
+// dummy private class
+class MCellInfoPrivate
 {
+    Q_DECLARE_PUBLIC(MCellInfo)
+
 public:
-    QTimer timer;
-    MBatteryInfo batteryInfo;
-    MCellInfo cellInfo;
-    MDeclarativePrivate() {}
+    MCellInfoPrivate(MCellInfo *qq) : q_ptr(qq) {}
+
+private:
+    MCellInfo *q_ptr;
 };
 
-MDeclarative::MDeclarative(QObject *parent) :
-    QObject(parent),
-    d_ptr(new MDeclarativePrivate)
-{
-    Q_D(MDeclarative);
-    d->timer.start(MINUTE_MS);
-    connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(currentTimeChanged()));
 
-    QCoreApplication *application = QCoreApplication::instance();
-    if (application)
-        application->installEventFilter(this);
+MCellInfo::MCellInfo(QObject *parent) :
+    QObject(parent), d_ptr(new MCellInfoPrivate(this))
+{
 }
 
-MDeclarative::~MDeclarative()
+MCellInfo::~MCellInfo()
 {
-    d_ptr->timer.stop();
     delete d_ptr;
 }
 
-QString MDeclarative::currentTime()
+
+bool MCellInfo::active() const
 {
-    return QTime::currentTime().toString(QLatin1String("h:mm"));
+    return false;
 }
 
-MBatteryInfo *MDeclarative::batteryInfo()
+bool MCellInfo::offline() const
 {
-    Q_D(MDeclarative);
-    return &d->batteryInfo;
+    return true;
 }
 
-MCellInfo *MDeclarative::cellInfo()
+QString MCellInfo::status() const
 {
-    Q_D(MDeclarative);
-    return &d->cellInfo;
+    return "no-gsm-connection";
 }
 
-void MDeclarative::privateClearIconCaches()
+QString MCellInfo::networkOperator() const
 {
-    QPixmapCache::clear();
+    return "";
 }
 
-void MDeclarative::privateClearComponentCache()
+QString MCellInfo::radioMode() const
 {
-    QDeclarativeContext *context = qobject_cast<QDeclarativeContext*>(this->parent());
-    if (context) {
-        context->engine()->clearComponentCache();
-    }
+    return "gsm";
 }
 
-bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
+int MCellInfo::signalStrength() const
 {
-    if (obj == QCoreApplication::instance()) {
-        if (event->type() == QEvent::ApplicationActivate) {
-            emit currentTimeChanged();
-            d_ptr->timer.start(MINUTE_MS);
-        } else if (event->type() == QEvent::ApplicationDeactivate) {
-            d_ptr->timer.stop();
-        }
-    }
-    return QObject::eventFilter(obj, event);
+    return 0;
 }
+
+
+#include "moc_mcellinfo.cpp"
