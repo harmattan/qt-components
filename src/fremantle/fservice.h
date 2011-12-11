@@ -7,6 +7,8 @@
 
 #include "fdbusproxy.h"
 
+#define SERVICE_BUS  QDBusConnection::systemBus()
+
 class FService : public FDBusProxy
 {
     Q_OBJECT
@@ -26,13 +28,13 @@ public:
     virtual void stop  (QObject *requestor = 0);
 
 public:
-    explicit FService(const QString& path, QObject *parent = 0);
+    explicit FService(const QString& path, QObject *parent = 0, QDBusConnection bus =  SERVICE_BUS);
 
 public:
     bool isReady() const;
 
 private:
-    QDBusConnection* service_bus;
+    QDBusConnection service_bus;
 
     bool ready;
     QDBusServiceWatcher *watcher;

@@ -4,8 +4,9 @@
 
 #include "fservice.h"
 
-FService::FService(const QString& path, QObject *parent):
+FService::FService(const QString& path, QObject *parent, QDBusConnection bus):
     FDBusProxy(path, parent),
+    service_bus(bus),
     watcher(0)
 {
 }
@@ -17,7 +18,7 @@ void FService::start(QObject *requestor)
     if (!started) {
         ready = started = true;
 
-        watcher = new QDBusServiceWatcher(serviceName, *service_bus);
+        watcher = new QDBusServiceWatcher(serviceName, service_bus);
         QObject::connect(watcher, SIGNAL(serviceRegistered(const QString&)),
                          this, SLOT(isUp()), Qt::QueuedConnection);
         QObject::connect(watcher, SIGNAL(serviceUnregistered(const QString&)),

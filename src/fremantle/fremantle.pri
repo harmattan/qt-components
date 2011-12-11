@@ -12,8 +12,9 @@ win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
 QT += declarative network opengl
 
-maemo5 {
+!maemo5 {
     SOURCES += \
+	fcelldevice.cpp \
 	fservice.cpp \
         asyncdbusinterface.cpp \
         fbatteryinfo.cpp \
@@ -25,6 +26,7 @@ maemo5 {
         fsliderdevice.cpp \
 
     HEADERS += \
+	fcelldevice.h \
 	fphoneservice.h \
 	fservice.h \
         asyncdbusinterface.h \
