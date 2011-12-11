@@ -14,6 +14,7 @@ QT += declarative network opengl
 
 maemo5 {
     SOURCES += \
+	fservice.cpp \
         asyncdbusinterface.cpp \
         fbatteryinfo.cpp \
         fbmedevice.cpp \
@@ -24,6 +25,8 @@ maemo5 {
         fsliderdevice.cpp \
 
     HEADERS += \
+	fphoneservice.h \
+	fservice.h \
         asyncdbusinterface.h \
         fbmedevice.h \
         fdbusproxy.h \

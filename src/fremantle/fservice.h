@@ -1,5 +1,5 @@
-#ifndef FMCESERVICE_H
-#define FMCESERVICE_H
+#ifndef FSERVICE_H
+#define FSERVICE_H
 
 #include <QObject>
 #include <QSet>
@@ -7,15 +7,13 @@
 
 #include "fdbusproxy.h"
 
-#define MCE_BUS QDBusConnection::systemBus()
-
-class FMCEService : public FDBusProxy
+class FService : public FDBusProxy
 {
     Q_OBJECT
 
 public:
     //Singleton
-    static FMCEService* instance();
+    static FService* instance();
 
 public:
     Q_PROPERTY(bool ready READ isReady NOTIFY valueChanged())
@@ -28,12 +26,14 @@ public:
     virtual void stop  (QObject *requestor = 0);
 
 public:
-    explicit FMCEService(const QString& path, QObject *parent = 0);
+    explicit FService(const QString& path, QObject *parent = 0);
 
 public:
     bool isReady() const;
 
 private:
+    QDBusConnection* service_bus;
+
     bool ready;
     QDBusServiceWatcher *watcher;
     QSet<QObject *> subscribers;
@@ -43,4 +43,4 @@ private Q_SLOTS:
     void isUp();
 };
 
-#endif /* ! FMCESERVICE_H */
+#endif /* ! FSERVICE_H */
