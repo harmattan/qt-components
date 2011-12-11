@@ -12,7 +12,7 @@ win32|mac:!wince*:!win32-msvc:!macx-xcode:CONFIG += debug_and_release build_all
 CONFIG += qt plugin copy_native install_native
 QT += declarative network opengl
 
-!maemo5 {
+maemo5 {
     SOURCES += \
 	fcelldevice.cpp \
 	fservice.cpp \

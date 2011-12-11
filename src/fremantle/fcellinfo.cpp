@@ -38,6 +38,7 @@
 **
 ****************************************************************************/
 
+#include "fcelldevice.h"
 #include "mcellinfo.h"
 
 // dummy private class
@@ -46,7 +47,8 @@ class MCellInfoPrivate
     Q_DECLARE_PUBLIC(MCellInfo)
 
 public:
-    MCellInfoPrivate(MCellInfo *qq) : q_ptr(qq) {}
+    MCellInfoPrivate(MCellInfo *qq) : cell(CELL_DEVICE), q_ptr(qq) {}
+    FCellDevice cell;
 
 private:
     MCellInfo *q_ptr;
@@ -56,6 +58,12 @@ private:
 MCellInfo::MCellInfo(QObject *parent) :
     QObject(parent), d_ptr(new MCellInfoPrivate(this))
 {
+    Q_D(MBatteryInfo);
+
+    QObject::connect(&d->cell, SIGNAL(signalStrengthChanged()), this, SIGNAL(signalStrengthChanged()));
+
+    //Start to listen to events
+    d->cell.start();
 }
 
 MCellInfo::~MCellInfo()
@@ -91,7 +99,8 @@ QString MCellInfo::radioMode() const
 
 int MCellInfo::signalStrength() const
 {
-    return 0;
+    const Q_D(MCellInfo);
+    return d->cell.signalStrength();
 }
 
 
