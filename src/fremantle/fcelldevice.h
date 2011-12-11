@@ -27,15 +27,38 @@
 #define CELL_DEVICE   "/com/nokia/phone/net"
 #define CELL_BUS      QDBusConnection::systemBus()
 
+enum registrationStatus 
+{
+    NETWORK_REG_STATUS_HOME = 0x00,
+    NETWORK_REG_STATUS_ROAM,
+    NETWORK_REG_STATUS_ROAM_BLINK,
+    NETWORK_REG_STATUS_NOSERV,
+    NETWORK_REG_STATUS_NOSERV_SEARCHING,
+    NETWORK_REG_STATUS_NOSERV_NOTSEARCHING,
+    NETWORK_REG_STATUS_NOSERV_NOSIM,
+    NETWORK_REG_STATUS_POWER_OFF = 0x08,
+    NETWORK_REG_STATUS_NSPS,
+    NETWORK_REG_STATUS_NSPS_NO_COVERAGE,
+    NETWORK_REG_STATUS_NOSERV_SIM_REJECTED_BY_NW
+};
+
 class FCellDevice : public FDBusProxy
 {
     Q_OBJECT
 
 public:
     Q_PROPERTY(int signalStrength READ getSignalStrength NOTIFY signalStrengthChanged() FINAL)
+    Q_PROPERTY(int status READ getStatus NOTIFY statusChanged() FINAL)
+    Q_PROPERTY(bool offline READ isOffline NOTIFY offlineChanged() FINAL)
+    Q_PROPERTY(QString provider READ getProvider NOTIFY providerChanged() FINAL)
+    Q_PROPERTY(int radioMode READ getRadioMode NOTIFY radioModeChanged() FINAL)
 
 Q_SIGNALS:
     void signalStrengthChanged();
+    void statusChanged();
+    void offlineChanged();
+    void providerChanged();
+    void radioModeChanged();
 
 public:
     virtual void start (QObject *requestor = 0);
@@ -46,16 +69,36 @@ public:
 
 public:
     int getSignalStrength();
+    int getStatus();
+    bool isOffline();
+    QString getProvider() const;
+    int getRadioMode();
 
 private:
     int signalStrength;
+    uchar status;
+    bool offline;
+    QString provider;
+    int radioMode;
+
     FService *service;
 
 private Q_SLOTS:
     void setSignalStrength();
+    void setRegistrationStatus();
+    void setProvider(uint operator_code, uint country_code);
+    void setRadioMode();
 
-    void onSignalStrengthChanged(int bars, int dbm);
+
+    void onSignalStrengthChanged(uchar bars, uchar dbm);
     void onSignalStrengthReply(QDBusPendingCallWatcher* watcher);
+    void onRegistrationStatusChanged(QDBusMessage msg);
+    void onRegistrationStatusReply(QDBusPendingCallWatcher* watcher);
+    void onProviderChanged(QString name);
+    void onProviderReply(QDBusPendingCallWatcher *watcher);
+    void onRadioModeChanged(uchar mode);
+    void onRadioModeReply(QDBusPendingCallWatcher *watcher);
+
     void onServiceStateChanged();
 };
 

@@ -27,22 +27,28 @@
 #include <fcelldevice.h>
 #include <fphoneservice.h>
 
-#define DEVICE_SERVICE_NAME          "com.nokia.phone.net";
-#define DEVICE_INTERFACE_NAME        "Phone.Net"
-#define DEVICE_SIGNAL_INTERFACE_NAME "Phone.Net"
-#define DEVICE_SIGNAL_MEMBER_NAME    "signal_strength_change"
+#define DEVICE_SERVICE_NAME             "com.nokia.phone.net";
+#define DEVICE_INTERFACE_NAME           "Phone.Net"
+#define DEVICE_SIGNAL_INTERFACE_NAME    "Phone.Net"
+
+#define DEVICE_SIGNAL_STRENGTH_NAME     "signal_strength_change"
+#define DEVICE_REGISTRATION_STATUS_NAME "registration_status_change"
+#define DEVICE_PROVIDER_NAME            "operator_name_change"
+#define DEVICE_RADIO_MODE_NAME          "radio_access_technology_change"
 
 #include <QDebug>
 
 FCellDevice::FCellDevice(const QString& path, QObject *parent):
     FDBusProxy(path, path, parent),
     signalStrength(0),
+    status(NETWORK_REG_STATUS_NOSERV),
+    offline(true),
+    provider(""),
     service(FPhoneService::instance())
 {
     serviceName      = DEVICE_SERVICE_NAME;
     interfaceName    = DEVICE_INTERFACE_NAME;
     signalName       = DEVICE_SIGNAL_INTERFACE_NAME;
-    signalMemberName = DEVICE_SIGNAL_MEMBER_NAME;
 
     QObject::connect (service, SIGNAL(valueChanged()), this,
                       SLOT(onServiceStateChanged()), Qt::QueuedConnection);
@@ -65,14 +71,34 @@ void FCellDevice::start(QObject *requestor)
                     serviceName, device.path(),
                     interfaceName, CELL_BUS, this);
 
-        // Listen to updates
+        // Listen to signal strength update
         CELL_BUS.connect(
                     serviceName, signal.path(),
-                    signalName, signalMemberName,
-                    this, SLOT(onSignalStrength(int, int)));
+                    signalName, DEVICE_SIGNAL_STRENGTH_NAME,
+                    this, SLOT(onSignalStrengthChanged(uchar, uchar)));
+
+        // Liste to register status updates
+        CELL_BUS.connect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_REGISTRATION_STATUS_NAME,
+                    this, SLOT(onRegistrationStatusChanged(QDBusMessage)));
+
+        //Listen to operator name changes
+        CELL_BUS.connect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_PROVIDER_NAME,
+                    this, SLOT(onProviderChanged(QString)));
+
+        //Listen to radio mode changes
+        CELL_BUS.connect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_RADIO_MODE_NAME,
+                    this, SLOT(onRadioModeChanged(uchar)));
 
         // Set initial value
         QMetaObject::invokeMethod(this, "setSignalStrength", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "setRegistrationStatus", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "setRadioMode", Qt::QueuedConnection);
     }
 }
 
@@ -85,8 +111,23 @@ void FCellDevice::stop(QObject *requestor)
         // Disconnect from signal notifications
         CELL_BUS.disconnect(
                     serviceName, signal.path(),
-                    signalName, signalMemberName,
-                    this, SLOT(updated(int)));
+                    signalName, DEVICE_SIGNAL_STRENGTH_NAME,
+                    this, SLOT(onSignalStrengthChanged(uchar, uchar)));
+
+        CELL_BUS.disconnect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_REGISTRATION_STATUS_NAME,
+                    this, SLOT(onRegistrationStatusChanged(QDBusMessage)));
+
+        CELL_BUS.disconnect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_PROVIDER_NAME,
+                    this, SLOT(onProviderChanged(QString)));
+
+        CELL_BUS.disconnect(
+                    serviceName, signal.path(),
+                    signalName, DEVICE_RADIO_MODE_NAME,
+                    this, SLOT(onRadioModeChanged(uchar)));
 
         // If mce is disconnected, service is already started but offline, We wait for
         // a mce signal to wake up again
@@ -118,10 +159,60 @@ void FCellDevice::setSignalStrength()
 #undef DEVICE_GET_SIGNAL_STRENGTH
 }
 
+int FCellDevice::getStatus()
+{
+    return status;
+}
+
+void FCellDevice::setRegistrationStatus()
+{
+#define DEVICE_GET_REGISTRATION_STATUS "get_registration_status"
+    if(started) {
+        watcher = new QDBusPendingCallWatcher(proxy->asyncCall(DEVICE_GET_REGISTRATION_STATUS));
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(onRegistrationStatusReply(QDBusPendingCallWatcher*)));
+    }
+#undef DEVICE_GET_REGISTRATION_STATUS
+}
+
+bool FCellDevice::isOffline()
+{
+    return offline;
+}
+
+QString FCellDevice::getProvider() const
+{
+    return provider;
+}
+
+void FCellDevice::setProvider(uint operator_code, uint country_code)
+{
+#define DEVICE_GET_OPERATOR_NAME "get_operator_name"
+    if(started) {
+        watcher = new QDBusPendingCallWatcher(proxy->asyncCall(DEVICE_GET_OPERATOR_NAME, QVariant::fromValue(uchar(0)), operator_code, country_code));
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(onProviderReply(QDBusPendingCallWatcher*)));
+    }
+#undef DEVICE_GET_OPERATOR_NAME
+}
+
+int FCellDevice::getRadioMode()
+{
+    return radioMode;
+}
+
+void FCellDevice::setRadioMode()
+{
+#define DEVICE_GET_RADIO_MODE "get_radio_access_technology"
+    if(started) {
+        watcher = new QDBusPendingCallWatcher(proxy->asyncCall(DEVICE_GET_RADIO_MODE));
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(onRadioModeReply(QDBusPendingCallWatcher*)));
+    }
+#undef DEVICE_GET_RADIO_MODE
+}
+
 // Signals
 void FCellDevice::onSignalStrengthReply(QDBusPendingCallWatcher *pcw)
 {
-    QDBusPendingReply<int, int> reply = *pcw;
+    QDBusPendingReply<uchar, uchar> reply = *pcw;
     if (!reply.isError()) {
         // Currently, a True value in reply indicated that keyboard is closed
         onSignalStrengthChanged(reply.argumentAt<0>(), reply.argumentAt<1>());
@@ -135,7 +226,7 @@ void FCellDevice::onSignalStrengthReply(QDBusPendingCallWatcher *pcw)
     pcw->deleteLater();
 }
 
-void FCellDevice::onSignalStrengthChanged(int bars, int dbm)
+void FCellDevice::onSignalStrengthChanged(uchar bars, uchar dbm)
 {
 #define MIN(a, b) (a > b ? b : a)
 
@@ -147,6 +238,109 @@ void FCellDevice::onSignalStrengthChanged(int bars, int dbm)
         Q_EMIT signalStrengthChanged();
     }
 #undef MIN
+}
+
+void FCellDevice::onRegistrationStatusReply(QDBusPendingCallWatcher *pcw)
+{
+    QDBusPendingReply<uchar, ushort, int, int, int, uchar, uchar> reply = *pcw;
+    if (!reply.isError()) {
+        uint operator_code = reply.argumentAt<3>();
+        uint country_code  = reply.argumentAt<4>();
+        // Get operator Name
+        setProvider(operator_code, country_code);
+        // Currently, a True value in reply indicated that keyboard is closed
+        onRegistrationStatusChanged(reply.reply());
+    }
+    else {
+        qWarning() << reply.error().message();
+    }
+    if (watcher == pcw) {
+        watcher = 0;
+    }
+    pcw->deleteLater();
+}
+
+void FCellDevice::onRegistrationStatusChanged(QDBusMessage msg)
+{
+    int old_status = status;
+    int new_status = msg.arguments().at(3).toInt();
+
+#define TOGGLE_OFFLINE(v) if (offline == v) { offline = !offline; Q_EMIT offlineChanged(); }
+
+    status = new_status;
+    if (old_status != new_status) {
+        switch (new_status) {
+        case NETWORK_REG_STATUS_HOME:
+        case NETWORK_REG_STATUS_ROAM:
+        case NETWORK_REG_STATUS_ROAM_BLINK:
+            if (old_status >= NETWORK_REG_STATUS_NOSERV) {
+                Q_EMIT statusChanged();
+            }
+            TOGGLE_OFFLINE(true);
+            break;
+
+        case NETWORK_REG_STATUS_NOSERV_NOSIM:
+            Q_EMIT statusChanged();
+            TOGGLE_OFFLINE(false);
+            break;
+
+        default:
+            if (old_status < NETWORK_REG_STATUS_NOSERV || old_status == NETWORK_REG_STATUS_NOSERV_NOSIM) {
+                Q_EMIT statusChanged();
+            }
+            TOGGLE_OFFLINE(false);
+            break;
+        }
+#undef TOGGLE_OFFLINE
+    }
+}
+
+void FCellDevice::onProviderReply(QDBusPendingCallWatcher *pcw)
+{
+    QDBusPendingReply<QString> reply = *pcw;
+    if (!reply.isError()) {
+        // Currently, a True value in reply indicated that keyboard is closed
+        onProviderChanged(reply.argumentAt<0>());
+    }
+    else {
+        qWarning() << reply.error().message();
+    }
+    if (watcher == pcw) {
+        watcher = 0;
+    }
+    pcw->deleteLater();
+}
+
+void FCellDevice::onProviderChanged(QString name)
+{
+    if (provider != name) {
+        provider = name;
+        Q_EMIT providerChanged();
+    }
+}
+
+void FCellDevice::onRadioModeReply(QDBusPendingCallWatcher *pcw)
+{
+    QDBusPendingReply<uchar> reply = *pcw;
+    if (!reply.isError()) {
+        // Currently, a True value in reply indicated that keyboard is closed
+        onRadioModeChanged(reply.argumentAt<0>());
+    }
+    else {
+        qWarning() << reply.error().message();
+    }
+    if (watcher == pcw) {
+        watcher = 0;
+    }
+    pcw->deleteLater();
+}
+
+void FCellDevice::onRadioModeChanged(uchar mode)
+{
+    if (radioMode != mode) {
+        radioMode = mode;
+        Q_EMIT radioModeChanged();
+    }
 }
 
 void FCellDevice::onServiceStateChanged()
