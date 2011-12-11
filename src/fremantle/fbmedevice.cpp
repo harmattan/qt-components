@@ -117,6 +117,7 @@ void FBMEDevice::updated(int n, QList<FHALProperty> updates)
 #define BME_IS_CHARGING_KEY       "battery.rechargeable.is_charging"
 
     if (!updates.length()) {
+        updates << FHALProperty(BME_IS_CHARGING_KEY);
         updates << FHALProperty(BME_REPORTING_CURRENT_KEY);
     }
     for (int i = 0; i < updates.length(); ++i) {
