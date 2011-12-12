@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BMD$
-** You may use this file under the terms of the BMD license as follows:
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,55 +38,32 @@
 **
 ****************************************************************************/
 
-#ifndef MDECLARATIVE_H
-#define MDECLARATIVE_H
+#include <QNetworkSession>
+#include <QNetworkConfiguration>
+#include <QNetworkConfigurationManager>
 
-#include <QtCore/qobject.h>
-#include <QtDeclarative/qdeclarative.h>
+#include "mnetworkinfo.h"
 
-#include "mdialogstatus.h"
-#include "mpagestatus.h"
-#include "mpageorientation.h"
-#include "mtoolbarvisibility.h"
-
-class MBatteryInfo;
-class MCellInfo;
-class MNetworkInfo;
-class MDeclarativePrivate;
-
-class MDeclarative : public QObject
+// dummy private class
+class MNetworkInfoPrivate: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString currentTime READ currentTime NOTIFY currentTimeChanged)
-    Q_PROPERTY(MBatteryInfo * batteryInfo READ batteryInfo CONSTANT FINAL)
-    Q_PROPERTY(MCellInfo * cellInfo READ cellInfo CONSTANT FINAL)
-    Q_PROPERTY(MNetworkInfo * networkInfo READ networkInfo CONSTANT FINAL)
+    Q_DECLARE_PUBLIC(MNetworkInfo)
 
 public:
-    explicit MDeclarative(QObject *parent = 0);
-    virtual ~MDeclarative();
-
-    static QString currentTime();
-    MBatteryInfo * batteryInfo();
-    MCellInfo * cellInfo();
-    MNetworkInfo * networkInfo();
-
-    Q_INVOKABLE void privateClearIconCaches();
-    Q_INVOKABLE void privateClearComponentCache();
-
-Q_SIGNALS:
-    void currentTimeChanged();
-
-protected:
-    bool eventFilter(QObject *obj, QEvent *event);
-    MDeclarativePrivate *d_ptr;
+    explicit MNetworkInfoPrivate(MNetworkInfo *qq);
 
 private:
-    Q_DISABLE_COPY(MDeclarative)
-    Q_DECLARE_PRIVATE(MDeclarative)
+    MNetworkInfo *q_ptr;
+    QNetworkSession *current;
+    QNetworkConfigurationManager manager;
+    QHash<QString, QNetworkSession *> sessions;
 
+private Q_SLOTS:
+    void updateConfigurations();
+    void onStateChanged(QNetworkSession::State state);
+    void onConfigurationAdded(QNetworkConfiguration conf);
+    void onConfigurationRemoved(QNetworkConfiguration conf);
 };
 
-QML_DECLARE_TYPE(MDeclarative)
 
-#endif // MDECLARATIVE_H

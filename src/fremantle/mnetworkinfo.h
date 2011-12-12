@@ -6,8 +6,8 @@
 **
 ** This file is part of the Qt Components project.
 **
-** $QT_BEGIN_LICENSE:BMD$
-** You may use this file under the terms of the BMD license as follows:
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -38,55 +38,43 @@
 **
 ****************************************************************************/
 
-#ifndef MDECLARATIVE_H
-#define MDECLARATIVE_H
+#ifndef MNETWORKINFO_H
+#define MNETWORKINFO_H
 
-#include <QtCore/qobject.h>
-#include <QtDeclarative/qdeclarative.h>
+#include <QtCore/qscopedpointer.h>
+#include <QtDeclarative/qdeclarativeitem.h>
 
-#include "mdialogstatus.h"
-#include "mpagestatus.h"
-#include "mpageorientation.h"
-#include "mtoolbarvisibility.h"
+class MNetworkInfoPrivate;
 
-class MBatteryInfo;
-class MCellInfo;
-class MNetworkInfo;
-class MDeclarativePrivate;
-
-class MDeclarative : public QObject
+class MNetworkInfo : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString currentTime READ currentTime NOTIFY currentTimeChanged)
-    Q_PROPERTY(MBatteryInfo * batteryInfo READ batteryInfo CONSTANT FINAL)
-    Q_PROPERTY(MCellInfo * cellInfo READ cellInfo CONSTANT FINAL)
-    Q_PROPERTY(MNetworkInfo * networkInfo READ networkInfo CONSTANT FINAL)
+
+    Q_ENUMS(Status)
+    Q_PROPERTY(Status status READ getStatus NOTIFY statusChanged)
+    Q_PROPERTY(QString bearer READ getBearer NOTIFY bearerChanged)
 
 public:
-    explicit MDeclarative(QObject *parent = 0);
-    virtual ~MDeclarative();
+    explicit MNetworkInfo(QObject *parent = 0);
+    ~MNetworkInfo();
 
-    static QString currentTime();
-    MBatteryInfo * batteryInfo();
-    MCellInfo * cellInfo();
-    MNetworkInfo * networkInfo();
+    enum Status {Connecting, Connected, Closing, Disconnected, Roaming};
 
-    Q_INVOKABLE void privateClearIconCaches();
-    Q_INVOKABLE void privateClearComponentCache();
+    Status getStatus();
+    QString getBearer();
 
 Q_SIGNALS:
-    void currentTimeChanged();
+    void statusChanged();
+    void bearerChanged();
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event);
-    MDeclarativePrivate *d_ptr;
+    MNetworkInfoPrivate* d_ptr;
 
 private:
-    Q_DISABLE_COPY(MDeclarative)
-    Q_DECLARE_PRIVATE(MDeclarative)
-
+    Q_DISABLE_COPY(MNetworkInfo)
+    Q_DECLARE_PRIVATE(MNetworkInfo)
 };
 
-QML_DECLARE_TYPE(MDeclarative)
+QML_DECLARE_TYPE(MNetworkInfo)
 
-#endif // MDECLARATIVE_H
+#endif // MNETWORKINFO_H

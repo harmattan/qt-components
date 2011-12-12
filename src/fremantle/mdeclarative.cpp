@@ -41,6 +41,7 @@
 #include "mdeclarative.h"
 #include "mbatteryinfo.h"
 #include "mcellinfo.h"
+#include "mnetworkinfo.h"
 
 #include <QCoreApplication>
 #include <QTime>
@@ -59,6 +60,8 @@ public:
     QTimer timer;
     MBatteryInfo batteryInfo;
     MCellInfo cellInfo;
+    MNetworkInfo networkInfo;
+
     MDeclarativePrivate() {}
 };
 
@@ -96,6 +99,12 @@ MCellInfo *MDeclarative::cellInfo()
 {
     Q_D(MDeclarative);
     return &d->cellInfo;
+}
+
+MNetworkInfo *MDeclarative::networkInfo()
+{
+    Q_D(MDeclarative);
+    return &d->networkInfo;
 }
 
 void MDeclarative::privateClearIconCaches()

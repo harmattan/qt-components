@@ -110,6 +110,7 @@ SOURCES += \
     mdeclarativeimageprovider.cpp \
     mdeclarativeimplicitsizeitem.cpp \
     mdeclarativemaskeditem.cpp \
+    mnetworkinfo.cpp \
     mscrolldecoratorsizer.cpp \
     mtexttranslator.cpp \
     mthemedaemon.cpp \
@@ -142,6 +143,8 @@ SOURCES += \
 HEADERS += \
     mbatteryinfo.h \
     mcellinfo.h \
+    mnetworkinfo.h \
+    mnetworkinfo_p.h \
     mdeclarativescreen.h \
     mdeclarativeclipboard.h \
     mdialogstatus.h \
@@ -217,8 +220,8 @@ QML_FILES = \
         style/QueryDialogStyle.qml \
         style/SelectionDialogStyle.qml \
         style/MenuStyle.qml \
-	    style/WindowStyle.qml \
-	    style/StatusBarStyle.qml \
+	style/WindowStyle.qml \
+	style/StatusBarStyle.qml \
         Fader.qml \
         Label.qml \
         style/LabelStyle.qml \
@@ -288,7 +291,3 @@ QML_FILES = \
         MultiSelectionDialog.js \
         Magnifier.qml \
         Magnifier.js
-
-TRANSLATIONS += \
-	i18n/qt-components_en.ts \
-	i18n/qt-components_es.ts
