@@ -61,6 +61,9 @@ MCellInfo::MCellInfo(QObject *parent) :
     Q_D(MBatteryInfo);
 
     QObject::connect(&d->cell, SIGNAL(signalStrengthChanged()), this, SIGNAL(signalStrengthChanged()));
+    QObject::connect(&d->cell, SIGNAL(statusChanged()), this, SIGNAL(statusChanged()));
+    QObject::connect(&d->cell, SIGNAL(providerChanged()), this, SIGNAL(providerChanged()));
+    QObject::connect(&d->cell, SIGNAL(radioModeChanged()), this, SIGNAL(radioModeChanged()));
 
     //Start to listen to events
     d->cell.start();
@@ -72,32 +75,54 @@ MCellInfo::~MCellInfo()
 }
 
 
-bool MCellInfo::active() const
+QString MCellInfo::getStatus() const
 {
-    return false;
+    return d->cell.getStatus();
 }
 
-bool MCellInfo::offline() const
+QString MCellInfo::getProvider() const
 {
-    return true;
+    return d->cell.getProvider();
 }
 
-QString MCellInfo::status() const
+QString MCellInfo::getRadioMode() const
 {
-    return "no-gsm-connection";
+    const Q_D(MCellInfo);
+
+    switch(d->cell.getStatus()) {
+
+    case NETWORK_REG_STATUS_HOME:
+    case NETWORK_REG_STATUS_ROAM:
+    case NETWORK_REG_STATUS_ROAM_BLINK:
+
+#define GPRS (0x01 | 0x04)
+#define HSPA (0x08 | 0x10)
+
+        if (d->cell.getRadioMode() == 1)
+            return d->cell.getServices() & GPRS ? "25g" : "gsm";
+        if (d->cell.getRadioMode() == 2)
+            return d->cell.getServices() & HSPA ? "35g" : "3g";
+
+#undef GPRS
+#undef HSPA
+
+        break;
+
+    case NETWORK_REG_STATUS_NOSERV:
+    case NETWORK_REG_STATUS_SEARCHING:
+    case NETWORK_REG_STATUS_NOTSEARCHING:
+        return "no-gsm-connection";
+
+    case NETWORK_REG_STATUS_NODIM:
+        return "no-simcard";
+
+    case NETWORK_REG_STATUS_POWEROFF:
+        return "offline";
+    }
+    return "unknown";
 }
 
-QString MCellInfo::networkOperator() const
-{
-    return "";
-}
-
-QString MCellInfo::radioMode() const
-{
-    return "gsm";
-}
-
-int MCellInfo::signalStrength() const
+int MCellInfo::getSignalStrength() const
 {
     const Q_D(MCellInfo);
     return d->cell.signalStrength();

@@ -70,12 +70,14 @@ public:
 public:
     int getSignalStrength();
     int getStatus();
+    int getServices();
     bool isOffline();
     QString getProvider() const;
     int getRadioMode();
 
 private:
     int signalStrength;
+    int services;
     uchar status;
     bool offline;
     QString provider;

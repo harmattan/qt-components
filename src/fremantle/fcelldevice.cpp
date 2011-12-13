@@ -41,9 +41,11 @@
 FCellDevice::FCellDevice(const QString& path, QObject *parent):
     FDBusProxy(path, path, parent),
     signalStrength(0),
+    services(0),
     status(NETWORK_REG_STATUS_NOSERV),
     offline(true),
     provider(""),
+    radioMode(0),
     service(FPhoneService::instance())
 {
     serviceName      = DEVICE_SERVICE_NAME;
@@ -179,6 +181,11 @@ bool FCellDevice::isOffline()
     return offline;
 }
 
+int FCellDevice::getServices()
+{
+    return services;
+}
+
 QString FCellDevice::getProvider() const
 {
     return provider;
@@ -214,7 +221,6 @@ void FCellDevice::onSignalStrengthReply(QDBusPendingCallWatcher *pcw)
 {
     QDBusPendingReply<uchar, uchar> reply = *pcw;
     if (!reply.isError()) {
-        // Currently, a True value in reply indicated that keyboard is closed
         onSignalStrengthChanged(reply.argumentAt<0>(), reply.argumentAt<1>());
     }
     else {
@@ -246,9 +252,8 @@ void FCellDevice::onRegistrationStatusReply(QDBusPendingCallWatcher *pcw)
     if (!reply.isError()) {
         uint operator_code = reply.argumentAt<3>();
         uint country_code  = reply.argumentAt<4>();
-        // Get operator Name
+        // Get operator Name and Network services
         setProvider(operator_code, country_code);
-        // Currently, a True value in reply indicated that keyboard is closed
         onRegistrationStatusChanged(reply.reply());
     }
     else {
@@ -267,7 +272,9 @@ void FCellDevice::onRegistrationStatusChanged(QDBusMessage msg)
 
 #define TOGGLE_OFFLINE(v) if (offline == v) { offline = !offline; Q_EMIT offlineChanged(); }
 
-    status = new_status;
+    status   = new_status;
+    services = msg.arguments().at(7).toInt();
+
     if (old_status != new_status) {
         switch (new_status) {
         case NETWORK_REG_STATUS_HOME:
@@ -291,6 +298,7 @@ void FCellDevice::onRegistrationStatusChanged(QDBusMessage msg)
             TOGGLE_OFFLINE(false);
             break;
         }
+
 #undef TOGGLE_OFFLINE
     }
 }
@@ -299,7 +307,6 @@ void FCellDevice::onProviderReply(QDBusPendingCallWatcher *pcw)
 {
     QDBusPendingReply<QString> reply = *pcw;
     if (!reply.isError()) {
-        // Currently, a True value in reply indicated that keyboard is closed
         onProviderChanged(reply.argumentAt<0>());
     }
     else {
@@ -323,7 +330,6 @@ void FCellDevice::onRadioModeReply(QDBusPendingCallWatcher *pcw)
 {
     QDBusPendingReply<uchar> reply = *pcw;
     if (!reply.isError()) {
-        // Currently, a True value in reply indicated that keyboard is closed
         onRadioModeChanged(reply.argumentAt<0>());
     }
     else {

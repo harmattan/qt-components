@@ -64,32 +64,22 @@ MCellInfo::~MCellInfo()
 }
 
 
-bool MCellInfo::active() const
+MCellInfo::Status MCellInfo::getStatus() const
 {
-    return false;
+    return NoServ;
 }
 
-bool MCellInfo::offline() const
-{
-    return true;
-}
-
-QString MCellInfo::status() const
-{
-    return "no-gsm-connection";
-}
-
-QString MCellInfo::networkOperator() const
+QString MCellInfo::getProvider() const
 {
     return "";
 }
 
-QString MCellInfo::radioMode() const
+QString MCellInfo::getRadioMode() const
 {
     return "gsm";
 }
 
-int MCellInfo::signalStrength() const
+int MCellInfo::getSignalStrength() const
 {
     return 0;
 }

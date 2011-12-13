@@ -49,37 +49,32 @@ class MCellInfoPrivate;
 class MCellInfo : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(Status)
 
-    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
-    Q_PROPERTY(bool offline READ offline NOTIFY offlineChanged)
-
-    Q_PROPERTY(QString status READ status NOTIFY statusChanged)
-    Q_PROPERTY(QString provider READ networkOperator NOTIFY operatorChanged)
-    Q_PROPERTY(QString mode READ radioMode NOTIFY radioModeChanged)
-
-    Q_PROPERTY(int strength READ signalStrength NOTIFY signalStrengthChanged)
+    Q_PROPERTY(Status status READ getStatus NOTIFY statusChanged)
+    Q_PROPERTY(QString provider READ getProvider NOTIFY providerChanged)
+    Q_PROPERTY(QString mode READ getRadioMode NOTIFY radioModeChanged)
+    Q_PROPERTY(int strength READ getSignalStrength NOTIFY signalStrengthChanged)
 
 public:
     explicit MCellInfo(QObject *parent = 0);
     ~MCellInfo();
 
-    bool active() const;
-    bool offline() const;
-    QString status() const;
+    enum Status {
+        Home = 0x00, Roam, RoamBlinkm, NoServ, NoServSearching,
+        NoServNotSearcing, NoServNoSIM, PowerOff = 0x08, NSPS,
+        NSPSNoCoverage, NOServSimRejected
+    };
 
-    QString networkOperator() const;
-    QString radioMode() const;
-
-    int signalStrength() const;
+    Status  getStatus() const;
+    QString getProvider() const;
+    QString getRadioMode() const;
+    int     getSignalStrength() const;
 
 Q_SIGNALS:
-    void activeChanged();
-    void offlineChanged();
-
     void statusChanged();
-    void operatorChanged();
+    void providerChanged();
     void radioModeChanged();
-
     void signalStrengthChanged();
 
 protected:
