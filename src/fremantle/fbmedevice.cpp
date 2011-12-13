@@ -111,6 +111,8 @@ void FBMEDevice::onHALStateChanged()
 
 void FBMEDevice::updated(int n, QList<FHALProperty> updates)
 {
+    Q_UNUSED(n);
+
 #define BME_GET_PROPERTY          "GetProperty"
 #define BME_BARS_KEY              "battery.charge_level.current"
 #define BME_REPORTING_CURRENT_KEY "battery.reporting.current"
