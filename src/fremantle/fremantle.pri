@@ -15,6 +15,7 @@ QT += declarative network opengl
 maemo5 {
     SOURCES += \
 	fcelldevice.cpp \
+	fcellinfo.cpp \
 	fservice.cpp \
         asyncdbusinterface.cpp \
         fbatteryinfo.cpp \
@@ -52,7 +53,6 @@ else {
 }
 
 mobility {
-    QT += network
     MOBILITY += sensors systeminfo
     DEFINES += HAVE_SENSORS HAVE_SYSTEMINFO
 }

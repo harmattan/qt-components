@@ -58,7 +58,7 @@ private:
 MCellInfo::MCellInfo(QObject *parent) :
     QObject(parent), d_ptr(new MCellInfoPrivate(this))
 {
-    Q_D(MBatteryInfo);
+    Q_D(MCellInfo);
 
     QObject::connect(&d->cell, SIGNAL(signalStrengthChanged()), this, SIGNAL(signalStrengthChanged()));
     QObject::connect(&d->cell, SIGNAL(statusChanged()), this, SIGNAL(statusChanged()));
@@ -75,13 +75,17 @@ MCellInfo::~MCellInfo()
 }
 
 
-QString MCellInfo::getStatus() const
+MCellInfo::Status MCellInfo::getStatus() const
 {
-    return d->cell.getStatus();
+    const Q_D(MCellInfo);
+
+    return (MCellInfo::Status)d->cell.getStatus();
 }
 
 QString MCellInfo::getProvider() const
 {
+    const Q_D(MCellInfo);
+
     return d->cell.getProvider();
 }
 
@@ -108,24 +112,27 @@ QString MCellInfo::getRadioMode() const
 
         break;
 
-    case NETWORK_REG_STATUS_NOSERV:
-    case NETWORK_REG_STATUS_SEARCHING:
-    case NETWORK_REG_STATUS_NOTSEARCHING:
+    case NETWORK_REG_STATUS_NOSERV_SIM_REJECTED_BY_NW:
         return "no-gsm-connection";
 
-    case NETWORK_REG_STATUS_NODIM:
+    case NETWORK_REG_STATUS_NOSERV_NOSIM:
         return "no-simcard";
 
-    case NETWORK_REG_STATUS_POWEROFF:
+    case NETWORK_REG_STATUS_POWER_OFF:
         return "offline";
+
+    default:
+        break;
     }
+
     return "unknown";
 }
 
 int MCellInfo::getSignalStrength() const
 {
     const Q_D(MCellInfo);
-    return d->cell.signalStrength();
+
+    return d->cell.getSignalStrength();
 }
 
 

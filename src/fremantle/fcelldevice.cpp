@@ -146,7 +146,7 @@ void FCellDevice::stop(QObject *requestor)
 }
 
 // Target values
-int FCellDevice::getSignalStrength()
+int FCellDevice::getSignalStrength() const
 {
     return signalStrength;
 }
@@ -161,7 +161,7 @@ void FCellDevice::setSignalStrength()
 #undef DEVICE_GET_SIGNAL_STRENGTH
 }
 
-int FCellDevice::getStatus()
+int FCellDevice::getStatus() const
 {
     return status;
 }
@@ -181,7 +181,7 @@ bool FCellDevice::isOffline()
     return offline;
 }
 
-int FCellDevice::getServices()
+int FCellDevice::getServices() const
 {
     return services;
 }
@@ -201,7 +201,7 @@ void FCellDevice::setProvider(uint operator_code, uint country_code)
 #undef DEVICE_GET_OPERATOR_NAME
 }
 
-int FCellDevice::getRadioMode()
+int FCellDevice::getRadioMode() const
 {
     return radioMode;
 }

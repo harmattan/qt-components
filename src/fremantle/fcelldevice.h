@@ -68,12 +68,12 @@ public:
     explicit FCellDevice(const QString& path, QObject *parent = 0);
 
 public:
-    int getSignalStrength();
-    int getStatus();
-    int getServices();
+    int getSignalStrength() const;
+    int getStatus() const;
+    int getServices() const;
     bool isOffline();
     QString getProvider() const;
-    int getRadioMode();
+    int getRadioMode() const;
 
 private:
     int signalStrength;

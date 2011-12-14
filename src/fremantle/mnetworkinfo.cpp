@@ -162,22 +162,22 @@ MNetworkInfo::Status MNetworkInfo::getStatus()
 #define NETWORK_STATE(_c, _def) _c ? _c->state() : _def;
 
     QNetworkSession::State state = QNetworkSession::NotAvailable;
-    state = NETWORK_STATE(d->current, state)
+    state = NETWORK_STATE(d->current, state);
 
-            switch(state) {
-            case QNetworkSession::Connecting:
-            return Connecting;
+    switch(state) {
+    case QNetworkSession::Connecting:
+        return Connecting;
+    case QNetworkSession::Roaming:
     case QNetworkSession::Connected:
         return Connected;
     case QNetworkSession::Closing:
         return Closing;
     case QNetworkSession::Disconnected:
-    case QNetworkSession::Roaming:
     case QNetworkSession::NotAvailable:
     case QNetworkSession::Invalid:
     default:
         return Disconnected;
-}
+    }
 
 #undef NETWORK_STATE
 }
@@ -189,12 +189,15 @@ QString MNetworkInfo::getBearer()
 #define NETWORK_BEARER(_c, _def) _c ? _c->configuration().bearerType(): _def;
 
     QNetworkConfiguration::BearerType bearer = QNetworkConfiguration::BearerUnknown;
-    bearer = NETWORK_BEARER(d->current, bearer)
+    bearer = NETWORK_BEARER(d->current, bearer);
 
-            switch(bearer) {
-            case QNetworkConfiguration::BearerWLAN:
-            return "wlan";
+    switch(bearer) {
+    case QNetworkConfiguration::BearerWiMAX:
+    case QNetworkConfiguration::BearerEthernet:
+    case QNetworkConfiguration::BearerWLAN:
+        return "wlan";
     case QNetworkConfiguration::Bearer2G:
+    case QNetworkConfiguration::BearerCDMA2000:
         return "25";
     case QNetworkConfiguration::BearerWCDMA:
         return "3g";
@@ -202,13 +205,10 @@ QString MNetworkInfo::getBearer()
         return "35";
     case QNetworkConfiguration::BearerBluetooth:
         return "bluetooth";
-    case QNetworkConfiguration::BearerCDMA2000:
-    case QNetworkConfiguration::BearerWiMAX:
-    case QNetworkConfiguration::BearerEthernet:
     case QNetworkConfiguration::BearerUnknown:
     default:
         return "unknown";
-}
+    }
 
 #undef NETWORK_BEARER
 }

@@ -66,7 +66,7 @@ MCellInfo::~MCellInfo()
 
 MCellInfo::Status MCellInfo::getStatus() const
 {
-    return NoServ;
+    return NoServNoSIM;
 }
 
 QString MCellInfo::getProvider() const
@@ -76,7 +76,7 @@ QString MCellInfo::getProvider() const
 
 QString MCellInfo::getRadioMode() const
 {
-    return "gsm";
+    return "no-simcard";
 }
 
 int MCellInfo::getSignalStrength() const

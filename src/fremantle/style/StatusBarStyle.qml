@@ -76,5 +76,10 @@ Style {
     property url cellStatus: "image://theme/icon-s-status-"
     property url cellRangeMode: "image://theme/icon-s-status-"
     property url cellSignalFrames: "image://theme/icon-s-status-network"
+
+    // Fremantle Network indicators
+    property int networkPeriod: 200
+    property int numberOfWlanFrames: 5
+    property int numberOfCellFrames: 8
 }
 

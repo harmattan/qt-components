@@ -58,7 +58,7 @@ public:
     explicit MNetworkInfo(QObject *parent = 0);
     ~MNetworkInfo();
 
-    enum Status {Connecting, Connected, Closing, Disconnected, Roaming};
+    enum Status {Connecting, Connected, Closing, Disconnected};
 
     Status getStatus();
     QString getBearer();
