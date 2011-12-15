@@ -41,11 +41,12 @@
 FCellDevice::FCellDevice(const QString& path, QObject *parent):
     FDBusProxy(path, path, parent),
     signalStrength(0),
-    services(0),
-    status(NETWORK_REG_STATUS_NOSERV),
-    offline(true),
-    provider(""),
     radioMode(0),
+    status(NETWORK_REG_STATUS_NOSERV),
+    cell_operator(0),
+    cell_country(0),
+    provider(""),
+    services(0),
     service(FPhoneService::instance())
 {
     serviceName      = DEVICE_SERVICE_NAME;
@@ -156,7 +157,7 @@ void FCellDevice::setSignalStrength()
 #define DEVICE_GET_SIGNAL_STRENGTH "get_signal_strength"
     if(started) {
         watcher = new QDBusPendingCallWatcher(proxy->asyncCall(DEVICE_GET_SIGNAL_STRENGTH));
-        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(signalStrengthReply(QDBusPendingCallWatcher*)));
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(onSignalStrengthReply(QDBusPendingCallWatcher*)));
     }
 #undef DEVICE_GET_SIGNAL_STRENGTH
 }
@@ -176,11 +177,6 @@ void FCellDevice::setRegistrationStatus()
 #undef DEVICE_GET_REGISTRATION_STATUS
 }
 
-bool FCellDevice::isOffline()
-{
-    return offline;
-}
-
 int FCellDevice::getServices() const
 {
     return services;
@@ -194,7 +190,9 @@ QString FCellDevice::getProvider() const
 void FCellDevice::setProvider(uint operator_code, uint country_code)
 {
 #define DEVICE_GET_OPERATOR_NAME "get_operator_name"
-    if(started) {
+    if(started && (cell_operator != operator_code || cell_country != country_code)) {
+        cell_operator = operator_code;
+	cell_country  = country_code;
         watcher = new QDBusPendingCallWatcher(proxy->asyncCall(DEVICE_GET_OPERATOR_NAME, QVariant::fromValue(uchar(0)), operator_code, country_code));
         QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),this, SLOT(onProviderReply(QDBusPendingCallWatcher*)));
     }
@@ -238,7 +236,7 @@ void FCellDevice::onSignalStrengthChanged(uchar bars, uchar dbm)
 
     Q_UNUSED(dbm);
 
-    bars = MIN(bars, 100) + 20 / 21;
+    bars = (MIN(bars, 100) + 20) / 21;
     if (signalStrength != bars) {
         signalStrength = bars;
         Q_EMIT signalStrengthChanged();
@@ -248,7 +246,7 @@ void FCellDevice::onSignalStrengthChanged(uchar bars, uchar dbm)
 
 void FCellDevice::onRegistrationStatusReply(QDBusPendingCallWatcher *pcw)
 {
-    QDBusPendingReply<uchar, ushort, int, int, int, uchar, uchar> reply = *pcw;
+  QDBusPendingReply<uchar, ushort, uint, uint, uint, uchar, uchar, int> reply = *pcw;
     if (!reply.isError()) {
         uint operator_code = reply.argumentAt<3>();
         uint country_code  = reply.argumentAt<4>();
@@ -268,12 +266,10 @@ void FCellDevice::onRegistrationStatusReply(QDBusPendingCallWatcher *pcw)
 void FCellDevice::onRegistrationStatusChanged(QDBusMessage msg)
 {
     int old_status = status;
-    int new_status = msg.arguments().at(3).toInt();
-
-#define TOGGLE_OFFLINE(v) if (offline == v) { offline = !offline; Q_EMIT offlineChanged(); }
+    int new_status = msg.arguments().at(0).toInt();
 
     status   = new_status;
-    services = msg.arguments().at(7).toInt();
+    services = msg.arguments().at(6).toInt();
 
     if (old_status != new_status) {
         switch (new_status) {
@@ -283,24 +279,21 @@ void FCellDevice::onRegistrationStatusChanged(QDBusMessage msg)
             if (old_status >= NETWORK_REG_STATUS_NOSERV) {
                 Q_EMIT statusChanged();
             }
-            TOGGLE_OFFLINE(true);
             break;
 
+        case NETWORK_REG_STATUS_POWER_OFF:
         case NETWORK_REG_STATUS_NOSERV_NOSIM:
             Q_EMIT statusChanged();
-            TOGGLE_OFFLINE(false);
             break;
 
         default:
-            if (old_status < NETWORK_REG_STATUS_NOSERV || old_status == NETWORK_REG_STATUS_NOSERV_NOSIM) {
+            if (old_status < NETWORK_REG_STATUS_NOSERV) {
                 Q_EMIT statusChanged();
             }
-            TOGGLE_OFFLINE(false);
             break;
         }
-
-#undef TOGGLE_OFFLINE
     }
+    setProvider(msg.arguments().at(3).toUInt(), msg.arguments().at(4).toUInt());
 }
 
 void FCellDevice::onProviderReply(QDBusPendingCallWatcher *pcw)

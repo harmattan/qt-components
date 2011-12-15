@@ -49,7 +49,7 @@ public:
 
 private:
     bool open;
-    FHALService *hal;
+    FService *hal;
 
 private Q_SLOTS:
     void onHALStateChanged();

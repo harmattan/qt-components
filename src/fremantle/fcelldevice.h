@@ -49,14 +49,12 @@ class FCellDevice : public FDBusProxy
 public:
     Q_PROPERTY(int signalStrength READ getSignalStrength NOTIFY signalStrengthChanged() FINAL)
     Q_PROPERTY(int status READ getStatus NOTIFY statusChanged() FINAL)
-    Q_PROPERTY(bool offline READ isOffline NOTIFY offlineChanged() FINAL)
     Q_PROPERTY(QString provider READ getProvider NOTIFY providerChanged() FINAL)
     Q_PROPERTY(int radioMode READ getRadioMode NOTIFY radioModeChanged() FINAL)
 
 Q_SIGNALS:
     void signalStrengthChanged();
     void statusChanged();
-    void offlineChanged();
     void providerChanged();
     void radioModeChanged();
 
@@ -71,17 +69,18 @@ public:
     int getSignalStrength() const;
     int getStatus() const;
     int getServices() const;
-    bool isOffline();
     QString getProvider() const;
     int getRadioMode() const;
 
 private:
     int signalStrength;
-    int services;
-    uchar status;
-    bool offline;
-    QString provider;
     int radioMode;
+
+    uchar status;
+    uint cell_operator; 
+    uint cell_country;
+    QString provider;
+    int services;
 
     FService *service;
 

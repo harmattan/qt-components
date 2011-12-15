@@ -86,11 +86,6 @@ namespace
 const unsigned int VisibleChangedDelay = 1000;
 }
 
-static int handleXError(Display *, XErrorEvent *)
-{
-    return 0;
-}
-
 Window MWindowStatePrivate::effectiveWinId(Window winIdFromEvent)
 {
     QWidget * window = QWidget::find(winIdFromEvent);

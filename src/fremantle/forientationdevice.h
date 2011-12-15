@@ -52,7 +52,8 @@ public:
 private:
     QString orientation;
     QString physicalOrientation;
-    FMCEService *mce;
+
+    FService *mce;
 
 private Q_SLOTS:
     void onMCEStateChanged();

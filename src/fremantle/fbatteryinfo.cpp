@@ -46,11 +46,12 @@ class MBatteryInfoPrivate
     Q_DECLARE_PUBLIC(MBatteryInfo)
 
 public:
-    MBatteryInfoPrivate(MBatteryInfo *qq) : bme(BME_DEVICE), q_ptr(qq) {}
+    MBatteryInfoPrivate(MBatteryInfo *qq) : bme(BME_DEVICE), q_ptr(qq), refs(0) {}
     FBMEDevice bme;
 
 private:
     MBatteryInfo *q_ptr;
+    int refs;
 };
 
 MBatteryInfo::MBatteryInfo(QObject *parent) :
@@ -60,14 +61,39 @@ MBatteryInfo::MBatteryInfo(QObject *parent) :
 
     QObject::connect(&d->bme, SIGNAL(levelChanged()), this, SIGNAL(batteryLevelChanged()));
     QObject::connect(&d->bme, SIGNAL(chargingChanged()), this, SIGNAL(chargingChanged()));
-
-    //Start to listen to events
-    d->bme.start();
 }
 
 MBatteryInfo::~MBatteryInfo()
 {
     delete d_ptr;
+}
+
+void MBatteryInfo::start(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+ 
+    Q_D(MBatteryInfo);
+
+    d->refs++;
+    if (d->refs == 1) {
+      d->bme.start();
+    }
+}
+
+void MBatteryInfo::stop(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+
+    Q_D(MBatteryInfo);
+
+    d->refs --;
+    if (d->refs == 0) {
+      d->bme.stop();
+    }
+
+#define MAX(a, b) a > b ? a : b 
+    d->refs = MAX(d->refs, 0);
+#undef MAX
 }
 
 int MBatteryInfo::batteryLevel() const

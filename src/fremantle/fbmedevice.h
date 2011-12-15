@@ -53,7 +53,8 @@ public:
 private:
     int level;
     bool charging;
-    FHALService *hal;
+
+    FService *hal;
 
 private Q_SLOTS:
     void onHALStateChanged();

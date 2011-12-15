@@ -168,6 +168,8 @@ void MDeclarativeInputContext::setKeyboardOrientation(MDeclarativeScreen::Orient
         case MDeclarativeScreen::Portrait:
             angle = M::Angle270;
             break;
+	default:
+	    break;
         }
 
         M::InputMethod::instance()->setOrientationAngle(angle);

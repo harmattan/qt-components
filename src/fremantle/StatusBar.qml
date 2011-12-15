@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-import Qt 4.7
+import QtQuick 1.1
 import "." 1.0
 
 import "UIConstants.js" as UI
@@ -65,6 +65,7 @@ Item {
     //Statusbar background
     BorderImage {
         id: background
+        width: parent.width;
         source: platformStyle.background
 
         property int contentHeight: Math.round(root.height * 18 / 26)
@@ -111,26 +112,27 @@ Item {
             // Offline indicator
             Image {
                 id: signal_indicator
-                smooth: true;
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             states: [
-                State {
-                    name: ""
-                    PropertyChanges {target: cellsignal_indicator; width: 0; visible: false}
-                },
                 State {
                     name: "OFFLINE"
                     when: maemo.cellInfo.status === CellInfo.NoServNoSIM ||
                           maemo.cellInfo.status === CellInfo.NoServSimRejected ||
                           maemo.cellInfo.status === CellInfo.PowerOff
                     PropertyChanges {target: signal_indicator; source: platformStyle.cellStatus + maemo.cellInfo.mode}
+                    PropertyChanges {target: cellsignal_indicator; width: signal_indicator.width; visible: true}
                 },
                 State {
                     name: "ONLINE"
                     when: maemo.cellInfo.status < CellInfo.NoServ
                     PropertyChanges {target: signal_indicator; source: platformStyle.cellSignalFrames + maemo.cellInfo.strength}
+                    PropertyChanges {target: cellsignal_indicator; width: signal_indicator.width; visible: true}
+                },
+                State {
+                    name: "HIDDEN"
+                    PropertyChanges {target: cellsignal_indicator; width: 0; visible: false}
                 }
             ]
         }
@@ -138,8 +140,8 @@ Item {
         // Operator name
         Text {
             id: provider_indicator
-            color: platformStyle.indicatorColor
             text: maemo.cellInfo.provider
+            color: platformStyle.indicatorColor
             visible: maemo.cellInfo.status < CellInfo.NoServ
 
             anchors {
@@ -161,7 +163,7 @@ Item {
             width: range_indicator.width; height: parent.height
 
             anchors {
-                left: provider_indicator.right
+                left: maemo.cellInfo.status < CellInfo.NoServ ? provider_indicator.right : cellsignal_indicator.right
                 leftMargin: visible ? platformStyle.paddingSmall : 0
             }
 
@@ -172,46 +174,51 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
 
                 // For connecting aniamtions
-                property int index: 1
+                property int index
+
+                NumberAnimation on index {
+                    from: 1; to: platformStyle.numberOfWlanFrames
+                    easing.type:Easing.OutCubic; loops: Animation.Infinite; duration: platformStyle.wlanPeriod;
+                    running: network_indicator.state === "CONNECTING" && maemo.networkInfo.bearer === "wlan"
+                }
+                NumberAnimation on index {
+                    from: 1; to: platformStyle.numberOfCellFrames
+                    loops: Animation.Infinite; duration: platformStyle.cellPeriod;
+                    running: network_indicator.state === "CONNECTING" && maemo.networkInfo.bearer !== "wlan"
+                }
             }
 
             states: [
                 State {
-                    name: ""
-                    PropertyChanges {target: network_indicator; width: 0; visible: false}
-                },
-                State {
-                    name: "DISCONNECTED"
-                    when:  maemo.networkInfo.status === NetworkInfo.Disconnected &&
-                           maemo.cellInfo.status < CellInfo.NoServ
+                    name: "OFFLINE"
+                    when:  maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status < CellInfo.NoServ
                     PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.cellInfo.mode}
+                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
                 },
                 State {
                     name: "CONNECTING"
-                    when:  maemo.networkInfo.status === NetworkInfo.Connecting
-                    PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.networkInfo.bearer + "-active"}
+                    when:  maemo.networkInfo.status === NetworkInfo.Connecting && maemo.cellInfo.status !== CellInfo.PowerOff
+                    PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + (maemo.networkInfo.bearer === "wlan" ? maemo.networkInfo.bearer: "packetdata" ) + range_indicator.index;}
+                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
                 },
                 State {
                     name: "ONLINE"
                     when: maemo.networkInfo.status === NetworkInfo.Connected &&
-                          !(maemo.networkInfo.bearer !== "wlan" && maemo.cellInfo.status !== CellInfo.NoServSearching)
+                          (maemo.networkInfo.bearer === "wlan" || maemo.cellInfo.status < CellInfo.NoServ)
                     PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.networkInfo.bearer + (maemo.networkInfo.bearer === "wlan" ? "": "-active")}
+                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
                 },
                 State {
                     name: "SUSPENDED"
-                    when: state == "ONLINE" &&
-                          (maemo.networkInfo.bearer !== "wlan" && maemo.cellInfo.status === CellInfo.NoServSearching)
+                    when: maemo.networkInfo.status === NetworkInfo.Connected &&
+                          maemo.networkInfo.bearer !== "wlan" && maemo.cellInfo.Status >= CellInfo.NoServ
                     PropertyChanges {target: range_indicator; source: platformStyle.cellStatus + "-suspended"}
-                }
-
-            ]
-            transitions: [
-                Transition {
-                    from:"*"; to: "CONNECTING"
-                    NumberAnimation {
-                        target: range_indicator.index; duration: platformStyle.networkPeriod;loops: Animation.Infinite; alwaysRunToEnd: true
-                        from: 0; to: (maemo.networkInfo.bearer === "wlan" ? platformStyle.numberOfWlanFrames : platformStyle.numberOfCellFrames)
-                    }
+                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
+                },
+                State {
+                    name: "HIDDEN"
+                    when: maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status >= CellInfo.NoServ
+                    PropertyChanges {target: network_indicator; width: 0; visible: false}
                 }
             ]
         }
@@ -231,7 +238,6 @@ Item {
             font {
                 family: platformStyle.clockFont
                 pixelSize: background.contentHeight
-                weight: Font.Light
             }
         }
     }
@@ -239,9 +245,7 @@ Item {
     Rectangle {
         id: help_background
         width: parent.width; height: parent.height
-        color: "black"
-        opacity: 0.0
-        enabled: showHelp
+        color: "black"; opacity: 0.0; enabled: showHelp
 
         Item {
             id: help_contents
@@ -274,8 +278,8 @@ Item {
                 text: textTranslator.translate("qtn_statusbar_help")
 
                 font {
-                    family: platformStyle.clockFont
-                    pixelSize: background.contentHeight
+                    family: platformStyle.indicatorFont
+                    pixelSize: platformStyle.indicatorFontSize
                 }
             }
         }

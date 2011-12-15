@@ -21,8 +21,6 @@ maemo5 {
         fbatteryinfo.cpp \
         fbmedevice.cpp \
         fdbusproxy.cpp \
-        fhalservice.cpp \
-        fmceservice.cpp \
         forientationdevice.cpp \
         fsliderdevice.cpp \
 

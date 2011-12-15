@@ -74,7 +74,7 @@ void MNetworkInfoPrivate::updateConfigurations()
         onConfigurationAdded(conf);
 
         if (conf.state() == QNetworkConfiguration::Active) {
-            current = sessions[manager.defaultConfiguration().identifier()];
+            current = sessions[conf.identifier()];
             Q_EMIT(q->statusChanged());
             Q_EMIT(q->bearerChanged());
         }
@@ -197,12 +197,13 @@ QString MNetworkInfo::getBearer()
     case QNetworkConfiguration::BearerWLAN:
         return "wlan";
     case QNetworkConfiguration::Bearer2G:
+        return "gsm";
     case QNetworkConfiguration::BearerCDMA2000:
-        return "25";
+        return "25g";
     case QNetworkConfiguration::BearerWCDMA:
         return "3g";
     case QNetworkConfiguration::BearerHSPA:
-        return "35";
+        return "35g";
     case QNetworkConfiguration::BearerBluetooth:
         return "bluetooth";
     case QNetworkConfiguration::BearerUnknown:

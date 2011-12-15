@@ -67,6 +67,10 @@ Q_SIGNALS:
     void chargingChanged();
     void powerSaveModeEnabledChanged();
 
+public:
+    void start(QObject *requestor = 0);
+    void stop(QObject *requestor = 0);
+
 protected:
     MBatteryInfoPrivate* d_ptr;
 

@@ -63,6 +63,15 @@ MCellInfo::~MCellInfo()
     delete d_ptr;
 }
 
+void MCellInfo::start(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+}
+
+void MCellInfo::stop(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+}
 
 MCellInfo::Status MCellInfo::getStatus() const
 {

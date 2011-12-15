@@ -44,7 +44,7 @@ import "." 1.0
 Style {
     // Background
     property url background: "image://theme/meegotouch-statusbar-" +
-            ((screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted) ? "portrait" : "landscape") +
+            ((screen.currentOrientation === Screen.Portrait || screen.currentOrientation === Screen.PortraitInverted) ? "portrait" : "landscape") +
             __invertedString + "-background"
 
     // Fremantle only buttons to replace Harmattan swipe functionality
@@ -55,10 +55,23 @@ Style {
     property int paddingSmall: 6
 
     // StatusBar default font and colors
-    property string clockFont: theme.constants.Fonts.FONT_FAMILY
-    property string providerFont: theme.constants.Fonts.FONT_FAMILY
-    property string clockColor: inverted ? theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND : theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
-    property string indicatorColor: inverted ? theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND : theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
+    property string defaultFont: theme.constants.Fonts.FONT_FAMILY
+
+    // Provider name font and color
+    property string providerFont: defaultFont
+
+    // Clock font color
+    property string clockFont:  defaultFont
+    property string clockColor: inverted ?
+        theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND :
+        theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
+
+    // Indicators fonts and colors
+    property string indicatorFont:  defaultFont
+    property int indicatorFontSize: theme.constants.Fonts.FONT_DEFAULT
+    property string indicatorColor: inverted ?
+        theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND :
+        theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
 
     // transitions
     property int visibilityTransitionDuration: 250
@@ -78,8 +91,9 @@ Style {
     property url cellSignalFrames: "image://theme/icon-s-status-network"
 
     // Fremantle Network indicators
-    property int networkPeriod: 200
+    property int wlanPeriod: 2000
     property int numberOfWlanFrames: 5
+    property int cellPeriod: 2000
     property int numberOfCellFrames: 8
 }
 

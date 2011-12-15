@@ -27,12 +27,10 @@
 #include <forientationdevice.h>
 #include <fmceservice.h>
 
-#define MCE_SERVICE_NAME          "com.nokia.mce";
 #define MCE_INTERFACE_NAME        "com.nokia.mce.request"
 #define MCE_SIGNAL_INTERFACE_NAME "com.nokia.mce.signal"
 #define MCE_SIGNAL_MEMBER_NAME    "sig_device_orientation_ind"
 
-#include <QDebug>
 
 FOrientationDevice::FOrientationDevice(const QString& path, const QString &signal_path, QObject *parent):
     FDBusProxy(path, signal_path, parent),
@@ -65,12 +63,12 @@ void FOrientationDevice::start(QObject *requestor)
                     serviceName, device.path(),
                     interfaceName, ORIENTATION_BUS, this);
 
-        // Listen to updates
+        // Listen to orientation changes
         ORIENTATION_BUS.connect(
                     serviceName, signal.path(),
                     signalName, signalMemberName,
                     this, SLOT(signalUpdated(QString, QString, QString)));
-
+	
         // Update orientation and enable if required accelerometers
         setOrientation(orientation == "Default" ? "Undefined": orientation);
     }
@@ -164,9 +162,6 @@ void FOrientationDevice::callback(QDBusPendingCallWatcher *pcw)
     if (!reply.isError()) {
         // Currently, a True value in reply indicated that keyboard is closed
         signalUpdated(reply.argumentAt<0>(), reply.argumentAt<1>(), reply.argumentAt<2>());
-    }
-    else {
-        qWarning() << reply.error().message();
     }
     if (watcher == pcw) {
         watcher = 0;

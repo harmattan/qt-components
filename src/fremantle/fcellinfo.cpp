@@ -52,6 +52,7 @@ public:
 
 private:
     MCellInfo *q_ptr;
+    int refs;
 };
 
 
@@ -64,9 +65,6 @@ MCellInfo::MCellInfo(QObject *parent) :
     QObject::connect(&d->cell, SIGNAL(statusChanged()), this, SIGNAL(statusChanged()));
     QObject::connect(&d->cell, SIGNAL(providerChanged()), this, SIGNAL(providerChanged()));
     QObject::connect(&d->cell, SIGNAL(radioModeChanged()), this, SIGNAL(radioModeChanged()));
-
-    //Start to listen to events
-    d->cell.start();
 }
 
 MCellInfo::~MCellInfo()
@@ -74,18 +72,44 @@ MCellInfo::~MCellInfo()
     delete d_ptr;
 }
 
+void MCellInfo::start(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+ 
+    Q_D(MCellInfo);
+
+    d->refs++;
+    if (d->refs == 1) {
+      d->cell.start();
+    }
+}
+
+void MCellInfo::stop(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+
+    Q_D(MCellInfo);
+
+    d->refs --;
+    if (d->refs == 0) {
+      d->cell.stop();
+    }
+
+#define MAX(a, b) a > b ? a : b 
+    d->refs = MAX(d->refs, 0);
+#undef MAX
+}
+
 
 MCellInfo::Status MCellInfo::getStatus() const
 {
     const Q_D(MCellInfo);
-
     return (MCellInfo::Status)d->cell.getStatus();
 }
 
 QString MCellInfo::getProvider() const
 {
     const Q_D(MCellInfo);
-
     return d->cell.getProvider();
 }
 
@@ -131,9 +155,7 @@ QString MCellInfo::getRadioMode() const
 int MCellInfo::getSignalStrength() const
 {
     const Q_D(MCellInfo);
-
     return d->cell.getSignalStrength();
 }
-
 
 #include "moc_mcellinfo.cpp"

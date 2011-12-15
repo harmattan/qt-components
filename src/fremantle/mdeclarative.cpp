@@ -122,12 +122,19 @@ void MDeclarative::privateClearComponentCache()
 
 bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
 {
+    Q_D(MDeclarative);
+
     if (obj == QCoreApplication::instance()) {
         if (event->type() == QEvent::ApplicationActivate) {
+	    d->batteryInfo.start();
+	    d->cellInfo.start();
+            d->timer.start(MINUTE_MS);
             emit currentTimeChanged();
-            d_ptr->timer.start(MINUTE_MS);
+	    
         } else if (event->type() == QEvent::ApplicationDeactivate) {
-            d_ptr->timer.stop();
+            d->timer.stop();
+	    d->cellInfo.stop();
+	    d->batteryInfo.stop();
         }
     }
     return QObject::eventFilter(obj, event);

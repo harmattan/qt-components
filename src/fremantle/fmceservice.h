@@ -5,42 +5,33 @@
 #include <QSet>
 #include <QDBusServiceWatcher>
 
-#include "fdbusproxy.h"
+#include "fservice.h"
+
+#define MCE_SERVICE_NAME   "com.nokia.mce"
+#define MCE_INTERFACE_NAME "com.nokia.mce.request"
 
 #define MCE_BUS QDBusConnection::systemBus()
 
-class FMCEService : public FDBusProxy
+
+class FMCEService : public FService
 {
-    Q_OBJECT
-
 public:
-    //Singleton
-    static FMCEService* instance();
+    static FService *instance()
+    {
+        static FMCEService *self = 0;
+        if (!self) {
+            self =  new FMCEService("/com/nokia/mce/request");
+        }
+        return qobject_cast<FService *>(self);
+    }
 
-public:
-    Q_PROPERTY(bool ready READ isReady NOTIFY valueChanged())
+    explicit FMCEService(const QString& path, QObject *parent = 0, QDBusConnection bus=MCE_BUS):
+        FService(path, parent, bus)
+    {
+        serviceName   = MCE_SERVICE_NAME;
+        interfaceName = MCE_INTERFACE_NAME;
+    }
 
-Q_SIGNALS:
-    void valueChanged();
-
-public:
-    virtual void start (QObject *requestor = 0);
-    virtual void stop  (QObject *requestor = 0);
-
-public:
-    explicit FMCEService(const QString& path, QObject *parent = 0);
-
-public:
-    bool isReady() const;
-
-private:
-    bool ready;
-    QDBusServiceWatcher *watcher;
-    QSet<QObject *> subscribers;
-
-private Q_SLOTS:
-    void isDown();
-    void isUp();
 };
 
 #endif /* ! FMCESERVICE_H */

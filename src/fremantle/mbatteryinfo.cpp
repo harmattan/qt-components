@@ -63,6 +63,16 @@ MBatteryInfo::~MBatteryInfo()
     delete d_ptr;
 }
 
+void MBatteryInfo::start(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+}
+
+void MBatteryInfo::stop(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+}
+
 int MBatteryInfo::batteryLevel() const
 {
     return 0;

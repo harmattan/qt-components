@@ -4,10 +4,40 @@
 #include <QObject>
 #include <QSet>
 #include <QDBusServiceWatcher>
+#include <QDBusMetaType>
 
-#include "fdbusproxy.h"
+#include "fservice.h"
 
+#define HAL_SERVICE_NAME "org.freedesktop.Hal"
 #define HAL_BUS QDBusConnection::systemBus()
+
+struct FHALProperty;
+class FHALService : public FService
+{
+public:
+    static FService *instance()
+    {
+        static FHALService *self = 0;
+        if (!self) {
+            self =  new FHALService("/");
+        }
+        return qobject_cast<FService *>(self);
+    }
+
+    explicit FHALService(const QString& path, QObject *parent = 0, QDBusConnection bus=HAL_BUS):
+        FService(path, parent, bus)
+    {
+      static bool property_registered = false;
+
+      serviceName = HAL_SERVICE_NAME;
+ 
+      if (!property_registered) {
+	property_registered = true;
+	qDBusRegisterMetaType< FHALProperty >();
+	qDBusRegisterMetaType< QList<FHALProperty> >();
+      }
+    }
+};
 
 struct FHALProperty 
 {
@@ -19,39 +49,21 @@ struct FHALProperty
     bool    removed;
 };
 
-class FHALService : public FDBusProxy
+inline const QDBusArgument & operator<<(QDBusArgument &arg, const FHALProperty &change)
 {
-    Q_OBJECT
+    arg.beginStructure();
+    arg << change.name << change.added << change.removed;
+    arg.endStructure();
+    return arg;
+}
 
-public:
-    //Singleton
-    static FHALService* instance();
-
-public:
-    Q_PROPERTY(bool ready READ isReady NOTIFY valueChanged())
-
-Q_SIGNALS:
-    void valueChanged();
-
-public:
-    virtual void start (QObject *requestor = 0);
-    virtual void stop  (QObject *requestor = 0);
-
-public:
-    explicit FHALService(const QString& path, QObject *parent = 0);
-
-public:
-    bool isReady() const;
-
-private:
-    bool ready;
-    QDBusServiceWatcher *watcher;
-    QSet<QObject *> subscribers;
-
-private Q_SLOTS:
-    void isDown();
-    void isUp();
-};
+inline const QDBusArgument & operator>>(const QDBusArgument &arg, FHALProperty &change)
+{
+    arg.beginStructure();
+    arg >> change.name >> change.added >> change.removed;
+    arg.endStructure();
+    return arg;
+}
 
 Q_DECLARE_METATYPE(FHALProperty)
 Q_DECLARE_METATYPE(QList<FHALProperty>)
