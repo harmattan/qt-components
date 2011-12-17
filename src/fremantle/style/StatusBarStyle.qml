@@ -57,21 +57,14 @@ Style {
     // StatusBar default font and colors
     property string defaultFont: theme.constants.Fonts.FONT_FAMILY
 
-    // Provider name font and color
-    property string providerFont: defaultFont
-
-    // Clock font color
-    property string clockFont:  defaultFont
-    property string clockColor: inverted ?
-        theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND :
-        theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
-
     // Indicators fonts and colors
-    property string indicatorFont:  defaultFont
-    property int indicatorFontSize: theme.constants.Fonts.FONT_DEFAULT
+    property string indicatorFont: defaultFont
+    property int indicatorFontSize: theme.constants.Fonts.FONT_SMALL
     property string indicatorColor: inverted ?
         theme.constants.Palette.COLOR_STATUSBAR_INVERTED_FOREGROUND :
         theme.constants.Palette.COLOR_STATUSBAR_FOREGROUND
+
+    property int helpFontSize: theme.constants.Fonts.FONT_DEFAULT
 
     // transitions
     property int visibilityTransitionDuration: 250

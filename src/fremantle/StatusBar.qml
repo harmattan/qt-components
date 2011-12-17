@@ -68,110 +68,104 @@ Item {
         width: parent.width;
         source: platformStyle.background
 
-        property int contentHeight: Math.round(root.height * 18 / 26)
-
-        // battery indicator
-        Item {
-            id: battery_indicator
-            width: battery_image.width; height: parent.height
-
-            property int animatedLevel: 0
+        // Time Clock
+        Text {
+            id: time_indicator
+            text: maemo.currentTime
+            color: platformStyle.indicatorColor
 
             anchors {
-                left: parent.left
-                leftMargin: platformStyle.paddingSmall
+                right: parent.right
+                rightMargin: platformStyle.paddingSmall
+                verticalCenter: parent.verticalCenter
+                verticalCenterOffset: 2
             }
 
-            Image {
-                id: battery_image
-                source: platformStyle.batteryFrames + (maemo.batteryInfo.charging ?
-                   (parent.animatedLevel > 0 ? parent.animatedLevel : "-low")    :
-                   (maemo.batteryInfo.batteryLevel > 0 ? maemo.batteryInfo.batteryLevel : "-verylow"))
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            NumberAnimation {
-                running: maemo.batteryInfo.charging && root.visible && platformWindow.active
-                target: battery_indicator; property: "animatedLevel"
-                from: 0; to: platformStyle.batteryLevels; duration: platformStyle.batteryPeriod
-                loops: Animation.Infinite
+            font {
+                family: platformStyle.indicatorFont
+                pixelSize: platformStyle.indicatorFontSize
             }
         }
 
-        // signal indicator
-        Item {
-            id: cellsignal_indicator
-            visible: true
-            width: signal_indicator.width; height: parent.height
+        // Indicators
+        Row {
+            id: left_indicators
+            spacing: platformStyle.paddingSmall
 
             anchors {
-                left: battery_indicator.right
-                leftMargin: visible ? platformStyle.paddingSmall : 0
+                left: parent.left
+                leftMargin:platformStyle.paddingSmall
+                bottom: time_indicator.baseline
+            }
+
+            // battery indicator
+            Image {
+                id: battery_indicator
+                anchors.bottom: parent.bottom
+
+                property int level
+
+                NumberAnimation on level {
+                    from: 0; to: platformStyle.batteryLevels;
+                    duration: platformStyle.batteryPeriod; loops: Animation.Infinite
+                    running: maemo.batteryInfo.charging && root.visible && platformWindow.active
+                }
+
+                source: platformStyle.batteryFrames +
+                        (maemo.batteryInfo.charging ?
+                             (level > 0 ? level : "-low") :
+                             (maemo.batteryInfo.batteryLevel > 0 ?
+                                  maemo.batteryInfo.batteryLevel : "-verylow"))
+
             }
 
             // Offline indicator
             Image {
                 id: signal_indicator
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.bottom: parent.bottom
+                fillMode: Image.PreserveAspectFit
+
+                states: [
+                    State {
+                        name: "OFFLINE"
+                        when: maemo.cellInfo.status === CellInfo.NoServNoSIM ||
+                              maemo.cellInfo.status === CellInfo.NoServSimRejected ||
+                              maemo.cellInfo.status === CellInfo.PowerOff
+                        PropertyChanges {target: signal_indicator; source: platformStyle.cellStatus + maemo.cellInfo.mode; visible: true}
+                    },
+                    State {
+                        name: "ONLINE"
+                        when: maemo.cellInfo.status < CellInfo.NoServ
+                        PropertyChanges {target: signal_indicator; source: platformStyle.cellSignalFrames + maemo.cellInfo.strength; visible: true}
+                    },
+                    State {
+                        name: "HIDDEN"
+                        PropertyChanges {target: signal_indicator; visible: false}
+                    }
+                ]
             }
 
-            states: [
-                State {
-                    name: "OFFLINE"
-                    when: maemo.cellInfo.status === CellInfo.NoServNoSIM ||
-                          maemo.cellInfo.status === CellInfo.NoServSimRejected ||
-                          maemo.cellInfo.status === CellInfo.PowerOff
-                    PropertyChanges {target: signal_indicator; source: platformStyle.cellStatus + maemo.cellInfo.mode}
-                    PropertyChanges {target: cellsignal_indicator; width: signal_indicator.width; visible: true}
-                },
-                State {
-                    name: "ONLINE"
-                    when: maemo.cellInfo.status < CellInfo.NoServ
-                    PropertyChanges {target: signal_indicator; source: platformStyle.cellSignalFrames + maemo.cellInfo.strength}
-                    PropertyChanges {target: cellsignal_indicator; width: signal_indicator.width; visible: true}
-                },
-                State {
-                    name: "HIDDEN"
-                    PropertyChanges {target: cellsignal_indicator; width: 0; visible: false}
+            // Operator name
+            Text {
+                id: provider_indicator
+                visible: maemo.cellInfo.status < CellInfo.NoServ
+                anchors.baseline: parent.bottom
+                anchors.baselineOffset: -1
+
+                text: maemo.cellInfo.provider
+                color: platformStyle.indicatorColor
+
+                font {
+                    family: platformStyle.indicatorFont
+                    pixelSize: platformStyle.indicatorFontSize
                 }
-            ]
-        }
-
-        // Operator name
-        Text {
-            id: provider_indicator
-            text: maemo.cellInfo.provider
-            color: platformStyle.indicatorColor
-            visible: maemo.cellInfo.status < CellInfo.NoServ
-
-            anchors {
-                left: cellsignal_indicator.right
-                leftMargin: visible ? platformStyle.paddingSmall : 0
-                verticalCenter: parent.verticalCenter
-            }
-
-            font {
-                family: platformStyle.providerFont
-                pixelSize: background.contentHeight
-            }
-        }
-
-        // Network Indicator
-        Item {
-            id: network_indicator
-            visible: true
-            width: range_indicator.width; height: parent.height
-
-            anchors {
-                left: maemo.cellInfo.status < CellInfo.NoServ ? provider_indicator.right : cellsignal_indicator.right
-                leftMargin: visible ? platformStyle.paddingSmall : 0
             }
 
             // Range indicator
             Image {
                 id: range_indicator
-                smooth: true;
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.bottom: parent.bottom
+                fillMode: Image.PreserveAspectFit
 
                 // For connecting aniamtions
                 property int index
@@ -179,65 +173,43 @@ Item {
                 NumberAnimation on index {
                     from: 1; to: platformStyle.numberOfWlanFrames
                     easing.type:Easing.OutCubic; loops: Animation.Infinite; duration: platformStyle.wlanPeriod;
-                    running: network_indicator.state === "CONNECTING" && maemo.networkInfo.bearer === "wlan"
+                    running: range_indicator.state === "CONNECTING" && maemo.networkInfo.bearer === "wlan"
                 }
                 NumberAnimation on index {
                     from: 1; to: platformStyle.numberOfCellFrames
                     loops: Animation.Infinite; duration: platformStyle.cellPeriod;
-                    running: network_indicator.state === "CONNECTING" && maemo.networkInfo.bearer !== "wlan"
+                    running: range_indicator.state === "CONNECTING" && maemo.networkInfo.bearer !== "wlan"
                 }
-            }
 
-            states: [
-                State {
-                    name: "OFFLINE"
-                    when:  maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status < CellInfo.NoServ
-                    PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.cellInfo.mode}
-                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
-                },
-                State {
-                    name: "CONNECTING"
-                    when:  maemo.networkInfo.status === NetworkInfo.Connecting && maemo.cellInfo.status !== CellInfo.PowerOff
-                    PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + (maemo.networkInfo.bearer === "wlan" ? maemo.networkInfo.bearer: "packetdata" ) + range_indicator.index;}
-                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
-                },
-                State {
-                    name: "ONLINE"
-                    when: maemo.networkInfo.status === NetworkInfo.Connected &&
-                          (maemo.networkInfo.bearer === "wlan" || maemo.cellInfo.status < CellInfo.NoServ)
-                    PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.networkInfo.bearer + (maemo.networkInfo.bearer === "wlan" ? "": "-active")}
-                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
-                },
-                State {
-                    name: "SUSPENDED"
-                    when: maemo.networkInfo.status === NetworkInfo.Connected &&
-                          maemo.networkInfo.bearer !== "wlan" && maemo.cellInfo.Status >= CellInfo.NoServ
-                    PropertyChanges {target: range_indicator; source: platformStyle.cellStatus + "-suspended"}
-                    PropertyChanges {target: network_indicator; width: range_indicator.width; visible: true}
-                },
-                State {
-                    name: "HIDDEN"
-                    when: maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status >= CellInfo.NoServ
-                    PropertyChanges {target: network_indicator; width: 0; visible: false}
-                }
-            ]
-        }
-
-        // clock
-        Text {
-            id: time_indicator
-            text: maemo.currentTime
-            color: platformStyle.clockColor
-
-            anchors {
-                right: parent.right
-                rightMargin: platformStyle.paddingSmall
-                verticalCenter: parent.verticalCenter
-            }
-
-            font {
-                family: platformStyle.clockFont
-                pixelSize: background.contentHeight
+                states: [
+                    State {
+                        name: "OFFLINE"
+                        when:  maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status < CellInfo.NoServ
+                        PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.cellInfo.mode; visible: true}
+                    },
+                    State {
+                        name: "CONNECTING"
+                        when:  maemo.networkInfo.status === NetworkInfo.Connecting && maemo.cellInfo.status !== CellInfo.PowerOff
+                        PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + (maemo.networkInfo.bearer === "wlan" ? maemo.networkInfo.bearer: "packetdata" ) + range_indicator.index; visible: true}
+                    },
+                    State {
+                        name: "ONLINE"
+                        when: maemo.networkInfo.status === NetworkInfo.Connected &&
+                              (maemo.networkInfo.bearer === "wlan" || maemo.cellInfo.status < CellInfo.NoServ)
+                        PropertyChanges {target: range_indicator; source: platformStyle.cellRangeMode + maemo.networkInfo.bearer + (maemo.networkInfo.bearer === "wlan" ? "": "-active"); visible: true}
+                    },
+                    State {
+                        name: "SUSPENDED"
+                        when: maemo.networkInfo.status === NetworkInfo.Connected &&
+                              maemo.networkInfo.bearer !== "wlan" && maemo.cellInfo.Status >= CellInfo.NoServ
+                        PropertyChanges {target: range_indicator; source: platformStyle.cellStatus + "-suspended"; visible: true}
+                    },
+                    State {
+                        name: "HIDDEN"
+                        when: maemo.networkInfo.status === NetworkInfo.Disconnected && maemo.cellInfo.status >= CellInfo.NoServ
+                        PropertyChanges {target: range_indicator; visible: false}
+                    }
+                ]
             }
         }
     }
@@ -279,7 +251,7 @@ Item {
 
                 font {
                     family: platformStyle.indicatorFont
-                    pixelSize: platformStyle.indicatorFontSize
+                    pixelSize: platformStyle.helpFontSize
                 }
             }
         }
