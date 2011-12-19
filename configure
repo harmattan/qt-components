@@ -54,6 +54,7 @@ BUILD_EXAMPLES=yes
 BUILD_EXTRAS=yes
 BUILD_TRANSLATIONS=yes
 BUILD_TESTS=no
+BUILD_CSSU=no
 HAVE_MEEGOTOUCH=no
 HAVE_MALIIT_FRAMEWORK=no
 HAVE_XDAMAGE=no
@@ -188,6 +189,10 @@ while [ "$#" -gt 0 ]; do
             BUILD_TESTS=no
             shift
             ;;
+        cssu)
+            BUILD_CSSU=no
+            shift
+            ;;
         *)
             CURRENT_OPT="$1"
             UNKNOWN_OPT=yes
@@ -207,6 +212,9 @@ while [ "$#" -gt 0 ]; do
             ;;
         tests)
             BUILD_TESTS=yes
+            ;;
+        cssu)
+            BUILD_CSSU=yes
             ;;
         *)
             CURRENT_OPT="$1"
@@ -349,6 +357,7 @@ fi
 [ "$BUILD_EXTRAS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG extras"
 [ "$BUILD_TRANSLATIONS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG i18n"
 [ "$BUILD_TESTS" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG tests"
+[ "$BUILD_CSSU" = "yes" ] && [ "$BUILD_FREMANTLE_STYLE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG cssu"
 
 [ "$HAVE_MALIIT_FRAMEWORK" = "yes" ] && [ "$BUILD_FREMANTLE_SYLE" = "yes" ] && HAVE_MEEGOTOUCH="no"
 [ "$HAVE_MEEGOTOUCH" = "yes" ] && [ "$BUILD_MEEGO_SYLE" = "yes" ] && HAVE_MALIIT_FRAMEWORK="no"
@@ -396,7 +405,11 @@ if [ "$BUILD_MEEGO_STYLE" = "yes" ]; then
     echo "  Shader support ................. $HAVE_SHADER"
     echo "  Force local theme .............. $FORCE_LOCAL_THEME"
 fi
-echo "Fremantle Style .................. $BUILD_FREMANTLE_STYLE"
+if [ "$BUILD_CSSU" = "yes" ]; then
+    echo "Fremantle Style (and meego NS).... $BUILD_FREMANTLE_STYLE"
+else
+    echo "Fremantle Style .................. $BUILD_FREMANTLE_STYLE"
+fi
 if [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
     echo "  Maliit Framework ............... $HAVE_MALIIT_FRAMEWORK"
     echo "  Qt Mobility support ............ $HAVE_MOBILITY"
@@ -408,6 +421,7 @@ if [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
 	echo "  Gconf support .................. $HAVE_GCONF"
     fi
 fi
+
 echo "Symbian Style .................... $BUILD_SYMBIAN_STYLE"
 if [ "$BUILD_SYMBIAN_STYLE" = "yes" ]; then
     echo "  Qt Mobility support ............ $HAVE_MOBILITY"
@@ -417,6 +431,7 @@ echo "Extras ........................... $BUILD_EXTRAS"
 echo "Demos ............................ $BUILD_DEMOS"
 echo "Examples ......................... $BUILD_EXAMPLES"
 echo "Tests ............................ $BUILD_TESTS"
+
 echo
 if [ "$BUILD_MEEGO_STYLE" = "yes" ] || [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
 echo "Install prefix: $INSTALL_PREFIX"
