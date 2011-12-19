@@ -14,6 +14,16 @@ features.files += $$Q_COMPONENTS_BUILD_TREE/features/qt-components-config.prf
 features.path = $$[QMAKE_MKSPECS]/features
 INSTALLS += features
 
+fremantle {
+    scripts.files += $$Q_COMPONENTS_SOURCE_TREE/scripts/*.py
+    scripts.path   = $$INSTALL_PREFIX/bin
+    INSTALLS      += scripts
+
+    re.files += $$Q_COMPONENTS_SOURCE_TREE/scripts/re/*.re
+    re.path   = $$INSTALL_PREFIX/share/qt-components$$Q_COMPONENTS_VERSION/re
+    INSTALLS += re
+}
+
 symbian {
     features.path ~= s/^[A-Za-z]:/ # strip drive letter
     BLD_INF_RULES.prj_exports += "features/qt-components.prf $$features.path/qt-components.prf"

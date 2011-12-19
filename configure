@@ -371,6 +371,7 @@ fi
 echo "CONFIG +=$QMAKE_CONFIG" > $CONFIG_PRF
 echo "Q_COMPONENTS_SOURCE_TREE = $SOURCE_TREE" > $QMAKE_CACHE
 echo "Q_COMPONENTS_BUILD_TREE = $BUILD_TREE" >> $QMAKE_CACHE
+echo "Q_COMPONENTS_VERSION = 10" >> $QMAKE_CACHE
 
 echo
 echo "Running qmake..."
@@ -417,7 +418,7 @@ echo "Demos ............................ $BUILD_DEMOS"
 echo "Examples ......................... $BUILD_EXAMPLES"
 echo "Tests ............................ $BUILD_TESTS"
 echo
-if [ "$BUILD_MEEGO_STYLE" = "yes" ]; then
+if [ "$BUILD_MEEGO_STYLE" = "yes" ] || [ "$BUILD_FREMANTLE_STYLE" = "yes" ]; then
 echo "Install prefix: $INSTALL_PREFIX"
 echo
 fi

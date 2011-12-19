@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPTS_DIR=$PWD/../../../src/fremantle/patches/scripts
+SCRIPTS_DIR=$PWD/../../../scripts
 REGEX_DIR=$SCRIPTS_DIR/re
 QML_DIR=qml
 

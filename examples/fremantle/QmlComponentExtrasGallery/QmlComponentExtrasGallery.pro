@@ -1,6 +1,6 @@
 TEMPLATE = app
 QT += declarative
-target.path = $$INSTALL_PREFIX/qt-components/bin
+target.path = $$INSTALL_PREFIX/qt-components$$Q_COMPONENTS_VERSION/bin
 
 include(../util/util.pri)
 

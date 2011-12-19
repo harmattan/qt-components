@@ -33,7 +33,7 @@ fremantle {
     }
     THEME_DIR = $$INSTALL_PREFIX/share/themes
     CACHE_DIR = $$INSTALL_PREFIX/var/cache
-    I18N_DIR  = $$INSTALL_PREFIX/share/l10n/qt-components10/
+    I18N_DIR  = $$INSTALL_PREFIX/share/l10n/qt-components$$Q_COMPONENTS_VERSION/
 }
 
 unix:!symbian {
