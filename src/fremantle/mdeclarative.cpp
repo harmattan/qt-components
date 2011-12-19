@@ -128,11 +128,13 @@ bool MDeclarative::eventFilter(QObject *obj, QEvent *event)
         if (event->type() == QEvent::ApplicationActivate) {
 	    d->batteryInfo.start();
 	    d->cellInfo.start();
+	    d->networkInfo.start();
             d->timer.start(MINUTE_MS);
             emit currentTimeChanged();
 	    
         } else if (event->type() == QEvent::ApplicationDeactivate) {
             d->timer.stop();
+	    d->networkInfo.stop();
 	    d->cellInfo.stop();
 	    d->batteryInfo.stop();
         }

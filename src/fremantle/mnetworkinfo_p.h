@@ -53,11 +53,15 @@ class MNetworkInfoPrivate: public QObject
 public:
     explicit MNetworkInfoPrivate(MNetworkInfo *qq);
 
+    void start(QObject *requestor = 0);
+    void stop(QObject *requestor = 0);
+
 private:
     MNetworkInfo *q_ptr;
     QNetworkSession *current;
     QNetworkConfigurationManager manager;
     QHash<QString, QNetworkSession *> sessions;
+    int refs;
 
 private Q_SLOTS:
     void updateConfigurations();

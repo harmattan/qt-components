@@ -67,6 +67,10 @@ Q_SIGNALS:
     void statusChanged();
     void bearerChanged();
 
+public:
+    void start(QObject *requestor = 0);
+    void stop(QObject *requestor = 0);
+
 protected:
     MNetworkInfoPrivate* d_ptr;
 

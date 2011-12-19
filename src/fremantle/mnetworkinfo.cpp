@@ -48,20 +48,42 @@
 
 
 // dummy private class
-MNetworkInfoPrivate::MNetworkInfoPrivate(MNetworkInfo *qq) : 
-    q_ptr(qq),
-    current(0)
+MNetworkInfoPrivate::MNetworkInfoPrivate(MNetworkInfo *qq) : q_ptr(qq), current(0), refs(0)
 {
-    QObject::connect(
-                &manager,
-                SIGNAL(configurationAdded(QNetworkConfiguration)),
-                this, SLOT(onConfigurationAdded(QNetworkConfiguration)));
-    QObject::connect(
-                &manager,
-                SIGNAL(configurationRemoved(QNetworkConfiguration)),
-                this, SLOT(onConfigurationRemoved(QNetworkConfiguration)));
+}
 
-    QTimer::singleShot(0, this, SLOT(updateConfigurations()));
+void MNetworkInfoPrivate::start(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+
+    refs++;
+    if (refs == 1) {
+        QObject::connect(
+            &manager,
+            SIGNAL(configurationAdded(QNetworkConfiguration)),
+            this, SLOT(onConfigurationAdded(QNetworkConfiguration)));
+        QObject::connect(
+            &manager,
+            SIGNAL(configurationRemoved(QNetworkConfiguration)),
+            this, SLOT(onConfigurationRemoved(QNetworkConfiguration)));
+
+        QTimer::singleShot(0, this, SLOT(updateConfigurations()));
+    }
+}
+
+void MNetworkInfoPrivate::stop(QObject *requestor)
+{
+    Q_UNUSED(requestor);
+
+    refs --;
+    if (refs == 0) {
+        manager.disconnect();
+        sessions.clear();
+    }
+
+#define MAX(a, b) a > b ? a : b 
+    refs = MAX(refs, 0);
+#undef MAX
 }
 
 void MNetworkInfoPrivate::updateConfigurations()
@@ -152,6 +174,19 @@ MNetworkInfo::MNetworkInfo(QObject *parent) :
 MNetworkInfo::~MNetworkInfo()
 {
     delete d_ptr;
+}
+
+// Methods
+void MNetworkInfo::start(QObject *requestor)
+{
+    Q_D(MNetworkInfo);
+    d->start(requestor);
+}
+
+void MNetworkInfo::stop(QObject *requestor)
+{
+    Q_D(MNetworkInfo);
+    d->stop(requestor);
 }
 
 // Properties
