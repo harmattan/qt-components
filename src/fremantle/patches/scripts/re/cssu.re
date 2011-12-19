@@ -7,8 +7,8 @@
 \1QtQuick 1.1
 
 ;; Downgrade components version
-^(import[ \t]+).*components[ \t].*$
-\1Qt.labs.components 1.0
+^(import[ \t]+).*components[ \t]+1\.[10][ \t]*(.*)$
+\1Qt.labs.components 1.0 \2
 
 ;; Set namespace from meego to fremantle
 ^(import[ \t]+).*fremantle[ \t].*$
