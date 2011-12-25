@@ -44,7 +44,8 @@
 #include <QDeclarativeItem>
 #ifdef HAVE_MALIIT_FRAMEWORK
 # include <maliit/attributeextension.h>
-namespace M = Maliit;
+# include <maliit/inputmethod.h>
+# include <maliit/namespace.h>
 #endif
 
 class MDeclarativeIMAttributeExtension : public QDeclarativeItem
@@ -60,7 +61,7 @@ public:
 
     bool isActionKeyHighlighted() const {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        return extension.attributes().value("/keys/actionKey/highlighted").toBool();
+        return m_extension->attributes().value("/keys/actionKey/highlighted").toBool();
 #else
         return false;
 #endif
@@ -68,7 +69,7 @@ public:
 
     void setActionKeyHighlighted( bool isHighlighted ) {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        extension.setAttribute("/keys/actionKey/highlighted", QVariant(isHighlighted));
+        m_extension->setAttribute("/keys/actionKey/highlighted", QVariant(isHighlighted));
         emit actionKeyHighlightedChanged();
 #else
         Q_UNUSED(isHighlighted);
@@ -77,7 +78,7 @@ public:
 
     bool isActionKeyEnabled() const {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        return extension.attributes().value("/keys/actionKey/enabled").toBool();
+        return m_extension->attributes().value("/keys/actionKey/enabled").toBool();
 #else
         return false;
 #endif
@@ -85,7 +86,7 @@ public:
 
     void setActionKeyEnabled( bool isEnabled ) {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        extension.setAttribute("/keys/actionKey/enabled", QVariant(isEnabled));
+        m_extension->setAttribute("/keys/actionKey/enabled", QVariant(isEnabled));
         emit actionKeyEnabledChanged();
 #else
         Q_UNUSED(isEnabled);
@@ -94,7 +95,7 @@ public:
 
     QString actionKeyLabel() const {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        return extension.attributes().value("/keys/actionKey/label").toString();
+        return m_extension->attributes().value("/keys/actionKey/label").toString();
 #else
         return QString();
 #endif
@@ -102,7 +103,7 @@ public:
 
     void setActionKeyLabel( QString newLabel ) {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        extension.setAttribute("/keys/actionKey/label", QVariant(newLabel));
+        m_extension->setAttribute("/keys/actionKey/label", QVariant(newLabel));
         emit actionKeyLabelChanged();
 #else
         Q_UNUSED(newLabel);
@@ -111,7 +112,7 @@ public:
 
     QString actionKeyIcon() const {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        return extension.attributes().value("/keys/actionKey/icons").toString();
+        return m_extension->attributes().value("/keys/actionKey/icons").toString();
 #else
         return QString();
 #endif
@@ -119,7 +120,7 @@ public:
 
     void setActionKeyIcon( QString newIcon ) {
 #ifdef HAVE_MALIIT_FRAMEWORK
-        extension.setAttribute("/keys/actionKey/icon", QVariant(newIcon));
+        m_extension->setAttribute("/keys/actionKey/icon", QVariant(newIcon));
         emit actionKeyIconChanged();
 #else
         Q_UNUSED(newIcon);
@@ -127,9 +128,9 @@ public:
     }
 
     Q_INVOKABLE void registerInputElement(QDeclarativeItem *element) const {
-#if defined(HAVE_MALIIT_FRAMEWORK) && QT_VERSION > 0x040700
+#if defined(HAVE_MALIIT_FRAMEWORK)
         if (element)
-            element->setProperty("meego-inputmethod-attribute-extension-id", extension.id());
+            element->setProperty(Maliit::InputMethodQuery::attributeExtensionId, QVariant(m_extension->id()));
 #else
         Q_UNUSED(element);
 #endif
@@ -145,7 +146,7 @@ public slots:
 
 private:
 #ifdef HAVE_MALIIT_FRAMEWORK
-    M::AttributeExtension extension;
+    QScopedPointer<Maliit::AttributeExtension> m_extension;
 #endif
 };
 

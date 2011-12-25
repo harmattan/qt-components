@@ -43,7 +43,7 @@
 MDeclarativeIMAttributeExtension::MDeclarativeIMAttributeExtension(QDeclarativeItem *parent) :
     QDeclarativeItem(parent)
 #ifdef HAVE_MALIIT_FRAMEWORK
-    ,extension()
+    ,m_extension(new Maliit::AttributeExtension)
 #endif
 {
 }
