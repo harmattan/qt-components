@@ -1,0 +1,19 @@
+diff --git a/src/fremantle/mdeclarativeimattributeextension.h b/src/fremantle/mdeclarativeimattributeextension.h
+index 2ca2c0d..84fe1a1 100644
+--- a/src/fremantle/mdeclarativeimattributeextension.h
++++ b/src/fremantle/mdeclarativeimattributeextension.h
+@@ -129,8 +129,13 @@ public:
+ 
+     Q_INVOKABLE void registerInputElement(QDeclarativeItem *element) const {
+ #if defined(HAVE_MALIIT_FRAMEWORK)
+-        if (element)
++
++#define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) >= V
++        const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
++
++        if (element && CHECK_VER(v, 0x040704))
+             element->setProperty(Maliit::InputMethodQuery::attributeExtensionId, QVariant(m_extension->id()));
++#undef CHECK_VER
+ #else
+         Q_UNUSED(element);
+ #endif
