@@ -1,0 +1,36 @@
+diff --git a/src/meego/ToolBarLayout.js b/src/meego/ToolBarLayout.js
+index 691b63a..9c8bd66 100644
+--- a/src/meego/ToolBarLayout.js
++++ b/src/meego/ToolBarLayout.js
+@@ -88,6 +88,11 @@ function cleanup() {
+     this.parentChanged.disconnect(arguments.callee);
+ }
+ 
++function isButtonRow(item) {
++    return (item && item.checkedButton !== undefined);
++}
++
++ 
+ // Main layout function
+ function layout() {
+ 
+@@ -104,7 +109,18 @@ function layout() {
+             items.push(children[i])
+ 
+             // Center all items vertically
+-            items[0].y = (function() {return height / 2 - items[0].height / 2})
++            children[i].y = height / 2 - children[i].height / 2
++	    if(isButtonRow(children[i])) {
++		var buttonRow = children[i];
++	        // ButtonRow frame height is always tool bar's height in
++                // landscape, regardless of the current orientation, so we need
++                // to override the heights of the buttons within (because it's a
++                // Row, so its height is based on its children)
++		children[i].y = 0;
++                for (var j = 0; j < buttonRow.children.length; ++j) {
++                    buttonRow.children[j].implicitHeight = parent.height
++                }	
++	    }
+             // Find out which items are expanding
+             if (children[i].__expanding) {
+                 expandingItems.push(children[i])
