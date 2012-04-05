@@ -47,7 +47,7 @@
 
 int main(int argc, char **argv)
 {
-    const QString qrc = "qrc:/ssu/main.qml";
+    QString qrc = "qrc:/ssu/main.qml";
 
     //Check qt version if qt > 4.7.4, run with opengl graphics
     const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
