@@ -39,6 +39,7 @@
 ****************************************************************************/
 
 #include <QtDeclarative>
+
 #include "fpsdeclarativeview.h"
 
 #define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < V
@@ -46,11 +47,19 @@
 
 int main(int argc, char **argv)
 {
-    const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
-    const QString   qrc = CHECK_VER(v, 0x040704) ? "qrc:/ssu/main.qml" : "qrc:/cssu/main.qml";
+    const QString qrc = "qrc:/ssu/main.qml";
 
+    //Check qt version if qt > 4.7.4, run with opengl graphics
+    const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
+    if (CHECK_VER(v, 0x040704)) {
+		qrc = "qrc:/cssu/main.qml";
+        QApplication::setGraphicsSystem("opengl");
+    }
+    
     QApplication app(argc, argv);
-    FPSDeclarativeView window;
+    app.setProperty("NoMStyle", true);
+
+  	FPSDeclarativeView window;
 
     QDir::setCurrent(app.applicationDirPath());
     window.setSource(QUrl(qrc));
@@ -64,3 +73,6 @@ int main(int argc, char **argv)
 
     return app.exec();
 }
+
+#undef MAX
+#undef CHECK_VER
