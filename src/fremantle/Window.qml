@@ -102,7 +102,22 @@ Item {
             onClicked: Qt.quit()
         }
 
-        Item {
+        Rectangle {
+            anchors.top: windowContent.bottom
+            anchors.bottom: window.bottom
+            anchors.left: window.left
+            anchors.right: window.right
+            color: "black"
+            visible: !InputContext.simulateSip
+
+            Label {
+                text: "Virtual keyboard is not available, \nplease use hardware keyboard."
+                anchors.centerIn: parent;
+                color: "white"
+            }
+        }
+
+  	Item {
             id: windowContent
             width: parent.width
             height: parent.height - heightDelta
