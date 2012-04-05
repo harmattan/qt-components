@@ -179,11 +179,6 @@ void MDeclarativeInputContext::setKeyboardOrientation(MDeclarativeScreen::Orient
 #endif
 }
 
-bool MDeclarativeInputContext::simulateSip() const
-{
-    return d->simulateSip;
-}
-
 QRectF MDeclarativeInputContext::microFocus() const
 {
     return d->microFocus;
