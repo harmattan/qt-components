@@ -42,7 +42,7 @@
 
 #include "fpsdeclarativeview.h"
 
-#define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < V
+#define CHECK_VER(v, V) v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) >= V
 #define MAX(a, b) ((a > b) ? a : b)
 
 int main(int argc, char **argv)
