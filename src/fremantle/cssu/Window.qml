@@ -54,8 +54,8 @@ Item {
     property alias inPortrait: window.portrait
 
     // Extendend API (for fremantle only)
-    property bool allowSwitch: true
-    property bool allowClose:  true
+    property bool allowSwitch: false
+    property bool allowClose:  false
 
     property Style platformStyle: WindowStyle{}
 
@@ -78,6 +78,8 @@ Item {
 
         anchors.centerIn: parent
 
+        //Fremantle switch # close is not needed on BB10
+        /*
         MouseArea {
             id: switchButton
             enabled: allowSwitch && screen.allowSwipe
@@ -101,6 +103,7 @@ Item {
             }
             onClicked: Qt.quit()
         }
+        */
 
         Item {
             id: windowContent
