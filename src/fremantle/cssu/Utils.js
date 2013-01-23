@@ -38,9 +38,7 @@
  **
  ****************************************************************************/
 
-.
-pragma
-library
+.pragma library
 
 /*
  Get the first flickable in hierarchy.
