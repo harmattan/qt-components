@@ -419,9 +419,9 @@ MDeclarativeScreen::Orientation MDeclarativeScreenPrivate::physicalOrientation()
     QString topEdge = topEdgeValue();
 
     if (topEdge == "top") {
-        o = MDeclarativeScreen::Landscape;
-    } else if (topEdge == "left") {
         o = MDeclarativeScreen::Portrait;
+    } else if (topEdge == "left") {
+        o = MDeclarativeScreen::Landscape;
     } else if (topEdge == "right") {
         o = MDeclarativeScreen::PortraitInverted;
     } else if (topEdge == "bottom") {
@@ -709,9 +709,14 @@ void MDeclarativeScreen::setAllowedOrientations(Orientations orientation) {
     flags > 1 ? d->o.start(this): d->o.stop(this);
 #endif
 
+    //qDebug() << "MDeclarativeScreen" << "setAllowedOrientations";
+    //qDebug() << "MDeclarativeScreen" << "orient. physical:" << d->physicalOrientation();
+    //qDebug() << "MDeclarativeScreen" << "orient. current:" << d->orientation;
     // Check if physical orientation fits allowed orientations
     if(d->physicalOrientation() != d->orientation) {
+        //qDebug() << "MDeclarativeScreen" << "al. orient." << "mismatch with physical";
         if(d->physicalOrientation() & d->allowedOrientations) {
+            //qDebug() << "MDeclarativeScreen" << "al. orient." << "phys. orient. allowed, setting" ;
             setOrientation(d->physicalOrientation());
         }
     }
