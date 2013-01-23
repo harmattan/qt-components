@@ -249,7 +249,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
 
     if (screen) {
         displaySize = screen->screenGeometry().size();
-        qDebug() << "MDeclarativeScreen" << "size:" << displaySize;
+        //qDebug() << "MDeclarativeScreen" << "size:" << displaySize;
     }
 
     screenSize = QSize(displaySize.width(), displaySize.height());
@@ -313,17 +313,17 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
 void MDeclarativeScreenPrivate::initMobilityBackends()
 {
 #if !defined (Q_WS_MAEMO_5) && defined(HAVE_SENSORS)
-    qDebug() << "MDeclarativeScreen" << "orientation sensor init";
+    //qDebug() << "MDeclarativeScreen" << "orientation sensor init";
     orientationSensor.connectToBackend();
     orientationSensor.start();
     if (!orientationSensor.isActive()) {
         qWarning("OrientationSensor didn't start!");
     }
-    qDebug() << "MDeclarativeScreen" << "orientation sensor init - active ?" << orientationSensor.isActive();
+    //qDebug() << "MDeclarativeScreen" << "orientation sensor init - active ?" << orientationSensor.isActive();
     //Connect to updateOrientationAngle slot
     QObject::connect(&orientationSensor, SIGNAL(readingChanged()),
                      q, SLOT(_q_updateOrientationAngle()));
-    qDebug() << "MDeclarativeScreen" << "orientation sensor signal connected";
+    //qDebug() << "MDeclarativeScreen" << "orientation sensor signal connected";
 #endif
     return;
 }
@@ -344,7 +344,7 @@ void MDeclarativeScreenPrivate::_q_isCoveredChanged()
     bool covered = isCoveredProperty.value().toBool();
 
     if (isCovered != covered) {
-        qDebug() << "MDeclarativeScreenPrivate" << "Covered:" << covered;
+        //qDebug() << "MDeclarativeScreenPrivate" << "Covered:" << covered;
 
         isCovered = covered;
         emit q->coveredChanged();
@@ -454,7 +454,7 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 
 #if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS) 
     //HW Keyboard open or TV connected causes a switch to landscape, but only if this is allowed
-    qDebug() << "MDeclarativeScreen" << "edge:" << edge;
+    //qDebug() << "MDeclarativeScreen" << "edge:" << edge;
     if ((open || isTvConnected) && allowedOrientations & MDeclarativeScreen::Landscape) {
         newOrientation = MDeclarativeScreen::Landscape;
     } else if (edge == "top" && (allowedOrientations & MDeclarativeScreen::Portrait)) {
@@ -518,7 +518,7 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     top = o.getOrientation();
 # else
 #  ifdef HAVE_SENSORS
-    qDebug() << "MDeclarativeScreen" << "orientationSensor active:" << orientationSensor.isActive();
+    //qDebug() << "MDeclarativeScreen" << "orientationSensor active:" << orientationSensor.isActive();
     if (!orientationSensor.isActive()) {
         return top;
     }
@@ -576,7 +576,7 @@ bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
 		d->o.stop(this);
 #else
 # ifdef HAVE_SENSORS
-        qDebug() << "MDeclarativeScreen" << "orientationSensor stop";
+        //qDebug() << "MDeclarativeScreen" << "orientationSensor stop";
 		d->orientationSensor.stop();
 # endif
 #endif
@@ -587,7 +587,7 @@ bool landscapeMinimized = false;
 bool landscapeMinimized = true;
 #endif
                 if(landscapeMinimized){
-                    qDebug() << "MDeclarativeScreen" << "landscape minimized";
+                    //qDebug() << "MDeclarativeScreen" << "landscape minimized";
                     //minimized apps are forced to landscape
                     d->allowedOrientationsBackup = d->allowedOrientations;
                     //set allowedOrientations manually, because
@@ -602,7 +602,7 @@ bool landscapeMinimized = true;
 	      d->k.start(this); d->o.start(this);
 #else
 # ifdef HAVE_SENSORS
-          qDebug() << "MDeclarativeScreen" << "orientationSensor start";
+          //qDebug() << "MDeclarativeScreen" << "orientationSensor start";
 	      d->orientationSensor.start();
 # endif
 #endif
