@@ -54,6 +54,8 @@ Button {
     //Deprecated item, REMOVE THIS
     property QtObject style: toolButton.platformStyle
 
-    implicitWidth: platformStyle.buttonWidth
-    implicitHeight: platformStyle.buttonHeight
+    //implicitWidth: platformStyle.buttonWidth
+    //implicitHeight: platformStyle.buttonHeight
+    implicitWidth: 70
+    implicitHeight: 70
 }

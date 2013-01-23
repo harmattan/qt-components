@@ -50,7 +50,7 @@ Item {
 
     // TODO: deprecated
     property alias iconId: root.platformIconId
-    width: 80; height: 64
+    width: 160; height: 128
     signal clicked
 
     // Styling for the ToolItem
@@ -77,6 +77,9 @@ Item {
             }
 
             source: handleIconSource(iconId)
+            width : 80
+            height : 80
+            smooth : true
             anchors.centerIn: parent
         }
     }

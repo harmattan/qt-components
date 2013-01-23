@@ -89,6 +89,7 @@ Item {
     BorderImage {
         id: bgImage
         width: root.width
+        height: Screen.screenOrientation == "portrait" ? 115 : 100
         border.left: 10
         border.right: 10
         border.top: 10
