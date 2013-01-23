@@ -44,6 +44,7 @@
 #include "mdeclarativescreen.h"
 #include "mdeclarativeinputcontext.h"
 #include "mwindowstate.h"
+#include <QDesktopWidget>
 #include <math.h>
 
 #ifdef HAVE_CONTEXTSUBSCRIBER
@@ -79,8 +80,6 @@
 # include <QDBusMessage>
 #endif
 
-static const int DEFAULT_WIDTH = 480;
-static const int DEFAULT_HEIGHT = 800;
 
 static const qreal CATEGORY_SMALL_LIMIT  = 3.2;
 static const qreal CATEGORY_MEDIUM_LIMIT = 4.5;
@@ -155,6 +154,10 @@ public:
 # endif
 #endif
 
+#ifdef Q_OS_BLACKBERRY
+
+#endif
+
 private:
     bool minimized;
 };
@@ -208,8 +211,8 @@ bool x11EventFilter(void *message, long *result)
 
 MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     : q(qq)
-    , orientation(MDeclarativeScreen::Landscape)
-    , finalOrientation(MDeclarativeScreen::Landscape)
+    , orientation(MDeclarativeScreen::Portrait)
+    , finalOrientation(MDeclarativeScreen::Portrait)
     , allowedOrientations(MDeclarativeScreen::Landscape | MDeclarativeScreen::Portrait)
     , isCovered(false)
     , keyboardOpen(false)
@@ -241,7 +244,14 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , minimized(false)
 {
     // TODO: Could use QDesktopWidget, but what about on host PC?
-    displaySize = QSize(DEFAULT_HEIGHT, DEFAULT_WIDTH);
+
+    QDesktopWidget* screen = qApp->desktop();
+
+    if (screen) {
+        displaySize = screen->screenGeometry().size();
+        qDebug() << "MDeclarativeScreen" << "size:" << displaySize;
+    }
+
     screenSize = QSize(displaySize.width(), displaySize.height());
 
     oldEventFilter = QCoreApplication::instance()->setEventFilter(x11EventFilter);
@@ -303,14 +313,17 @@ void MDeclarativeScreenPrivate::initContextSubscriber()
 void MDeclarativeScreenPrivate::initMobilityBackends()
 {
 #if !defined (Q_WS_MAEMO_5) && defined(HAVE_SENSORS)
+    qDebug() << "MDeclarativeScreen" << "orientation sensor init";
     orientationSensor.connectToBackend();
     orientationSensor.start();
     if (!orientationSensor.isActive()) {
         qWarning("OrientationSensor didn't start!");
     }
+    qDebug() << "MDeclarativeScreen" << "orientation sensor init - active ?" << orientationSensor.isActive();
     //Connect to updateOrientationAngle slot
     QObject::connect(&orientationSensor, SIGNAL(readingChanged()),
                      q, SLOT(_q_updateOrientationAngle()));
+    qDebug() << "MDeclarativeScreen" << "orientation sensor signal connected";
 #endif
     return;
 }
@@ -381,11 +394,11 @@ int MDeclarativeScreenPrivate::rotation() const
 
     switch (orientation) {
     case MDeclarativeScreen::Landscape:
-        angle = 0;
+        angle = 270;
         break;
     case MDeclarativeScreen::Portrait:
     case MDeclarativeScreen::Default:  //handle default as portrait
-        angle = 270;
+        angle = 0;
         break;
     case MDeclarativeScreen::LandscapeInverted:
         angle = 180;
@@ -421,6 +434,7 @@ MDeclarativeScreen::Orientation MDeclarativeScreenPrivate::physicalOrientation()
 void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 {
     MDeclarativeScreen::Orientation newOrientation = MDeclarativeScreen::Default;
+    //qDebug() << "MDeclarativeScreen" << "_q_updateOrientationAngle";
 
 #if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS)
     QString edge = topEdgeValue();
@@ -440,12 +454,13 @@ void MDeclarativeScreenPrivate::_q_updateOrientationAngle()
 
 #if defined(HAVE_CONTEXTSUBSCRIBER) || defined (Q_WS_MAEMO_5) || defined(HAVE_SENSORS) 
     //HW Keyboard open or TV connected causes a switch to landscape, but only if this is allowed
+    qDebug() << "MDeclarativeScreen" << "edge:" << edge;
     if ((open || isTvConnected) && allowedOrientations & MDeclarativeScreen::Landscape) {
         newOrientation = MDeclarativeScreen::Landscape;
-    } else if (edge == "top" && (allowedOrientations & MDeclarativeScreen::Landscape)) {
-        newOrientation = MDeclarativeScreen::Landscape;
-    } else if (edge == "left" && (allowedOrientations & MDeclarativeScreen::Portrait)) {
+    } else if (edge == "top" && (allowedOrientations & MDeclarativeScreen::Portrait)) {
         newOrientation = MDeclarativeScreen::Portrait;
+    } else if (edge == "left" && (allowedOrientations & MDeclarativeScreen::Landscape)) {
+        newOrientation = MDeclarativeScreen::Landscape;
     } else if (edge == "right" && (allowedOrientations & MDeclarativeScreen::PortraitInverted)) {
         newOrientation = MDeclarativeScreen::PortraitInverted;
     } else if (edge == "bottom" && (allowedOrientations & MDeclarativeScreen::LandscapeInverted)) {
@@ -503,6 +518,7 @@ QString MDeclarativeScreenPrivate::topEdgeValue() const {
     top = o.getOrientation();
 # else
 #  ifdef HAVE_SENSORS
+    qDebug() << "MDeclarativeScreen" << "orientationSensor active:" << orientationSensor.isActive();
     if (!orientationSensor.isActive()) {
         return top;
     }
@@ -536,34 +552,78 @@ MDeclarativeScreen::~MDeclarativeScreen()
     delete d;
 }
 
+
+
+//    //qDebug() << "MDeclarativeScreen" << "event type" << e;
+//
+//    //if(e->type() == QEvent::ActivationChange) {
+//    if(e->type() == QEvent::ApplicationActivate || e->type() == QEvent::ApplicationDeactivate) {
+//        //if(e->type() == QEvent::WindowActivate || e->type() == QEvent::WindowDeactivate) {
+//
+//        //d->topLevelWidget = qobject_cast<QWidget*>(o);
+//        //if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
+//        if(1) {
+//            d->setMinimized(e->type() == QEvent::ApplicationDeactivate);
+//            //if(!d->topLevelWidget->isActiveWindow()) {
+//            if(e->type() == QEvent::ApplicationDeactivate) {
+//            //qDebug() << "MDeclarativeScreen" << "state event" << e;
+//            //qDebug() << "MDeclarativeScreen" << "state event type" << e->type();
+//	        //Stop keyboard and orientation watcher
+
+
+
+
 bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
+
+// On BB10 with QBB_USE_OPENGL set, even touching the screen sends the ActivationChange event
+// but ApplicationActivate/ApplicationDeactivate are sent correctly only when the application window
+// gets/looses focus (or it the screen is turned on/off)
+#ifdef Q_OS_BLACKBERRY
+    if(e->type() == QEvent::ApplicationActivate || e->type() == QEvent::ApplicationDeactivate) {
+        if(1) { // looks like the event can't come from foreign window on BB10
+            d->setMinimized(e->type() == QEvent::ApplicationDeactivate);
+            if(e->type() == QEvent::ApplicationDeactivate) {
+#else
     if(e->type() == QEvent::ActivationChange) {
         d->topLevelWidget = qobject_cast<QWidget*>(o);
         if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
             d->setMinimized(!d->topLevelWidget->isActiveWindow());
             if(d->isMinimized()) {
 	        //Stop keyboard and orientation watcher
+#endif
+
 #ifdef Q_WS_MAEMO_5
 	        d->k.stop(this); 
 		d->o.stop(this);
 #else
 # ifdef HAVE_SENSORS
+        qDebug() << "MDeclarativeScreen" << "orientationSensor stop";
 		d->orientationSensor.stop();
 # endif
 #endif
-                //minimized apps are forced to landscape
-                d->allowedOrientationsBackup = d->allowedOrientations;
-                //set allowedOrientations manually, because
-                //setAllowedOrientations() will not work while
-                //minimized. For Fremantle, force to Landscape
-                d->allowedOrientations = Landscape;
-                setOrientation(Landscape);
+
+#ifdef Q_OS_BLACKBERRY // don't switch to landscape when minimized on BB10
+bool landscapeMinimized = false;
+#else
+bool landscapeMinimized = true;
+#endif
+                if(landscapeMinimized){
+                    qDebug() << "MDeclarativeScreen" << "landscape minimized";
+                    //minimized apps are forced to landscape
+                    d->allowedOrientationsBackup = d->allowedOrientations;
+                    //set allowedOrientations manually, because
+                    //setAllowedOrientations() will not work while
+                    //minimized. For Fremantle, force to Landscape
+                    d->allowedOrientations = Landscape;
+                    //setOrientation(Landscape);
+                }
             } else {
 	        //Start watchers.
 #ifdef Q_WS_MAEMO_5
 	      d->k.start(this); d->o.start(this);
 #else
 # ifdef HAVE_SENSORS
+          qDebug() << "MDeclarativeScreen" << "orientationSensor start";
 	      d->orientationSensor.start();
 # endif
 #endif
