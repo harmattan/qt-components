@@ -73,8 +73,11 @@ Item {
         id: window
         property bool portrait
 
-        width: window.portrait ? screen.displayHeight : screen.displayWidth
-        height: window.portrait ? screen.displayWidth : screen.displayHeight
+        // BB10 uses the portrait orientation by default
+        //width: window.portrait ? screen.displayHeight : screen.displayWidth
+        //height: window.portrait ? screen.displayWidth : screen.displayHeight
+        width: window.portrait ? screen.displayWidth : screen.displayHeight
+        height: window.portrait ? screen.displayHeight : screen.displayWidth
 
         anchors.centerIn: parent
 
@@ -166,11 +169,11 @@ Item {
         states: [
             State {
                 name: "Landscape"
-                PropertyChanges { target: window; rotation: 0; portrait: false; }
+                PropertyChanges { target: window; rotation: 270; portrait: false; }
             },
             State {
                 name: "Portrait"
-                PropertyChanges { target: window; rotation: 270; portrait: true; }
+                PropertyChanges { target: window; rotation: 0; portrait: true; }
             },
             State {
                 name: "LandscapeInverted"
