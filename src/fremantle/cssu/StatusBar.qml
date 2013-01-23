@@ -63,10 +63,12 @@ Item {
     property Style platformStyle: StatusBarStyle {}
 
     //Statusbar background
-    BorderImage {
+    Rectangle {
         id: background
         width: parent.width;
-        source: platformStyle.background
+        //source: platformStyle.background
+        color : "black"
+        height : 80
 
         // Time Clock
         Text {
