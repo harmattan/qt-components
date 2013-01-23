@@ -69,8 +69,8 @@ Window {
         id: background
         visible: platformStyle.background == ""
         color: platformStyle.backgroundColor
-        width: window.inPortrait ? screen.displayHeight : screen.displayWidth
-        height: window.inPortrait ? screen.displayWidth : screen.displayHeight
+        width: window.inPortrait ? screen.displayWidth : screen.displayHeight
+        height: window.inPortrait ? screen.displayHeight : screen.displayWidth
         anchors { top: statusBar.bottom; left: parent.left; }
     }
 
@@ -132,7 +132,7 @@ Window {
 
         ToolBar {
             id: toolBar
-            anchors.bottom: parent.bottom            
+            anchors.bottom: parent.bottom
             privateVisibility: (inputContext.softwareInputPanelVisible==true || inputContext.customSoftwareInputPanelVisible == true)
             ? ToolBarVisibility.HiddenImmediately : (window.showToolBar ? ToolBarVisibility.Visible : ToolBarVisibility.Hidden)
         }
