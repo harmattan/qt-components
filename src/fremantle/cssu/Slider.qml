@@ -54,6 +54,9 @@ SliderTemplate {
     opacity: enabled ? UI.OPACITY_ENABLED : UI.OPACITY_DISABLED
 
     __handleItem: Image {
+        width : 100
+        height : 100
+        smooth : true
         source: pressed? platformStyle.handleBackgroundPressed : platformStyle.handleBackground;
     }
 
