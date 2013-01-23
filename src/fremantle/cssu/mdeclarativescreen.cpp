@@ -552,27 +552,6 @@ MDeclarativeScreen::~MDeclarativeScreen()
     delete d;
 }
 
-
-
-//    //qDebug() << "MDeclarativeScreen" << "event type" << e;
-//
-//    //if(e->type() == QEvent::ActivationChange) {
-//    if(e->type() == QEvent::ApplicationActivate || e->type() == QEvent::ApplicationDeactivate) {
-//        //if(e->type() == QEvent::WindowActivate || e->type() == QEvent::WindowDeactivate) {
-//
-//        //d->topLevelWidget = qobject_cast<QWidget*>(o);
-//        //if(d->topLevelWidget && d->topLevelWidget->parent() == NULL) { //it's a toplevelwidget
-//        if(1) {
-//            d->setMinimized(e->type() == QEvent::ApplicationDeactivate);
-//            //if(!d->topLevelWidget->isActiveWindow()) {
-//            if(e->type() == QEvent::ApplicationDeactivate) {
-//            //qDebug() << "MDeclarativeScreen" << "state event" << e;
-//            //qDebug() << "MDeclarativeScreen" << "state event type" << e->type();
-//	        //Stop keyboard and orientation watcher
-
-
-
-
 bool MDeclarativeScreen::eventFilter(QObject *o, QEvent *e) {
 
 // On BB10 with QBB_USE_OPENGL set, even touching the screen sends the ActivationChange event
