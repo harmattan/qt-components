@@ -102,7 +102,10 @@ Dialog {
 
                 opacity: closeButtonArea.pressed ? 0.5 : 1.0
 
-                source: "image://theme/icon-m-common-dialog-close"
+                //source: "image://theme/icon-m-common-dialog-close"
+                source : "image://theme/icon-m-toolbar-close-selected"
+                width : 64
+                height : 64
 
                 MouseArea {
                     id: closeButtonArea
