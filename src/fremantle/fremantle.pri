@@ -51,8 +51,8 @@ else {
 }
 
 mobility {
-    MOBILITY += sensors systeminfo
-    DEFINES += HAVE_SENSORS HAVE_SYSTEMINFO
+    MOBILITY += sensors
+    DEFINES += HAVE_SENSORS
 }
 
 maliit {
