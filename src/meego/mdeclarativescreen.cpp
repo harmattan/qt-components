@@ -202,7 +202,7 @@ MDeclarativeScreenPrivate::MDeclarativeScreenPrivate(MDeclarativeScreen *qq)
     , minimized(false)
 {
     // TODO: Could use QDesktopWidget, but what about on host PC?
-    displaySize = QSize(854, 480);
+    displaySize = QSize(320, 240);
     screenSize = QSize(displaySize.width(), displaySize.height());
 
     oldEventFilter = QCoreApplication::instance()->setEventFilter(x11EventFilter);

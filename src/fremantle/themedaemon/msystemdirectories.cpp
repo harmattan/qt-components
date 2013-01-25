@@ -67,7 +67,7 @@ QString MSystemDirectories::cacheDirectory()
             cacheDirInfo.setFile(cacheDir);
             if (!cacheDirInfo.isWritable() && cacheDirInfo.isDir()) {
                 qCritical() << "No writable cache directory found. Make sure that either" << QString(CACHE_DIR) << "or" << cacheDir << "are writable.";
-                _exit(EXIT_FAILURE);
+                //_exit(EXIT_FAILURE);
             }
         }
 

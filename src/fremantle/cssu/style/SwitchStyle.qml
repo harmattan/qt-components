@@ -42,8 +42,8 @@ import QtQuick 1.1
 import "UIConstants.js" as UI
 
 Style {
-    property int minKnobX: 4
-    property int maxKnobX: 28
+    property int minKnobX: 8
+    property int maxKnobX: 56
 
     // Slider
     property url switchOn: "image://theme/meegotouch-switch-on"+__invertedString

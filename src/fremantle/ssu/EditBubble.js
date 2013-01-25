@@ -38,9 +38,7 @@
  **
  ****************************************************************************/
 
-.
-pragma
-library
+.pragma library
 
 Qt.include("Utils.js");
 Qt.include("UIConstants.js");

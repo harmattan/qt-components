@@ -65,7 +65,6 @@ load(mobilityconfig, true)
 contains(MOBILITY_CONFIG, systeminfo) {
     CONFIG += mobility
     MOBILITY += systeminfo
-    DEFINES += HAVE_SYSTEMINFO
 }
 
 SOURCES += \

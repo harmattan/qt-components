@@ -52,7 +52,7 @@ Style {
     property url homeButton:  "image://theme/icon-f-statusbar-home"
 
     // Default separation between elements
-    property int paddingSmall: 6
+    property int paddingSmall: 12
 
     // StatusBar default font and colors
     property string defaultFont: theme.constants.Fonts.FONT_FAMILY

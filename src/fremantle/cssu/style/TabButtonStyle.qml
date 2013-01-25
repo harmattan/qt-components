@@ -49,11 +49,11 @@ ButtonStyle {
     property string screenOrientation: (screen.currentOrientation == Screen.Portrait || screen.currentOrientation == Screen.PortraitInverted) ? "portrait" : "landscape"
 
     fontCapitalization: Font.MixedCase 
-    fontPixelSize: 24
+    fontPixelSize: 42
     fontWeight: Font.Normal
     checkedFontWeight: Font.Bold
 
-    buttonHeight: screenOrientation == "portrait"? 72 : 56
+    buttonHeight: screenOrientation == "portrait"? 115 : 83
 
     textColor: inverted ? "#CDCDCD" : "#505050"
     pressedTextColor: inverted ? "#ffffff" : "#505050"

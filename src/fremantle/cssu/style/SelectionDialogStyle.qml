@@ -43,10 +43,10 @@ import "UIConstants.js" as UI
 
 DialogStyle {
     property alias titleBarFont: titleText.font
-    property int titleBarHeight: 44
+    property int titleBarHeight: 88
     property color titleBarColor: "white"
-    property int titleBarIndent: 17
-    property int titleBarLineMargin: 10
+    property int titleBarIndent: 34
+    property int titleBarLineMargin: 20
 
     property bool __portrait: (screen.currentOrientation == 1) || (screen.currentOrientation == 4)
 
@@ -68,13 +68,13 @@ DialogStyle {
 
     property color commonLabelColor: "white"
 
-    property int itemHeight: 64
+    property int itemHeight: 128
     property color itemTextColor: "white"
     property color itemSelectedTextColor: "white"
-    property int itemLeftMargin: 16
-    property int itemRightMargin: 16
+    property int itemLeftMargin: 32
+    property int itemRightMargin: 32
 
-    property int contentSpacing: 10
+    property int contentSpacing: 20
 
     property int pressDelay: 350 // ms
 

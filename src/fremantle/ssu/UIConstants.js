@@ -38,9 +38,7 @@
  **
  ****************************************************************************/
 
-.
-pragma
-library
+.pragma library
 
 var FONT_FAMILY = "Nokia Pure Text";
 var FONT_FAMILY_LIGHT = "Nokia Pure Text Light";

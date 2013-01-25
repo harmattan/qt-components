@@ -45,10 +45,10 @@ Style {
     id: root
     // Font
     property string fontFamily: UI.FONT_FAMILY
-    property int fontPixelSize: 26 // UI.FONT_DEFAULT_SIZE
+    property int fontPixelSize: UI.FONT_DEFAULT_SIZE
     property int fontCapitalization: Font.MixedCase
     property int fontWeight: Font.Bold
-    property int height: 80
+    property int height: 160
 
     // Text Color
     property color textColor: inverted ? UI.COLOR_BUTTON_INVERTED_FOREGROUND : UI.COLOR_BUTTON_FOREGROUND
@@ -56,8 +56,8 @@ Style {
     property color disabledTextColor: "#797979"
     property color checkedTextColor: UI.COLOR_INVERTED_FOREGROUND
 
-    property real leftMargin: 24
-    property real rightMargin: 24
+    property real leftMargin: 48
+    property real rightMargin: 48
     property real topMargin: 0
     property real bottomMargin: 0
     property bool centered: true

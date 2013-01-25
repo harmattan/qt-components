@@ -42,20 +42,20 @@ import QtQuick 1.1
 import "UIConstants.js" as UI
 
 ButtonStyle {
-    buttonWidth: 186
-    buttonHeight: 42
+    buttonWidth: 372
+    buttonHeight: 84
     
     // Font
-    fontPixelSize: 22
+    fontPixelSize: 44
     fontCapitalization: Font.MixedCase
     fontWeight: Font.Bold
     horizontalAlignment: Text.AlignHCenter
 
     // Background
-    backgroundMarginRight: 15
-    backgroundMarginLeft: 15
-    backgroundMarginTop: 15
-    backgroundMarginBottom: 15
+    backgroundMarginRight: 30
+    backgroundMarginLeft: 30
+    backgroundMarginTop: 30
+    backgroundMarginBottom: 30
     property bool backgroundVisible: true
     
     background: backgroundVisible ? "image://theme/meegotouch-button-navigationbar-button" + __invertedString + "-background" : ""

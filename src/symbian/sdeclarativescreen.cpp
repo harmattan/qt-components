@@ -167,7 +167,6 @@ void SDeclarativeScreenPrivate::_q_updateScreenSize(const QSize &size)
 #ifdef Q_DEBUG_SCREEN
     qDebug() << "_q_updateScreenSize(): " << size;
 #endif
-
     QSize newSize(size);
     if (newSize.isEmpty())
         newSize = currentScreenSize();

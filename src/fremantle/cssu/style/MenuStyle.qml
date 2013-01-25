@@ -51,10 +51,10 @@ Style {
 
     property real bottomMargin: 0
 
-    property real leftPadding: 16
-    property real rightPadding: 16
-    property real topPadding: 16
-    property real bottomPadding: 16
+    property real leftPadding: 32
+    property real rightPadding: 32
+    property real topPadding: 32
+    property real bottomPadding: 32
 
     // fader properties
     property double dim: 0.9

@@ -38,9 +38,7 @@
  **
  ****************************************************************************/
 
-.
-pragma
-library
+. pragma library
 
 /* Margins */
 var INDENT_DEFAULT = 16;
