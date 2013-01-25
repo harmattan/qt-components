@@ -3,8 +3,8 @@ Qt Components for BB10
 
 This branch (bb10) contains the MeeGo/Harmattan Qt Components modified to work on the BlackBerry 10 OS.
 
-Modifications done
-==================
+What was changed from Ineans components
+=======================================
 - main window size is automatically detected as runtime ("normal" Qt Components just have a hardcoded value)
 - the default orientation was changed to portrait
 - orientation fixes to work correctly with the QBB_USE_OPENGL environmental variable
@@ -18,7 +18,7 @@ Where to make changes
 For you changes to make effect, edit the files present in the src/fremantle/cssu folder.
 Changing the other files will not influence the build with the below provided commands.
 
-Preparing fo the build
+Preparing for the build
 ======================
 Firs of all install the BlackBerry 10 native SDK.
 Then prepare you shell for cross-compiling with the BB10 NDK:
@@ -56,6 +56,12 @@ Also don't forget to set the QBB_USE_OPENGL environmental variable to "1", as it
 The automatic orientation code also expects OpenGL to be set, as it fixes a few glitches introduces by using it and might not work correctly otherwise.
 You can include the following code in your bar, which makes sure QBB_USE_OPENGL is properly set at startup:
 <env var="QBB_USE_OPENGL" value="1"/>
+
+Compatible theme
+================
+You can get a BB10 Qt Components theme from here:
+https://gitorious.org/~martink/fremantle-qt-components/bb10-qt-components-graphics
+Se README in the main folder for how to use the theme.
 
 Original Qt Components README
 =============================
