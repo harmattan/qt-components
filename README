@@ -1,3 +1,64 @@
+Qt Components for BB10
+===============================
+
+This branch (bb10) contains the MeeGo/Harmattan Qt Components modified to work on the BlackBerry 10 OS.
+
+Modifications done
+==================
+- main window size is automatically detected as runtime ("normal" Qt Components just have a hardcoded value)
+- the default orientation was changed to portrait
+- orientation fixes to work correctly with the QBB_USE_OPENGL environmental variable
+- removed dependency on QSystemInfo when building with qt-mobility support, as QSystemInfo is not part of the BB10 Qt build
+- fixed screen rotation to landscape every time the application is minimized
+- high-DPI adaptation for relevant components --> this is not 100% done & patches are welcome ! :)
+-- basically, most of the hardcoded values were multiplied by 2, which seems to work quite fine on the high-DPI screen of the Dev-Alpha
+
+Where to make changes
+=====================
+For you changes to make effect, edit the files present in the src/fremantle/cssu folder.
+Changing the other files will not influence the build with the below provided commands.
+
+Preparing fo the build
+======================
+Firs of all install the BlackBerry 10 native SDK.
+Then prepare you shell for cross-compiling with the BB10 NDK:
+source ~/bbndk/bbdnk-env.sh
+
+Configuring
+===========
+Use the following command to configure for build:
+./configure -fremantle -no-maliit -make cssu -force-local-theme -mobility -no-xrandr -no-xdamage -nomake examples
+
+Compiling
+=========
+Just start make to compile it:
+make -j5
+
+Result
+======
+The resulting compiled components are in the imports/ folder.
+You can drop the "org" folder as that contains components targeted for Maemo 5 Fremantle,
+that are not needed by the ordinary MeeGo components.
+
+Recompiling
+===========
+First clean the directory:
+make clean
+Then remove the imports folder with the result & proceed with configure & make as usual.
+
+Using the components
+====================
+To use these components, use the following import in your QML:
+import com.nokia.meego 1.0
+You also need to pack the contents of the "imports" folder together with your application and then point the QML_IMPORT_PATH to it on application startup.
+Or you can feel the QDeclarativeEngine to add it when instantiation the QDeclarativeView.
+Also don't forget to set the QBB_USE_OPENGL environmental variable to "1", as it it would not use OpenGL and be horrendously slow.
+The automatic orientation code also expects OpenGL to be set, as it fixes a few glitches introduces by using it and might not work correctly otherwise.
+You can include the following code in your bar, which makes sure QBB_USE_OPENGL is properly set at startup:
+<env var="QBB_USE_OPENGL" value="1"/>
+
+Original Qt Components README
+=============================
 This source tree contains the Qt Components project.
 
 Building
